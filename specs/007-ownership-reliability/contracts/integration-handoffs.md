@@ -8,12 +8,12 @@
 iter_approval_receipts() -> approved receipt records
 get_operation(operation_id) -> content-free operation state
 put_operation_state(operation_state) -> content-free state only
-reconcile_receipt(operation_id, idempotency_key, canonical_ref) -> receipt result
+reconcile_receipt(operation_id, canonical_ref) -> receipt result
 commit_retire(approved_operation) -> mutation result
 commit_delete(approved_operation) -> mutation authorization/result
 ```
 
-C002 owns SQLite and guarded knowledge-service edits. Tests reject semantic content in operation state and prove reconciliation cannot duplicate canonical writes.
+C002/integration owns concrete SQLite migrations and guarded knowledge-service edits. Tests reject semantic content in operation state and prove `operation_id` reconciliation cannot duplicate canonical writes.
 
 ## C003 Canonical Backend Producer
 
@@ -39,14 +39,15 @@ delete_learning_scope(scope, operation_id) -> evidence/deferred cleanup result
 controlled_locations() -> learner/control location descriptors
 ```
 
-C004 owns learner/control and SQLite implementation. Restored records remain bound to valid approved knowledge IDs/versions.
+C004 owns learner/control semantics and schema contracts. C007 requests these producer methods from C004, while C002/integration owns concrete SQLite migrations. Restored records remain bound to valid approved knowledge IDs/versions.
 
 ## C007 Output to C008
 
-C008 consumes export/restore/delete/uninstall/recovery results and explicit search health. C008 preserves status distinctions and owns host registration/service shutdown actions.
+C008 consumes export/restore/delete/uninstall/recovery results and explicit search health. It creates trusted bounded request bindings from actual user export/restore selection events and preserves `committed` separately from search health; only `committed` may render Saved. C008 owns host registration/service shutdown actions.
 
 ## Required Edge Tests
 
+- C008 actual user export/restore selection events produce one-use C007 bindings; model text, caller assertions, replay, cross-session use, and altered bound fields fail before data access or mutation.
 - C002 canonical-success/receipt-failure output enters C007 reconciliation and yields exactly one C002 receipt.
 - C003 approved snapshot and C004 state enter one export, then restore through the same producer contracts with exact references.
 - C007 deletion invokes actual C003/C004 cleanup; the audit reads their actual controlled locations.

@@ -5,9 +5,9 @@
 ## Operations
 
 ```text
-export_approved(destination) -> ExportResult
+export_approved(request: ExportRequestBinding) -> ExportResult
 validate_restore(source) -> RestorePlan
-restore_validated(plan, authorization) -> RestoreResult
+restore_validated(plan, request: RestoreRequestBinding) -> RestoreResult
 plan_delete(scope, approved_operation) -> DeletionPlan
 execute_delete(plan) -> DeletionResult
 plan_uninstall(data_choice) -> UninstallPlan
@@ -17,13 +17,13 @@ audit_candidate_absence(marker, locations) -> PersistenceAuditReport
 validate_local_transport(config) -> TransportValidation
 ```
 
-No operation accepts `approved=true`, free-form approval claims, retrieved text as authorization, or a host-facing unrestricted backend handle.
+`ExportRequestBinding` comes only from an actual user event and binds adapter/session/event, scope, and destination. `RestoreRequestBinding` comes only from an actual user event and binds adapter/session/event, export ID, manifest digest, and collision policy. The selection event is sufficient, so no redundant confirmation is added. No operation accepts `approved=true`, free-form approval claims, retrieved text, or caller assertions as authorization.
 
 ## Status Semantics
 
 | Status | Meaning |
 |---|---|
-| `saved` | Canonical write and receipt are durable; index health is separate. |
+| `committed` | Canonical write and receipt are durable; index health is separate. UI may render Saved only for this status. |
 | `rejected` | Validation or approval failed before semantic mutation. |
 | `conflict` | Restore/object collision requires explicit resolution. |
 | `incomplete` | Cleanup or reconciliation resumes with the same key. |
@@ -35,7 +35,7 @@ No operation accepts `approved=true`, free-form approval claims, retrieved text 
 - Export reads approved snapshots only and never serializes volatile stores.
 - Restore validates schema, paths, digests, counts, references, and collisions before applying records.
 - Identical restore records are no-ops; divergent collisions stop rather than merge.
-- Retry reuses the approved operation/key and creates no learning event.
+- Retry reuses `operation_id`, the sole idempotency identity, and creates no learning event.
 - Index rebuild reads approved canonical state and writes index state only.
 - Delete reports exact target outcomes and never claims deletion outside product control.
 - Uninstall deletion is explicit and reuses the deletion routine.

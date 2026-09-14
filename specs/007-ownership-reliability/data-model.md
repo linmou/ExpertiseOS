@@ -23,6 +23,27 @@ Paths are relative, normalized, unique, and cannot escape the bundle. Digests co
 | `count` | Non-negative number matching parsed records. |
 | `digest` | Digest matching exact file bytes. |
 
+## ExportRequestBinding
+
+| Field | Rule |
+|---|---|
+| `operation_id` | Sole idempotency identity for the one export request. |
+| `adapter_id` / `session_id` | Trusted origin matching the active user session. |
+| `user_event_ref` | Actual user export-selection event; one-use and non-replayable. |
+| `scope_digest` | Exact approved record scope. |
+| `destination_ref` | Exact selected export destination. |
+
+## RestoreRequestBinding
+
+| Field | Rule |
+|---|---|
+| `operation_id` | Sole idempotency identity for the one restore request. |
+| `adapter_id` / `session_id` | Trusted origin matching the active user session. |
+| `user_event_ref` | Actual user restore-selection event; one-use and non-replayable. |
+| `export_id` | Exact validated bundle identity. |
+| `manifest_digest` | Exact selected manifest bytes. |
+| `collision_policy` | Exact preflight policy; MVP accepts only reject-divergent. |
+
 ## RestorePlan
 
 | Field | Rule |
@@ -53,8 +74,7 @@ State: `approved -> applying -> complete | incomplete`; retry resumes incomplete
 
 | Field | Rule |
 |---|---|
-| `operation_id` | Unique approved operation identity. |
-| `idempotency_key` | Stable key for the operation. |
+| `operation_id` | Unique approved operation identity and sole idempotency identity. |
 | `operation_kind` | Restore, delete, receipt reconciliation, or index rebuild. |
 | `object_refs` | IDs/versions only; never content or excerpts. |
 | `phase` | Valid phase for the operation kind. |
