@@ -26,7 +26,7 @@
 
 **Purpose**: Establish content-free records, explicit statuses, and structural data boundaries used by every story.
 
-- [ ] T005 [P] Add model validation coverage for no-default dataclasses, prohibited semantic operation fields, search health, and bounded untrusted results with the required header in `tests/unit/test_ownership_models.py` (FR-013, FR-015, FR-018, FR-023)
+- [ ] T005 [P] Add model validation coverage for no-default dataclasses, export/restore request bindings, sole `operation_id` identity, prohibited semantic operation fields, search health, and bounded untrusted results with the required header in `tests/unit/test_ownership_models.py` (FR-013, FR-015, FR-018, FR-023, FR-025)
 - [ ] T006 [P] Add failure/retry/rebuild state-transition coverage with the required header in `tests/unit/test_reliability.py` (FR-012 through FR-017)
 - [ ] T007 [P] Add transport, untrusted-data, and sensitive-excerpt minimization coverage with the required header in `tests/unit/test_security_boundary.py` (FR-018 through FR-021)
 - [ ] T008 Implement no-default operation, restore, deletion, export, uninstall, and result dataclasses plus protocol types with the required header in `src/expertiseos/ownership.py` (FR-001 through FR-011, FR-023)
@@ -44,11 +44,11 @@
 
 **Independent Test**: Round-trip all supported records through actual C002-C004 snapshot/restore producers, then exercise malformed bundles and every collision class.
 
-- [ ] T012 [P] [US1] Add export allowlist, candidate/grant exclusion, manifest path/digest/count, and interrupted-write tests with the required header in `tests/integration/test_export_restore.py` (FR-001 through FR-003, SC-001, SC-002)
+- [ ] T012 [P] [US1] Add actual-user export/restore binding, replay/cross-session/altered-field rejection, no-redundant-confirmation, export allowlist, candidate/grant exclusion, manifest, and interrupted-write tests with the required header in `tests/integration/test_export_restore.py` (FR-001 through FR-004, FR-025, SC-001, SC-002)
 - [ ] T013 [US1] Add actual producer round-trip, stable identity/reference, collision, foreign import, and index-rebuild-failure cases to `tests/integration/test_export_restore.py` (FR-004 through FR-006, SC-001, SC-007)
-- [ ] T014 [US1] Implement deterministic approved snapshot serialization and atomic destination publication in `src/expertiseos/ownership.py` (FR-001, FR-002)
+- [ ] T014 [US1] Implement trusted export request binding validation, deterministic approved snapshot serialization, and atomic bound-destination publication in `src/expertiseos/ownership.py` (FR-001, FR-002, FR-025)
 - [ ] T015 [US1] Implement full-bundle schema/path/digest/count/reference validation and collision preflight in `src/expertiseos/ownership.py` (FR-003, FR-005)
-- [ ] T016 [US1] Implement authorized restore, identical-record no-op, producer application ordering, and index-repair result in `src/expertiseos/ownership.py` (FR-004 through FR-006)
+- [ ] T016 [US1] Implement trusted restore request binding validation, identical-record no-op, producer application ordering, and index-repair result in `src/expertiseos/ownership.py` (FR-004 through FR-006, FR-025)
 - [ ] T017 [US1] Run `pytest tests/integration/test_export_restore.py` and save record counts, IDs, digests, collision results, and index status in `artifacts/verification/c007-export-restore.json` (SC-001, SC-007)
 
 **Checkpoint**: The supported approved record set round-trips exactly and every divergent collision stops before semantic mutation.
@@ -78,11 +78,11 @@
 
 **Independent Test**: Inject each canonical, receipt, index, timeout, duplicate-delivery, and restart boundary and count resulting objects, versions, receipts, evidence, and repair records.
 
-- [ ] T024 [P] [US3] Add canonical-outage and no-false-Saved cases with the required header in `tests/integration/test_backend_outage.py` (FR-012, SC-006)
+- [ ] T024 [P] [US3] Add canonical-outage, no-`committed`, and no-Saved-UI cases with the required header in `tests/integration/test_backend_outage.py` (FR-012, SC-006)
 - [ ] T025 [P] [US3] Add canonical-success/index-failure/repeatable-rebuild cases with the required header in `tests/integration/test_index_failure_rebuild.py` (FR-013, FR-016, SC-007)
-- [ ] T026 [P] [US3] Add timeout, duplicate delivery, and receipt-reconciliation count cases with the required header in `tests/integration/test_idempotent_retry.py` (FR-014, SC-005)
+- [ ] T026 [P] [US3] Add timeout, duplicate delivery, and receipt-reconciliation cases proving `operation_id` is the sole identity with the required header in `tests/integration/test_idempotent_retry.py` (FR-014, SC-005)
 - [ ] T027 [P] [US3] Add restart recovery allowlist and prohibited candidate/grant/semantic-replay cases with the required header in `tests/integration/test_startup_recovery.py` (FR-015, SC-002)
-- [ ] T028 [US3] Implement canonical/receipt/index outcome classification and stable-key reconciliation against actual C002/C003 protocols in `src/expertiseos/reliability.py` (FR-012 through FR-014)
+- [ ] T028 [US3] Implement canonical `committed`/receipt/index outcome classification and sole-`operation_id` reconciliation against actual C002/C003 protocols in `src/expertiseos/reliability.py` (FR-012 through FR-014)
 - [ ] T029 [US3] Implement approved-only startup recovery and repeatable canonical index rebuild in `src/expertiseos/reliability.py` (FR-015, FR-016)
 - [ ] T030 [US3] Run `pytest tests/integration/test_backend_outage.py tests/integration/test_index_failure_rebuild.py tests/integration/test_idempotent_retry.py tests/integration/test_startup_recovery.py` and record injected boundary plus object/version/receipt/evidence counts in `artifacts/verification/c007-recovery.json` (SC-005 through SC-007)
 
@@ -129,7 +129,7 @@
 - [ ] T041 Run `python benchmarks/benchmark_mvp.py --corpus-size 10000 --output artifacts/benchmarks/c007.json` and verify hardware, OS, Python, Basic Memory, index, corpus, command, commit, raw samples, and all p95 verdicts are present in `artifacts/benchmarks/c007.json` (SC-010 through SC-012)
 - [ ] T042 Run `mypy src/expertiseos/ownership.py src/expertiseos/reliability.py src/expertiseos/security.py benchmarks/benchmark_mvp.py` and save output/exit status in `artifacts/verification/c007-mypy.json`
 - [ ] T043 Run the complete C007 unit/integration suite and save command, exit status, test counts, durations, and environment versions in `artifacts/verification/c007-suite.json`
-- [ ] T044 Run actual C002-to-C007, C003/C004-to-C007, and C007-to-C008 handoff tests listed in `specs/007-ownership-reliability/contracts/integration-handoffs.md` and save the tested integration SHA in `artifacts/verification/c007-handoffs.json` (FR-023)
+- [ ] T044 Run actual C002-to-C007, C003/C004-to-C007, and C007-to-C008 handoff tests listed in `specs/007-ownership-reliability/contracts/integration-handoffs.md` and save the tested integration SHA in `artifacts/verification/c007-handoffs.json` (FR-023, FR-025)
 - [ ] T045 Review `README.md`, `docs/privacy-boundary.md`, `docs/compatibility.md`, and `docs/implementation-status.md`, then record required owner changes and tested commit metadata without editing shared docs in `specs/007-ownership-reliability/implementation-handoff.md`
 
 ---
@@ -153,6 +153,7 @@
 | FR-018 to FR-022 / SC-002, SC-008, SC-009 | T007, T031-T036 |
 | FR-023 / real handoffs | T001, T005-T010, T021, T028, T035, T044 |
 | FR-024 / SC-010 to SC-012 | T040-T041 |
+| FR-025 / trusted export-restore bindings | T005, T012, T014, T016, T044 |
 
 ## Implementation Strategy
 

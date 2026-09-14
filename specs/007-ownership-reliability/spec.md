@@ -19,8 +19,8 @@ As the repository owner, I can export all approved expertiseOS-owned state in a 
 
 **Acceptance Scenarios**:
 
-1. **Given** approved user-owned state, **When** the user exports it, **Then** the export contains the documented approved records and excludes unresolved candidates, unused grants, unrelated transcripts, and hidden reasoning.
-2. **Given** a valid export and an empty destination, **When** the user authorizes restore, **Then** stable IDs, versions, lineage, relationships, provenance, evidence, settings, counters, and deferred references are restored consistently and search is rebuilt from approved canonical data.
+1. **Given** approved user-owned state, **When** an actual user export-selection event identifies the scope and destination, **Then** one bounded request binding authorizes that export without a redundant confirmation, and the export contains only documented approved records.
+2. **Given** a valid export and an empty destination, **When** an actual user restore-selection event binds the export ID, manifest digest, and collision policy, **Then** restore proceeds without a redundant confirmation and preserves stable IDs, versions, lineage, relationships, provenance, evidence, settings, counters, and deferred references.
 3. **Given** a restore whose ID or version collides with local state, **When** validation runs, **Then** newer local data is not overwritten silently and the collision is reported before conflicting semantic state is changed.
 4. **Given** foreign content rather than an expertiseOS export, **When** import is attempted, **Then** it remains outside approved knowledge until reviewed through the normal proposal and approval boundary.
 
@@ -53,8 +53,8 @@ As a user doing ordinary host work, I can continue that work when expertiseOS st
 
 **Acceptance Scenarios**:
 
-1. **Given** canonical storage is unavailable, **When** an approved mutation is attempted, **Then** no success receipt or false Saved result is produced and ordinary host work can continue.
-2. **Given** canonical data and its approval receipt are complete but index update fails, **When** the operation returns, **Then** the save is reported as complete with degraded search status and only a bounded content-free repair marker remains.
+1. **Given** canonical storage is unavailable, **When** an approved mutation is attempted, **Then** no success receipt or `committed` result is produced, the UI cannot render Saved, and ordinary host work can continue.
+2. **Given** canonical data and its approval receipt are complete but index update fails, **When** the operation returns, **Then** the result is `committed` with degraded search status, the UI may render Saved, and only a bounded content-free repair marker remains.
 3. **Given** canonical write success followed by receipt failure, **When** the same operation is retried, **Then** the existing canonical result is reconciled to one receipt without creating another object or version.
 4. **Given** a process restart, **When** recovery runs, **Then** it loads approved durable state and content-free repair metadata only; it does not restore candidates, unused grants, or unapproved content.
 5. **Given** repeated index rebuilds, **When** recovery completes, **Then** approved canonical data remains unchanged and no approval, evidence, or learning event is created.
@@ -109,10 +109,10 @@ As the repository owner, I receive useful local keyword results when semantic in
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST export approved knowledge objects and required versions, relationships, approved source references/excerpts, approval receipts, learner evidence, persisted learner summaries, controls, required aggregate progress, and deferred activities in a documented portable format.
+- **FR-001**: An actual user export-selection event MUST create one trusted bounded request binding containing the approved export scope and destination; that binding MUST authorize, without redundant confirmation, export of approved knowledge and required versions, relationships, approved source references/excerpts, approval receipts, learner evidence/summaries, controls, required progress, and deferred activities, and model text or caller assertions MUST NOT manufacture it.
 - **FR-002**: The export MUST exclude unresolved candidates, unused decision grants, candidate queries, hidden reasoning, unrelated host transcripts, and all other unapproved content.
 - **FR-003**: The system MUST validate export schema and version before restore and MUST reject malformed or unsupported input without partially changing semantic state.
-- **FR-004**: Authorized restore MUST preserve stable identities, compatible lineage, provenance, relationships, approved learning state, controls, progress, and deferred references, then rebuild search from approved canonical data.
+- **FR-004**: An actual user restore-selection event MUST create one trusted bounded request binding containing the export ID, manifest digest, and collision policy; that binding MUST authorize, without redundant confirmation, restore preserving stable identities, compatible lineage, provenance, relationships, approved learning state, controls, progress, and deferred references followed by index rebuild, and model text or caller assertions MUST NOT manufacture it.
 - **FR-005**: Restore MUST detect identity/version collisions and MUST NOT silently overwrite a newer local version.
 - **FR-006**: Foreign semantic content MUST pass through the existing proposal and exact-approval boundary before entering the approved repository.
 - **FR-007**: Retire MUST remain distinct from delete: retirement preserves content, lineage, provenance, and resolvable links while excluding the object from ordinary active recall.
@@ -120,9 +120,9 @@ As the repository owner, I receive useful local keyword results when semantic in
 - **FR-009**: Relationships affected by deletion MUST be removed or converted to disclosed content-free unavailable references according to the approved deletion scope.
 - **FR-010**: Delete results MUST disclose limits for exported copies, operating-system backups, external host transcripts, provider retention, and forensic remnants outside product control.
 - **FR-011**: Uninstall MUST remove both supported host integrations and stop/unregister the local service before applying an explicit keep-or-delete choice for local repository/state data.
-- **FR-012**: Canonical write failure MUST produce no Saved result or success receipt and MUST leave ordinary host work able to continue.
-- **FR-013**: Canonical write plus approval-receipt success with index failure MUST report the write as saved, expose degraded search, and persist at most bounded content-free repair metadata.
-- **FR-014**: Approved mutations MUST use a stable operation/idempotency key so timeout retries, duplicate delivery, and receipt reconciliation create exactly one intended object/version and one corresponding receipt.
+- **FR-012**: Canonical write failure MUST produce no `committed` result or success receipt, the UI MUST NOT render Saved, and ordinary host work MUST remain able to continue.
+- **FR-013**: Canonical write plus approval-receipt success with index failure MUST return `committed`, expose degraded search separately, permit the UI to render Saved only from that status, and persist at most bounded content-free repair metadata.
+- **FR-014**: Approved mutations MUST use `operation_id` as their sole idempotency identity so timeout retries, duplicate delivery, and receipt reconciliation create exactly one intended object/version and one corresponding receipt.
 - **FR-015**: Startup recovery MUST load only approved durable state and content-free operation/repair markers; it MUST NOT restore unresolved candidates, reconstruct candidate text, replay unused grants, or perform automatic semantic consolidation.
 - **FR-016**: Index rebuild MUST derive only from approved canonical data and MUST NOT create approval receipts, learner evidence, mastery changes, or reflection progress.
 - **FR-017**: If semantic indexing is unavailable, search MUST use bounded local keyword retrieval, return a visible degraded status, preserve canonical knowledge availability, and MUST NOT call an external embedding service.
@@ -133,10 +133,13 @@ As the repository owner, I receive useful local keyword results when semantic in
 - **FR-022**: An automated persistence audit MUST inspect every expertiseOS-controlled persistent location and prove unique candidate markers are absent after Skip, ignore, cancel, and crash/restart cases while excluding host-owned transcripts from its scope.
 - **FR-023**: Reliability and ownership operations MUST extend the approved-state, receipt, backend/index, and learner/control contracts through narrow interfaces without duplicating canonical knowledge in side stores or bypassing exact approval.
 - **FR-024**: The system MUST measure lifecycle bookkeeping, warm local retrieval, and approved-write acknowledgment against the declared MVP targets using a deterministic 10,000-object corpus and record the test environment metadata.
+- **FR-025**: Export and restore request bindings MUST include the originating trusted user-event reference and enough adapter/session context to reject cross-session, replayed, altered-scope, altered-destination, altered-manifest, and altered-policy requests.
 
 ### Key Entities
 
 - **Portable Export**: A versioned manifest plus approved user-owned records and content, with enough identity and reference information for validation and restore.
+- **Export Request Binding**: Trusted one-use export authorization bound to user event, adapter/session, exact approved scope, and destination.
+- **Restore Request Binding**: Trusted one-use restore authorization bound to user event, adapter/session, export ID, manifest digest, and collision policy.
 - **Restore Report**: Validation and application outcome including schema compatibility, collisions, preserved records, rejected records, and index rebuild status.
 - **Deletion Scope**: The exact objects, revisions, excerpts, evidence content, relationships, and dependent activities the user authorized to remove.
 - **Deletion Result**: Removed product-controlled locations, retained disclosed content-free markers, unresolved external copies, and any recoverable failure status.
@@ -155,7 +158,7 @@ As the repository owner, I receive useful local keyword results when semantic in
 - **SC-003**: Retirement excludes the object from ordinary active recall while preserving 100% of its approved history and resolvable in-scope links.
 - **SC-004**: Deletion removes the selected content from every enumerated expertiseOS-controlled in-scope location and reports every known out-of-product location limitation.
 - **SC-005**: Timeout retry, duplicate delivery, and receipt-reconciliation fixtures each finish with exactly one intended object/version and one corresponding approval receipt.
-- **SC-006**: Every canonical-write failure fixture produces zero false Saved results and zero success receipts while the surrounding host task remains able to proceed.
+- **SC-006**: Every canonical-write failure fixture produces zero `committed` results, zero Saved UI outcomes, and zero success receipts while the surrounding host task remains able to proceed.
 - **SC-007**: Every index-failure fixture preserves canonical approved data, reports degraded status, and permits successful repeatable rebuild without creating learning or approval events.
 - **SC-008**: Every adversarial stored/file/tool fixture produces zero grants, writes, control/mastery changes, extra tool permissions, and out-of-scope retrieval effects.
 - **SC-009**: With outbound networking blocked after setup, 100% of the deterministic local storage, state, keyword-search, and approved-write scenarios complete without an external expertiseOS call.
@@ -167,7 +170,7 @@ As the repository owner, I receive useful local keyword results when semantic in
 ## Assumptions
 
 - Upstream components provide the stable guarded mutation, approval receipt, canonical backend, index lifecycle, learner/control state, and deferred-reference contracts described by C002-C004.
-- Selecting a valid expertiseOS export and confirming restore is explicit authorization for that restore operation; foreign content uses normal proposal approval.
+- Selecting export scope/destination or a valid restore bundle is the explicit authorization event for that bounded operation; no redundant confirmation is required, while foreign semantic content still uses normal proposal approval.
 - Portable representation uses documented human-inspectable files rather than a custom binary format.
 - A content-free tombstone or repair marker is permitted only when required for referential integrity or recovery and is disclosed.
 - Security claims cover the local product boundary, not hostile processes running with the same operating-system user or owner privileges.
@@ -175,8 +178,8 @@ As the repository owner, I receive useful local keyword results when semantic in
 
 ## Dependencies and Scope Boundaries
 
-- **Upstream C002**: Supplies approved operation identity, exact approval, receipt lookup/write, and partial-write reconciliation semantics.
+- **Upstream C002**: Supplies approved operation identity, exact approval, receipt lookup/write, partial-write reconciliation semantics, and concrete shared SQLite migrations.
 - **Upstream C003**: Supplies canonical approved-object enumeration/read/write, relationship handling, delete/index cleanup, index health/rebuild, and keyword retrieval capabilities.
-- **Upstream C004**: Supplies learner evidence, summaries, controls, progress, and deferred-reference enumeration/restore/delete capabilities.
+- **Upstream C004**: Owns learner/control semantics and schema contracts and supplies evidence, summaries, controls, progress, and deferred-reference enumeration/restore/delete capabilities; C002/integration owns concrete SQLite migrations.
 - **Downstream C008**: Owns shared service/MCP/skill wiring, host-facing orchestration, cross-host and complete acceptance scenarios.
 - **Excluded**: Candidate recovery, host-specific adapter behavior, shared service/MCP wiring, cloud sync, telemetry, IAM/RBAC, DLP systems, distributed transactions, job queues, migration frameworks, and background workers.

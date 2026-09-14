@@ -27,7 +27,7 @@ Add portable export/restore, retire/delete support, explicit uninstall data choi
 
 | Principle | Design evidence | Result |
 |---|---|---|
-| Explicit Approval Before Persistence | Restore selection is explicit; retire/delete use upstream exact approval; foreign imports return to proposal review; operation markers contain no semantic content. | PASS |
+| Explicit Approval Before Persistence | Trusted actual-user export/restore selection events bind exact requests without redundant confirmation; retire/delete use upstream exact approval; operation markers contain no semantic content. | PASS |
 | Work Continues, Unsafe Writes Stop | Canonical failures return non-success; index failures preserve completed canonical writes and surface degradation. | PASS |
 | Local, Minimal, Inspectable State | Three direct modules, one documented bundle, and existing backend/SQLite stores; no service, queue, or framework is added. | PASS |
 | Knowledge, Evidence, Permission, Mastery Separate | Export keeps record classes distinct; rebuild and retry cannot create evidence, mastery, progress, or approval. | PASS |
@@ -91,7 +91,7 @@ benchmarks/benchmark_mvp.py
 - Serialize approved snapshots into a portable bundle and validate/restore them.
 - Plan and execute exact retire/delete scopes through guarded upstream operations.
 - Return an explicit uninstall keep/delete plan for C008/host installers.
-- Reconcile approved operations and index repairs by idempotency key after failure/restart.
+- Reconcile approved operations and index repairs by `operation_id`, the sole idempotency identity, after failure/restart.
 - Expose degraded search health and invoke C003's bounded keyword fallback.
 - Envelope retrieved material as untrusted data and minimize sensitive excerpts.
 - Audit configured expertiseOS-controlled persistent locations for a candidate marker.
@@ -99,16 +99,16 @@ benchmarks/benchmark_mvp.py
 
 ### Upstream extension requests
 
-- **C002** owns additions to `src/expertiseos/state/sqlite.py` and `src/expertiseos/knowledge/service.py`: content-free operation status, receipt enumeration, exact retire/delete entry points, and reconciliation.
+- **C002/integration** owns concrete additions to `src/expertiseos/state/sqlite.py` and `src/expertiseos/knowledge/service.py`: content-free operation status, receipt enumeration, exact retire/delete entry points, and reconciliation.
 - **C003** owns backend/index additions: deterministic approved snapshots, restore/delete primitives, index health/rebuild, keyword search, and canonical digest lookup.
-- **C004** owns learner/control additions: approved snapshot enumeration, restore, excerpt deletion, and dependent deferred cleanup.
+- **C004** owns learner/control semantics and schema contracts; C007 requests approved snapshot enumeration, restore, excerpt deletion, and dependent deferred cleanup from C004, while C002/integration owns concrete SQLite migrations.
 - C007 supplies contract tests and protocol shapes; it does not edit those shared files.
 
 ### Downstream handoff to C008
 
 - Call these operations only after capability and approval checks.
 - Wire host/service uninstall actions outside C007.
-- Preserve `saved`, `degraded`, `conflict`, and `repair_required` statuses.
+- Produce trusted request bindings from actual export/restore selection events and preserve `committed`, `degraded`, `conflict`, and `repair_required` statuses; Saved is UI text derived only from `committed`.
 - Run producer-to-consumer AT-13 through AT-16 coverage with actual artifacts.
 
 ## Delivery Phases

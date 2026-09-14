@@ -34,4 +34,5 @@
 ## Notes
 
 - Validation iteration 1 passed all items on 2026-09-14.
+- Reconciliation validation iteration 2 passed after canonical identity, status, ownership, and request-binding corrections.
 - The upstream/downstream section identifies contract dependencies without assigning C007 ownership of shared implementation files.

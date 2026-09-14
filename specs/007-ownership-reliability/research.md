@@ -20,11 +20,19 @@
 
 ## Failure and Recovery State
 
-**Decision**: Persist only content-free operation records containing operation ID, kind, object references, idempotency key, phase/status, and timestamps. Index repair uses one content-free rebuild marker, not a content queue.
+**Decision**: Persist only content-free operation records containing `operation_id`, kind, object references, phase/status, and timestamps. `operation_id` is the sole idempotency identity. Index repair uses one content-free rebuild marker, not a content queue.
 
 **Rationale**: This reconciles canonical-write/receipt gaps and rebuilds indexes from approved data without recovering candidates.
 
 **Alternatives considered**: A durable job queue, event log, or distributed transaction coordinator is unnecessary for one local process and risks semantic payload persistence.
+
+## Export and Restore Authorization
+
+**Decision**: The actual user selection event creates one trusted, one-use bounded request. Export binds adapter/session/event, scope, and destination. Restore binds adapter/session/event, export ID, manifest digest, and fixed collision policy. Selection is authorization, so neither operation asks for redundant confirmation.
+
+**Rationale**: The binding proves exact user intent while preserving a short ownership workflow. Model text and caller booleans remain outside the trusted event path.
+
+**Alternatives considered**: An unbound method call can be forged. A second confirmation after an exact selection adds friction without strengthening the binding.
 
 ## Delete Completion
 
