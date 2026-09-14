@@ -8,7 +8,7 @@
 - Immutable baseline: `4213d8bd6b21448401f9aba9a10208303672c7c6`
 - Integration branch: `integration/expertiseos-mvp`
 - Started: 2026-09-14
-- Current state: `integration_queue`
+- Current state: `promotion_ready`
 - Fast multi-agent TDD: not used, per explicit user direction
 - Development method: Spec Kit tasks with proportionate unit, integration, end-to-end, static, and smoke verification
 
@@ -141,4 +141,24 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Evidence: `specs/001-feasibility-bootstrap/evidence/g0-gate.md`, `g0-verdict.md`, and `integration-handoff.md` on the component branch.
 - Capability limits: Codex CLI 0.146.1 and Claude Code 2.1.241 writes remain blocked pending live authenticated decision fixtures; Basic Memory 0.23.2 needs the planned adapter for expertiseOS version/idempotency semantics; public distribution needs packaging-specific AGPL review.
 
-No component integration or promotion has completed yet.
+### C001 Integration Gate
+
+- Integration began from clean audit commit `20786bb`; `begin_integration` validation passed for C001.
+- Explicit merge commit: `e952d72b1945762e08f6d0aa8dbea31e74c3ac4d`
+- Integration-owned E00 tests: `tests/integration/test_bootstrap_consumer_handoff.py` and `tests/e2e/test_bootstrap_health.py`.
+- First `rtk .venv-arm64/bin/ruff format --check src tests`: exit 1; the new handoff test required mechanical formatting.
+- Correction: `rtk .venv-arm64/bin/ruff format tests/integration/test_bootstrap_consumer_handoff.py`; exit 0; no behavior changed.
+- Tested integration SHA: `b3f0ab7cf6fdbb61dc8282d475bda396fa5e9eb5`
+- `rtk .venv-arm64/bin/ruff format --check src tests`: exit 0; 22 files formatted
+- `rtk .venv-arm64/bin/ruff check src tests`: exit 0
+- `rtk .venv-arm64/bin/mypy src tests`: exit 0; 22 source files checked
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 16 passed in 32.90 seconds
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 1 passed in 0.03 seconds
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 41 passed in 32.90 seconds
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON
+- `rtk git diff --check`: exit 0
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c001.json`; schema version 2; E00 consumes actual upstream output without a synthetic boundary replacement.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+No component promotion has completed yet.

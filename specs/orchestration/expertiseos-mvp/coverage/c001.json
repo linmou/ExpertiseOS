@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "status": "passed",
+  "tested_integration_sha": "b3f0ab7cf6fdbb61dc8282d475bda396fa5e9eb5",
+  "edge_handoffs": [
+    {
+      "edge_id": "E00",
+      "producer": "C001",
+      "consumer": "integration-bootstrap",
+      "test_path": "tests/integration/test_bootstrap_consumer_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    }
+  ],
+  "integration": {
+    "tests": [
+      {
+        "path": "tests/integration/test_bootstrap_consumer_handoff.py",
+        "added": true,
+        "passed": true
+      }
+    ],
+    "command": "rtk .venv-arm64/bin/python -m pytest -q tests/integration",
+    "exit_code": 0
+  },
+  "e2e": {
+    "tests": [
+      {
+        "path": "tests/e2e/test_bootstrap_health.py",
+        "added": true,
+        "passed": true
+      }
+    ],
+    "command": "rtk .venv-arm64/bin/python -m pytest -q tests/e2e",
+    "exit_code": 0
+  }
+}
