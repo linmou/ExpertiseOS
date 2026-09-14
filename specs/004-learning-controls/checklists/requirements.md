@@ -2,8 +2,10 @@
 
 **Intent**: Confirm that the component specification is complete, testable, bounded, and ready for planning.
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning  
-**Created**: 2026-09-14  
+**Purpose**: Validate specification completeness and quality before proceeding to planning
+
+**Created**: 2026-09-14
+
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality

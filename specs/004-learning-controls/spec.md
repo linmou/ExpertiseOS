@@ -2,9 +2,12 @@
 
 **Intent**: Define the smallest inspectable learner-state and control behavior required by the expertiseOS MVP without adding autonomous tutoring or weakening approval.
 
-**Feature Branch**: `004-learning-controls`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `004-learning-controls`
+
+**Created**: 2026-09-14
+
+**Status**: Draft
+
 **Input**: Learner evidence, deterministic mastery, reflection targets, effort, pause/fatigue/target/disable precedence, scope exclusions, inspection, and deferred activities from the approved MVP plan.
 
 ## Clarifications

@@ -11,14 +11,22 @@ Add two host-neutral modules: `learning/evidence.py` for approved evidence valid
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Python standard library plus the project contracts established by C001-C003; no new runtime dependency  
-**Storage**: Shared local SQLite `state.db` through C002-owned `src/expertiseos/state/sqlite.py`; approved object identity/version and conflict facts from C003  
-**Testing**: pytest unit tests with fake approval/state/retrieval ports; integration tests against the shared SQLite implementation after promotion  
-**Target Platform**: Local macOS/Linux process used by Codex and Claude Code adapters  
-**Project Type**: One installable Python package and one local service process  
-**Performance Goals**: Pure state/control resolution completes without I/O; bounded inspection performs one state query per view and does not scan unrelated objects  
-**Constraints**: No unapproved persistence; no dataclass field defaults; deterministic behavior; local device timezone periods; idempotent approved event handling; ordinary host work remains unaffected  
+**Language/Version**: Python 3.12
+
+**Primary Dependencies**: Python standard library plus the project contracts established by C001-C003; no new runtime dependency
+
+**Storage**: Shared local SQLite `state.db` through C002-owned `src/expertiseos/state/sqlite.py`; approved object identity/version and conflict facts from C003
+
+**Testing**: pytest unit tests with fake approval/state/retrieval ports; integration tests against the shared SQLite implementation after promotion
+
+**Target Platform**: Local macOS/Linux process used by Codex and Claude Code adapters
+
+**Project Type**: One installable Python package and one local service process
+
+**Performance Goals**: Pure state/control resolution completes without I/O; bounded inspection performs one state query per view and does not scan unrelated objects
+
+**Constraints**: No unapproved persistence; no dataclass field defaults; deterministic behavior; local device timezone periods; idempotent approved event handling; ordinary host work remains unaffected
+
 **Scale/Scope**: One user, two local hosts, per-object/version/scope summaries, small control records and aggregate counters; no distributed coordination
 
 ## Constitution Check
