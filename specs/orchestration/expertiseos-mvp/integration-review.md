@@ -114,4 +114,12 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - State validation command: `python3 /Users/admin/.codex/skills/speckit-orchestrate/scripts/validate_orchestration_state.py --state implementation_ready --transition start_implementation_wave --actor main_agent --evidence activation_record=specs/orchestration/expertiseos-mvp/integration-review.md`
 - State validation result: exit 0; accepted transition from `implementation_ready` to `implementing`.
 
+### Integration Design Correction D002
+
+- Detected: 2026-09-14 after Wave 1 activation and before any component implementation commit.
+- Issue: E01 required the real C002 consent consumer to pass before C001 could be promoted, while C002 was correctly blocked from implementation until C001 promotion.
+- Resolution: E00 now verifies C001 through the real integration bootstrap consumer for root promotion; the full E01 handoff remains mandatory when C002 is integrated.
+- Scope impact: none; component contracts, ownership, DAG edges, and implementation waves are unchanged.
+- Evidence: `specs/orchestration/expertiseos-mvp/dependency-graph.md` E00 and revised E01 promotion condition.
+
 No component implementation or integration has completed yet.

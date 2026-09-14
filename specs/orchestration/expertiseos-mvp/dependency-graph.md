@@ -99,8 +99,18 @@ The user explicitly approved Packet V2 on 2026-09-14. The graph above is authori
 - Smoke command: `python -m expertiseos --health`
 - Every handoff test creates or obtains the actual producer output and passes that same object, record, or event to the consumer in the same test. Synthetic replacements at the boundary are forbidden.
 - Commands may be narrowed during early promotions only when the complete affected edge set, current end-to-end scenarios, and smoke path still run; the final gate runs all commands above.
+- Root promotion uses E00 to verify the actual C001 package, protocols, and fakes through the integration bootstrap consumer. E01 runs when its real C002 consumer has been integrated.
 
 ## Edge Work Packets
+
+### E00: C001 -> Integration Bootstrap
+
+- Contract: the installed package, `HostAdapter`, `KnowledgeBackend`, deterministic fakes, and local process entrypoint feed the integration test and smoke harness.
+- Invariants: imports use the installed package; the same fake-produced host event and backend record are consumed by the bootstrap harness; no synthetic boundary replacement or product behavior is introduced.
+- Glue: integration owns only the bootstrap consumer test and evidence manifest.
+- Handoff test: `tests/integration/test_bootstrap_consumer_handoff.py` imports the real C001 package and passes actual fake outputs through a minimal downstream contract consumer.
+- End-to-end coverage: `tests/e2e/test_bootstrap_health.py` runs the real local health entrypoint.
+- Promotion: C001 local checks, E00 integration and end-to-end tests, static checks, and smoke pass on the tested integration SHA.
 
 ### E01: C001 -> C002
 
@@ -109,7 +119,7 @@ The user explicitly approved Packet V2 on 2026-09-14. The graph above is authori
 - Glue: integration owns only fixture construction and shared error/result mapping.
 - Handoff test: `tests/integration/test_consent_foundation_handoff.py` passes actual C001 fake host/backend outputs through C002 proposal, grant, commit, and exact read-back.
 - End-to-end coverage: `tests/e2e/test_acceptance_consent.py` AT-04 through AT-06.
-- Promotion: C001 local checks, this handoff, current end-to-end tests, static checks, and smoke all pass on integration.
+- Promotion: C002 local checks plus this full producer-to-consumer handoff, affected end-to-end tests, static checks, and smoke pass on integration. C001 root promotion is covered by E00 before C002 starts.
 
 ### E02: C002 -> C003
 
