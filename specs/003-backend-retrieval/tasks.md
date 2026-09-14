@@ -1,6 +1,6 @@
 # Tasks: Approved Knowledge Retrieval Backend
 
-**Input**: Design documents from `/specs/003-backend-retrieval/`  
+**Input**: Design documents from `/specs/003-backend-retrieval/`
 **Prerequisites**: C001 and C002 green promotion SHAs, `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`
 
 **Tests**: Required by the specification and constitution. Each new Python test begins with a Python shebang and a comment naming the responsible production file and behavior.

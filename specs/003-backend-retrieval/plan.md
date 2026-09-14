@@ -9,14 +9,14 @@ Implement one thin Basic Memory adapter behind the G0 `KnowledgeBackend` protoco
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: G0-pinned Basic Memory release; Python standard library where practical; no remote embedding or reranking service  
-**Storage**: Basic Memory canonical approved knowledge and local indexes; no duplicate canonical content in SQLite unless G0 evidence requires the smallest stable-ID sidecar  
-**Testing**: pytest unit/contract tests, real Basic Memory integration tests, network-disabled smoke test, deterministic 10,000-object retrieval benchmark  
-**Target Platform**: G0-supported local developer environments for Codex and Claude Code  
-**Project Type**: One installable local Python package and one local service process  
-**Performance Goals**: Warm local retrieval p95 below 1 second for 10,000 small approved objects on recorded hardware  
-**Constraints**: Approved-only canonical data; maximum 20 recall results per request; keyword fallback; no private backend tables; no remote service; fail closed for writes and visibly degrade reads; no persistence of query text  
+**Language/Version**: Python 3.12
+**Primary Dependencies**: G0-pinned Basic Memory release; Python standard library where practical; no remote embedding or reranking service
+**Storage**: Basic Memory canonical approved knowledge and local indexes; no duplicate canonical content in SQLite unless G0 evidence requires the smallest stable-ID sidecar
+**Testing**: pytest unit/contract tests, real Basic Memory integration tests, network-disabled smoke test, deterministic 10,000-object retrieval benchmark
+**Target Platform**: G0-supported local developer environments for Codex and Claude Code
+**Project Type**: One installable local Python package and one local service process
+**Performance Goals**: Warm local retrieval p95 below 1 second for 10,000 small approved objects on recorded hardware
+**Constraints**: Approved-only canonical data; maximum 20 recall results per request; keyword fallback; no private backend tables; no remote service; fail closed for writes and visibly degrade reads; no persistence of query text
 **Scale/Scope**: One user's local repository, 10,000-object acceptance corpus, seven relationship types, current and explicitly requested historical versions
 
 ## Constitution Check

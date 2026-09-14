@@ -1,8 +1,8 @@
 # Feature Specification: Approved Knowledge Retrieval Backend
 
-**Feature Branch**: `003-backend-retrieval`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `003-backend-retrieval`
+**Created**: 2026-09-14
+**Status**: Draft
 **Input**: User description: "Implement the MVP Basic Memory adapter and approved-only, bounded, provenance-aware retrieval without over-designing the product."
 
 ## User Scenarios & Testing *(mandatory)*
