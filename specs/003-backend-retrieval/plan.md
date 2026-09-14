@@ -44,7 +44,7 @@ Post-design re-check: PASS. The design adds no constitution exception and requir
 ### Stable identity and versions
 
 - expertiseOS IDs are generated upstream and stored explicitly in supported Basic Memory metadata; Basic Memory paths or note titles are not public identity.
-- Every canonical representation carries `expertiseos_id`, positive `version`, lifecycle status, and an idempotency/operation key for authorized mutation reconciliation.
+- Every semantic mutation receives the C002 `operation_id`; canonical versions retain that identifier for exact replay and reconciliation.
 - Historical version access uses supported backend history where G0 proves it adequate. If G0 proves it inadequate, a content-free mapping sidecar may locate canonical Basic Memory revisions; it must not duplicate knowledge content.
 
 ### Metadata, provenance, and relationships
@@ -65,7 +65,7 @@ Post-design re-check: PASS. The design adds no constitution exception and requir
 ### Retirement, deletion, and rebuild
 
 - Retirement is a versioned semantic mutation from G1: retain history but exclude it from ordinary recall.
-- Deletion removes the requested canonical content and derived index entries within backend scope. Reliability owns wider evidence/export cleanup.
+- Deletion checks the C002 expected version, then removes the requested canonical content and derived index entries within backend scope. A stale version returns a conflict without deletion. Reliability owns wider evidence/export cleanup.
 - Rebuild discards/recreates derived index state only from current approved canonical objects. It is idempotent and emits no approval or learner event.
 
 ## Project Structure
@@ -119,7 +119,7 @@ tests/
 | Dependency | Required producer contract | Consumer impact |
 |---|---|---|
 | C001 feasibility/bootstrap | Pinned Basic Memory version, supported public create/read/search/delete/rebuild capabilities, `KnowledgeBackend`, backend test fake | Determines exact adapter calls and whether any content-free mapping is required. |
-| C002 consent core | Domain objects, expected-version/idempotency semantics, guarded authorized mutation commands, `KnowledgeService` base | All mutations enter the adapter only after authorization; retrieval extends this service without changing approval behavior. |
+| C002 consent core | Domain objects, expected-version and `operation_id` replay semantics, guarded authorized mutation commands, `KnowledgeService` base | All mutations enter the adapter only after authorization; retrieval extends this service without changing approval behavior. |
 | C004 learning controls | Learner-state lookup keyed by knowledge ID/version | Downstream integration may enrich recall results; this component does not store or infer learner state. |
 | C005/C006 hosts | Bounded host-neutral recall request | Hosts receive only retrieval contract values and never Basic Memory internals. |
 | C007 reliability | Wider deletion/export policy and failure recovery | This component supplies backend delete/rebuild primitives and status; reliability orchestrates cross-store effects. |
@@ -127,7 +127,7 @@ tests/
 
 ## Verification Strategy
 
-1. Contract tests run the same create/read/search/update/relation/retire/delete/rebuild behavior against the G0 fake and real adapter where supported.
+1. Contract tests run the same explicit create/read/search/update/relationship/retire/delete/rebuild behavior against the G0 fake and real adapter, including `operation_id` replay, versioned get, and batch current-version lookup.
 2. Integration tests prove exact approved round trips, version conflicts, provenance/source availability, relation/conflict reconstruction, result bounds, filters, and absence of declined/unapproved markers.
 3. Failure tests distinguish canonical failure from index failure, verify local keyword fallback, idempotent retry, and rebuild from approved canonical state only.
 4. A network-disabled smoke test proves direct read and keyword fallback make no external memory/embedding call after setup.

@@ -5,7 +5,7 @@
 ## Preconditions
 
 - C001's green integration SHA is merged with its pinned Basic Memory version and backend contract.
-- C002's green integration SHA is merged with guarded mutations, domain models, and idempotency semantics.
+- C002's green integration SHA is merged with guarded mutations, domain models, and canonical `operation_id` replay semantics.
 - Basic Memory completed documented local setup; no remote memory or embedding credentials are configured.
 
 ## Focused Verification
