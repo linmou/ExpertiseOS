@@ -133,8 +133,8 @@
 
 - [X] T038 Add the deterministic 10,000-object warm retrieval benchmark and environment metadata output in `tests/performance/test_retrieval_benchmark.py` (FR-006, FR-014; SC-008)
 - [X] T039 Run the complete component pytest suite plus the repository lint command and `mypy src/expertiseos`; record command, exit status, dependency versions, OS, hardware, corpus, and p95 evidence
-- [ ] T040 Run the integration-owned real C002-authorized-write-to-C003-recall scenario in `tests/integration/test_authorized_write_to_recall.py` after serial integration (FR-001-FR-021; SC-001-SC-010)
-- [ ] T041 Update C003 compatibility limits and verification evidence in integration-owned `docs/implementation-status.md` through the main integration owner
+- [X] T040 Run the integration-owned real C002-authorized-write-to-C003-recall scenario in `tests/integration/test_authorized_backend_retrieval_handoff.py` after serial integration (FR-001-FR-021; SC-001-SC-010)
+- [X] T041 Update C003 compatibility limits and verification evidence in integration-owned `docs/implementation-status.md` through the main integration owner
 - [X] T042 Review implementation against `specs/003-backend-retrieval/quickstart.md` and confirm no private-table access, remote fallback, custom ranking, query persistence, or unrestricted write surface was added
 
 ---

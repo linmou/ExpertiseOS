@@ -22,7 +22,7 @@ Expected evidence includes exact approved round trips, stale-version rejection, 
 ## Producer-to-Consumer Integration
 
 ```bash
-pytest tests/integration/test_authorized_write_to_recall.py
+pytest tests/integration/test_authorized_backend_retrieval_handoff.py
 ```
 
 The integration-owned test must authorize through C002, persist through the real adapter, and consume the same artifact through retrieval without replacing either side with a synthetic object.

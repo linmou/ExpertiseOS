@@ -259,3 +259,17 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `rtk git diff --check`: exit 0.
 - Protected boundary: local Basic Memory public CLI only; no private table, remote fallback, unrestricted host writer, or query persistence is introduced.
 - Local transition validation: `local_component_passed`, C003, exit 0, accepted from `implementing` to `integration_queue`.
+
+### C003 Integration Start And E02 Handoff
+
+- Integration began from clean audit commit `7d4f400`; `begin_integration` validation passed for C003.
+- Explicit merge commit: `ff3dcf9b9a167a0793c3924177f2191405afe090`.
+- Integration-owned E02 test: `tests/integration/test_authorized_backend_retrieval_handoff.py`.
+- Integration-owned status documentation: `docs/implementation-status.md`.
+- E02 passes one actual host-observed C002 approval through the guarded commit into C003 canonical storage, exact read-back, indexed recall, and degraded local keyword fallback. It also proves replay is idempotent and divergent `operation_id` reuse cannot mutate storage.
+- Pre-commit `rtk .venv-arm64/bin/python -m ruff format --check tests/integration/test_authorized_backend_retrieval_handoff.py`: exit 1; the new test required mechanical formatting. Correction: Ruff formatted that file; no behavior changed.
+- Pre-commit isolated-file mypy command: exit 1 with editable-package import-resolution errors. Correction: used the repository-defined `rtk .venv-arm64/bin/python -m mypy src tests` scope; no ignore or source fallback was added.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_authorized_backend_retrieval_handoff.py`: exit 0; 2 passed in 0.04 seconds.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 60 source files checked.
+- `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 60 files formatted.
