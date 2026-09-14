@@ -9,14 +9,14 @@ Implement a thin Codex adapter and reversible onboarding path that translate onl
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Existing `expertiseos` package and upstream HostAdapter/approval/service contracts; the Codex integration dependency and API are accepted only from the G0 evidence packet  
-**Storage**: No candidate or grant storage; only minimal reversible installation/onboarding state through the upstream state interface if G0 proves it necessary  
-**Testing**: pytest contract/integration fixtures plus reproducible pinned live-Codex fixtures supplied by the verified integration surface  
+**Language/Version**: Python 3.12
+**Primary Dependencies**: Existing `expertiseos` package and upstream HostAdapter/approval/service contracts; the Codex integration dependency and API are accepted only from the G0 evidence packet
+**Storage**: No candidate or grant storage; only minimal reversible installation/onboarding state through the upstream state interface if G0 proves it necessary
+**Testing**: pytest contract/integration fixtures plus reproducible pinned live-Codex fixtures supplied by the verified integration surface
 **Target Platform**: Exact local Codex version, operating system, installation surface, and permission mode proven by G0
-**Project Type**: Thin adapter within one installable local Python package and one shared local service process  
-**Performance Goals**: No learning prompt during an incomplete atomic operation; no semantic analysis per low-level event; bounded startup/control load; ordinary host work unaffected by adapter/service failures  
-**Constraints**: Local-first; released/supported interfaces only; exact actual-user event provenance; session-scoped volatile state; false capability claims forbidden; no second model, scheduler, or unrestricted writes  
+**Project Type**: Thin adapter within one installable local Python package and one shared local service process
+**Performance Goals**: No learning prompt during an incomplete atomic operation; no semantic analysis per low-level event; bounded startup/control load; ordinary host work unaffected by adapter/service failures
+**Constraints**: Local-first; released/supported interfaces only; exact actual-user event provenance; session-scoped volatile state; false capability claims forbidden; no second model, scheduler, or unrestricted writes
 **Scale/Scope**: One user's local Codex sessions connected to one shared local expertiseOS service
 
 ## Constitution Check

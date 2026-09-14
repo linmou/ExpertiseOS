@@ -1,6 +1,6 @@
 # Tasks: Codex Host Adapter
 
-**Input**: Design documents from `/specs/005-codex-host/`  
+**Input**: Design documents from `/specs/005-codex-host/`
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`
 
 **Tests**: Required by FR-019 and the MVP acceptance plan. Build each behavior with its focused tests and run the listed verification checkpoint before moving on; strict multi-agent TDD orchestration is not required.

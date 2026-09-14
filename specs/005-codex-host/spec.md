@@ -1,8 +1,8 @@
 # Feature Specification: Codex Host Adapter
 
-**Feature Branch**: `005-codex-host`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `005-codex-host`
+**Created**: 2026-09-14
+**Status**: Draft
 **Input**: User description: "Build the supported Codex onboarding and host adapter from the expertiseOS MVP plan, preserving exact user authorization, safe checkpoints, shared local state, accurate capability reporting, and ordinary Codex work during expertiseOS failures."
 
 ## User Scenarios & Testing *(mandatory)*
