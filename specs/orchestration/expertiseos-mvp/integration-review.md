@@ -8,7 +8,7 @@
 - Immutable baseline: `4213d8bd6b21448401f9aba9a10208303672c7c6`
 - Integration branch: `integration/expertiseos-mvp`
 - Started: 2026-09-14
-- Current state: `promotion_ready`
+- Current state: `implementing`
 - Fast multi-agent TDD: not used, per explicit user direction
 - Development method: Spec Kit tasks with proportionate unit, integration, end-to-end, static, and smoke verification
 
@@ -223,4 +223,23 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
 
-No C002 promotion has completed yet.
+### C002 Promotion And C003 Receipt
+
+- Promotion candidate and immutable promotion SHA: `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`
+- Promotion smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; bootstrap-ready JSON.
+- `promote_green_state`: exit 0; accepted from `promotion_ready` to `propagating` for C002.
+- Downstream branch: `003-backend-retrieval`
+- Exact promotion SHA received in merge commit: `fc69741251f07ff1d5ed7fceb5c7463a823d120b`
+- Receipt verification: `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_consent_foundation_handoff.py tests/e2e/test_acceptance_consent.py`; exit 0; 4 passed in 0.04 seconds.
+- Receipt smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; bootstrap-ready JSON.
+- C002 owner released after successful propagation; C003 remains assigned to `/root/owner_backend`.
+
+### C003 Wave Activation
+
+- Activated: 2026-09-14
+- Satisfied prerequisite promotion: C002 `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`
+- Starting receipt commit: `fc69741251f07ff1d5ed7fceb5c7463a823d120b`
+- `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
+- C004-C008 remain blocked by the authoritative DAG.
+
+No C003 implementation or integration has completed yet.
