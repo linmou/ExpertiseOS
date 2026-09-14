@@ -39,7 +39,7 @@ As an expertiseOS user, I need approved knowledge to remain local, inspectable, 
 
 **Acceptance Scenarios**:
 
-1. **Given** approved fixture knowledge, **When** it is created through supported backend interfaces, **Then** its content, identity, metadata, provenance, version, status, and relationships can be read or deterministically reconstructed.
+1. **Given** approved fixture knowledge, **When** it is created through supported backend interfaces, **Then** its current and exact historical content, identity, metadata, provenance, version, status, and relationships can be read or deterministically reconstructed.
 2. **Given** approved indexed knowledge, **When** local search and deletion are exercised, **Then** search returns bounded results and deletion removes the in-scope canonical and index entries.
 3. **Given** completed local setup and blocked outbound access, **When** supported read, write, search, delete, and rebuild operations run, **Then** no remote expertiseOS memory or model service is required.
 4. **Given** the selected backend packaging approach, **When** release obligations are reviewed, **Then** the dependency version, distribution method, obligations, allowed pilot scope, and any release blocker are explicit.
@@ -58,7 +58,7 @@ As a feature developer, I need one installable package, repeatable verification 
 
 1. **Given** a clean supported development environment, **When** the documented install and verification commands run, **Then** the package imports and all bootstrap checks use one repeatable entrypoint set.
 2. **Given** the host contract, **When** a fake host emits session, user, atomic-operation, checkpoint, and session-end events, **Then** consumers receive normalized host-neutral events and truthful capability information.
-3. **Given** the backend contract, **When** a fake backend exercises approved create, get, bounded search, update, relationship, retire, delete, rebuild, and health operations, **Then** it stores only approved test data and enforces stable identity and expected-version semantics.
+3. **Given** the backend contract, **When** a fake backend exercises approved create, current and historical get, bounded search, update, relationship, retire, delete, rebuild, and health operations, **Then** it stores only approved test data and enforces stable identity, expected-version, and idempotent-command semantics.
 4. **Given** an unavailable fake service or unsupported host capability, **When** a host fixture continues ordinary work, **Then** failure is explicit, writes remain unavailable, and the host work is not blocked.
 
 ### Edge Cases
@@ -68,6 +68,7 @@ As a feature developer, I need one installable package, repeatable verification 
 - A host exposes no stable session identifier: generate a local identifier that is scoped to and expires with that host session.
 - Backend identities or relationships require a mapping: allow only the smallest documented sidecar mapping needed for the P0 contract.
 - Canonical backend write succeeds while indexing fails: report canonical success and index health separately; never claim search readiness falsely.
+- A semantic mutation retries with the same `operation_id` and identical command input: return the original result without another write; reuse of that `operation_id` with any different command input returns a typed conflict.
 - Network-disabled semantic indexing is unavailable: prove bounded keyword search and record the degraded capability.
 - Existing host configuration is present during install or uninstall: preserve unrelated configuration and reverse only expertiseOS registration.
 
@@ -81,12 +82,12 @@ As a feature developer, I need one installable package, repeatable verification 
 - **FR-004**: Each host proof MUST identify supported activation, configuration-preserving setup, reversible uninstall, safe checkpoint, atomic-operation boundary, normal handoff, and session-end behavior.
 - **FR-005**: If FR-002 or FR-003 cannot be proven for a host, that host MUST be reported as read-only or blocked for writes; model compliance MUST NOT substitute for the missing boundary.
 - **FR-006**: Ordinary host work MUST continue when expertiseOS service calls fail, while unverifiable writes fail closed and never report false success.
-- **FR-007**: The backend feasibility proof MUST use supported public interfaces to exercise approved create, stable read, bounded local search, required metadata/provenance/version/status, relationships, retire/delete, index rebuild, and health behavior.
+- **FR-007**: The backend feasibility proof MUST use supported public interfaces to exercise approved create, current-version read, exact historical-version read, bounded local search, required metadata/provenance/version/status, relationships, retire/delete, index rebuild, and health behavior.
 - **FR-008**: The backend proof MUST demonstrate local operation after setup without a remote expertiseOS memory service or second generative-model API key, with a bounded keyword fallback when local semantic search is unavailable.
 - **FR-009**: The feasibility result MUST record the exact Basic Memory version reviewed, packaging and startup method, applicable AGPL-3.0 obligations, allowed showcase or pilot distribution, and any public-release blocker.
 - **FR-010**: The repository bootstrap MUST provide one installable `expertiseos` package, one local service development entrypoint, and repeatable unit, integration, end-to-end, static-type, lint, and format verification commands.
 - **FR-011**: The shared host contract MUST expose only adapter identity, session identity, truthful capabilities, session lifecycle, actual user events, atomic-operation boundaries, safe checkpoints, and unambiguous decision registration as normalized host-neutral concepts.
-- **FR-012**: The shared knowledge backend contract MUST expose only approved create, get, bounded search, expected-version update, relationship change, retire, delete, index rebuild, and health operations needed by the MVP.
+- **FR-012**: The shared knowledge backend contract MUST expose only approved create, current or exact historical get with explicit retired-record inclusion, batched current-version lookup, bounded search, expected-version update, relationship change, retire, expected-version delete, index rebuild, and health operations needed by the MVP. Every semantic mutation MUST receive `operation_id` as its final, separate command argument; `operation_id` MUST NOT be approved semantic content. The same `operation_id` with identical command input MUST replay the original result, while reuse with different command input MUST return a typed idempotency conflict. Index rebuild is non-semantic maintenance outside this semantic idempotency contract.
 - **FR-013**: Deterministic fakes MUST cover the shared host and backend contracts and MUST provide controllable time and identity generation only where tests require them.
 - **FR-014**: The fake backend MUST store only data explicitly marked as approved test input, and bootstrap tests MUST prove that no model-only or missing user event authorizes a persistent write.
 - **FR-015**: All external uncertainties and limitations MUST be recorded as reproducible evidence or explicit blockers; the gate MUST NOT silently change approval, privacy, local-only, or host-continuity behavior.
@@ -97,7 +98,7 @@ As a feature developer, I need one installable package, repeatable verification 
 - **Host Capability Profile**: The tested host/version/OS combination, supported activation and lifecycle events, trustworthy user-input availability, session identity source, write capability, and known limitation.
 - **Normalized Host Event**: A host-neutral session, actual-user-input, atomic-begin, atomic-end, checkpoint, or session-end signal with adapter/session identity and a host event reference where applicable.
 - **Backend Capability Profile**: The tested backend/version/configuration and results for identity, approved-data mutation, metadata, relationship, retrieval, deletion, rebuild, health, offline, and degraded-mode operations.
-- **Approved Knowledge Record Contract**: The minimal content, identity, version, metadata, provenance, status, and relationship values accepted or returned by the backend boundary after authorization occurs elsewhere.
+- **Approved Knowledge Record Contract**: The minimal semantic content, identity, version, metadata, provenance, status, and relationship values accepted or returned by the backend boundary after authorization occurs elsewhere; runtime `operation_id` is not part of this content.
 - **Compatibility Evidence**: Reproducible commands, fixtures, environment metadata, results, limitations, and release constraints for an external dependency or host.
 
 ## Success Criteria *(mandatory)*
@@ -106,7 +107,7 @@ As a feature developer, I need one installable package, repeatable verification 
 
 - **SC-001**: Every claimed write-capable host passes all six steps of the actual-user-decision fixture; a host missing any step is explicitly reported as read-only or blocked.
 - **SC-002**: For both required hosts, the feasibility record covers 100% of activation, configuration preservation, uninstall, safe checkpoint, atomic boundary, user-input distinction, session identity, and service-failure questions.
-- **SC-003**: The backend proof passes create/read/search/delete/rebuild round trips for approved fixtures with exact content and identity assertions and no use of private backend storage tables.
+- **SC-003**: The backend proof passes create/current-read/historical-read/search/delete/rebuild round trips and same-command replay/conflicting-command checks for approved fixtures with exact content and identity assertions and no use of private backend storage tables.
 - **SC-004**: After setup, all supported local backend scenarios pass with outbound access blocked or the precise unsupported capability is recorded with a keyword fallback result.
 - **SC-005**: The bootstrap verification suite includes and passes backend-contract, host-contract, no-write-without-user-event, and service-unavailable host-continuity checks.
 - **SC-006**: A clean Python 3.12 environment can install the package, import it, and run the documented test and static-check commands without manual database or remote model-provider setup.
