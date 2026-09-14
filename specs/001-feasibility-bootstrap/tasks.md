@@ -13,11 +13,11 @@ Each task follows `[ID] [P?] [Story?] Description with exact file path` and cite
 
 **Purpose**: Create the smallest installable and verifiable package skeleton.
 
-- [ ] T001 Create Python 3.12 package metadata and stable format, lint, mypy, import, unit, and integration command definitions in `pyproject.toml` (FR-010)
-- [ ] T002 Create package markers in `src/expertiseos/__init__.py`, `src/expertiseos/hosts/__init__.py`, and `src/expertiseos/knowledge/__init__.py` (FR-010)
-- [ ] T003 Create a non-networked local development process entrypoint stub that isolates expertiseOS failure from caller work in `src/expertiseos/__main__.py` (FR-006, FR-010)
-- [ ] T004 [P] Create unit/integration/e2e test directories and shared pytest configuration in `tests/conftest.py` (FR-010)
-- [ ] T005 [P] Create a version/environment evidence schema and evidence output directory description in `specs/001-feasibility-bootstrap/evidence/README.md` (FR-001, FR-015)
+- [X] T001 Create Python 3.12 package metadata and stable format, lint, mypy, import, unit, and integration command definitions in `pyproject.toml` (FR-010)
+- [X] T002 Create package markers in `src/expertiseos/__init__.py`, `src/expertiseos/hosts/__init__.py`, and `src/expertiseos/knowledge/__init__.py` (FR-010)
+- [X] T003 Create a non-networked local development process entrypoint stub that isolates expertiseOS failure from caller work in `src/expertiseos/__main__.py` (FR-006, FR-010)
+- [X] T004 [P] Create unit/integration/e2e test directories and shared pytest configuration in `tests/conftest.py` (FR-010)
+- [X] T005 [P] Create a version/environment evidence schema and evidence output directory description in `specs/001-feasibility-bootstrap/evidence/README.md` (FR-001, FR-015)
 
 **Checkpoint**: Package imports and all verification command entrypoints resolve without product behavior.
 
@@ -27,13 +27,13 @@ Each task follows `[ID] [P?] [Story?] Description with exact file path` and cite
 
 **Purpose**: Freeze shared protocols and deterministic fixtures before external proofs.
 
-- [ ] T006 Implement required-field normalized host capability, event, session, decision-binding, and observation values plus the `HostAdapter` protocol in `src/expertiseos/hosts/contract.py` (FR-011)
-- [ ] T007 Implement validation for lifecycle ordering, event-origin distinction, session scope, atomic checkpoint eligibility, and evidence-backed capability claims in `src/expertiseos/hosts/contract.py` (FR-002, FR-004, FR-011)
-- [ ] T008 Implement required-field approved semantic knowledge, record, relation, search, health, and delete/rebuild result values plus the canonical `KnowledgeBackend` signatures with `operation_id` last on create/update/relationships/retire/delete, version-aware get with explicit retired inclusion, batched current-version lookup, and expected-version delete in `src/expertiseos/knowledge/backend.py` (FR-007, FR-012)
-- [ ] T009 Implement bounded-query, stable-identity, exact historical/default-current lookup, retired-record filtering, batched current-version mapping, expected-version mutation checks, same-command replay, reused-`operation_id` divergent-input conflict, and canonical/index health validation in `src/expertiseos/knowledge/backend.py` (FR-007, FR-012)
-- [ ] T010 Implement deterministic clock/ID helpers, `FakeHostAdapter`, and approved-input-only `FakeKnowledgeBackend` in `tests/fakes.py` (FR-013, FR-014)
-- [ ] T011 [P] Add host protocol unit checks for lifecycle, origin distinction, exact decision binding, checkpoint eligibility, missing evidence, and constructor-required fields in `tests/unit/test_host_contract.py` (FR-002, FR-003, FR-004, FR-011, FR-013)
-- [ ] T012 [P] Add backend protocol unit checks for approved create/default-current-get/exact-historical-get, retired inclusion, batched current versions, bounds, stable identity, expected-version conflicts including delete, relationships, retire/delete/rebuild, health separation, same-`operation_id`/same-input replay and same-`operation_id`/different-input conflict on every semantic mutation, new-`operation_id` command behavior, unapproved input rejection, and constructor-required fields in `tests/unit/test_backend_contract.py` (FR-007, FR-012, FR-013, FR-014)
+- [X] T006 Implement required-field normalized host capability, event, session, decision-binding, and observation values plus the `HostAdapter` protocol in `src/expertiseos/hosts/contract.py` (FR-011)
+- [X] T007 Implement validation for lifecycle ordering, event-origin distinction, session scope, atomic checkpoint eligibility, and evidence-backed capability claims in `src/expertiseos/hosts/contract.py` (FR-002, FR-004, FR-011)
+- [X] T008 Implement required-field approved semantic knowledge, record, relation, search, health, and delete/rebuild result values plus the canonical `KnowledgeBackend` signatures with `operation_id` last on create/update/relationships/retire/delete, version-aware get with explicit retired inclusion, batched current-version lookup, and expected-version delete in `src/expertiseos/knowledge/backend.py` (FR-007, FR-012)
+- [X] T009 Implement bounded-query, stable-identity, exact historical/default-current lookup, retired-record filtering, batched current-version mapping, expected-version mutation checks, same-command replay, reused-`operation_id` divergent-input conflict, and canonical/index health validation in `src/expertiseos/knowledge/backend.py` (FR-007, FR-012)
+- [X] T010 Implement deterministic clock/ID helpers, `FakeHostAdapter`, and approved-input-only `FakeKnowledgeBackend` in `tests/fakes.py` (FR-013, FR-014)
+- [X] T011 [P] Add host protocol unit checks for lifecycle, origin distinction, exact decision binding, checkpoint eligibility, missing evidence, and constructor-required fields in `tests/unit/test_host_contract.py` (FR-002, FR-003, FR-004, FR-011, FR-013)
+- [X] T012 [P] Add backend protocol unit checks for approved create/default-current-get/exact-historical-get, retired inclusion, batched current versions, bounds, stable identity, expected-version conflicts including delete, relationships, retire/delete/rebuild, health separation, same-`operation_id`/same-input replay and same-`operation_id`/different-input conflict on every semantic mutation, new-`operation_id` command behavior, unapproved input rejection, and constructor-required fields in `tests/unit/test_backend_contract.py` (FR-007, FR-012, FR-013, FR-014)
 
 **Checkpoint**: Downstream components can execute deterministic contract suites without live hosts, network, or Basic Memory.
 
@@ -45,14 +45,14 @@ Each task follows `[ID] [P?] [Story?] Description with exact file path` and cite
 
 **Independent Test**: Run the pinned-host fixture from proposal through rejected model write, actual user decision, exact one-use observation, and service failure while preserving the host task.
 
-- [ ] T013 [P] [US1] Define concise adversarial event fixtures distinguishing user, assistant, tool, model-argument, quoted, unrelated, stale, cross-session, and cross-host inputs in `tests/fixtures/host_events.json` (FR-002, FR-003)
-- [ ] T014 [P] [US1] Create the evidence recorder/checker for exact component/version/OS/capability/steps/fixture/result/exit-status/timestamp/limitation metadata in `tests/feasibility/evidence.py` (FR-001, FR-015)
-- [ ] T015 [US1] Build the reusable six-step actual-user-decision contract fixture for both hosts in `tests/integration/test_host_feasibility.py` (FR-002, FR-003, FR-005)
-- [ ] T016 [P] [US1] Add no-write-without-actual-user-event integration coverage for every adversarial event kind in `tests/integration/test_no_write_without_user_event.py` (FR-002, FR-005, FR-014)
-- [ ] T017 [P] [US1] Add a service-unavailable host fixture proving ordinary task completion and closed/accurate write status in `tests/integration/test_service_failure_continuity.py` (FR-006)
-- [ ] T018 [US1] Execute and record pinned Codex activation, configuration preservation, uninstall, lifecycle/checkpoint, user-input, session identity, and failure-continuity evidence under `specs/001-feasibility-bootstrap/evidence/codex/` (FR-001, FR-002, FR-003, FR-004, FR-005, FR-006)
-- [ ] T019 [US1] Execute and record pinned Claude Code activation, configuration preservation, uninstall, lifecycle/checkpoint, user-input, session identity, and failure-continuity evidence under `specs/001-feasibility-bootstrap/evidence/claude-code/` (FR-001, FR-002, FR-003, FR-004, FR-005, FR-006)
-- [ ] T020 [US1] Classify each host capability from passed evidence, marking missing decision binding read-only/blocked, in `specs/001-feasibility-bootstrap/evidence/host-capability-matrix.md` (FR-001, FR-005, FR-015)
+- [X] T013 [P] [US1] Define concise adversarial event fixtures distinguishing user, assistant, tool, model-argument, quoted, unrelated, stale, cross-session, and cross-host inputs in `tests/fixtures/host_events.json` (FR-002, FR-003)
+- [X] T014 [P] [US1] Create the evidence recorder/checker for exact component/version/OS/capability/steps/fixture/result/exit-status/timestamp/limitation metadata in `tests/feasibility/evidence.py` (FR-001, FR-015)
+- [X] T015 [US1] Build the reusable six-step actual-user-decision contract fixture for both hosts in `tests/integration/test_host_feasibility.py` (FR-002, FR-003, FR-005)
+- [X] T016 [P] [US1] Add no-write-without-actual-user-event integration coverage for every adversarial event kind in `tests/integration/test_no_write_without_user_event.py` (FR-002, FR-005, FR-014)
+- [X] T017 [P] [US1] Add a service-unavailable host fixture proving ordinary task completion and closed/accurate write status in `tests/integration/test_service_failure_continuity.py` (FR-006)
+- [X] T018 [US1] Execute and record pinned Codex activation, configuration preservation, uninstall, lifecycle/checkpoint, user-input, session identity, and failure-continuity evidence under `specs/001-feasibility-bootstrap/evidence/codex/` (FR-001, FR-002, FR-003, FR-004, FR-005, FR-006)
+- [X] T019 [US1] Execute and record pinned Claude Code activation, configuration preservation, uninstall, lifecycle/checkpoint, user-input, session identity, and failure-continuity evidence under `specs/001-feasibility-bootstrap/evidence/claude-code/` (FR-001, FR-002, FR-003, FR-004, FR-005, FR-006)
+- [X] T020 [US1] Classify each host capability from passed evidence, marking missing decision binding read-only/blocked, in `specs/001-feasibility-bootstrap/evidence/host-capability-matrix.md` (FR-001, FR-005, FR-015)
 
 **Checkpoint**: Every host support claim is evidence-backed; missing authorization cannot be reported as write-capable.
 
@@ -64,12 +64,12 @@ Each task follows `[ID] [P?] [Story?] Description with exact file path` and cite
 
 **Independent Test**: Run approved create/current-read/historical-read/search/metadata/relation/delete/rebuild/health round trips and mutation replay/conflict checks on the pinned backend, then repeat supported scenarios with outbound access blocked.
 
-- [ ] T021 [P] [US2] Define compact approved-only backend fixtures covering metadata, provenance, versions, status, relationships, keyword matches, and deletion in `tests/fixtures/approved_knowledge.json` (FR-007)
-- [ ] T022 [US2] Build public-interface Basic Memory create/current-read/exact-historical-read/search/metadata/relation/delete/rebuild/health and same-command replay/divergent-input conflict feasibility checks in `tests/integration/test_backend_feasibility.py` (FR-007, FR-012)
-- [ ] T023 [US2] Add an outbound-blocked post-setup fixture with explicit semantic/keyword mode assertions in `tests/integration/test_local_backend_offline.py` (FR-008)
-- [ ] T024 [US2] Execute and record the pinned Basic Memory version, OS, public-interface current/historical round trips, identity mapping, metadata/relations, mutation replay/conflict, delete/rebuild, and health results under `specs/001-feasibility-bootstrap/evidence/basic-memory/` (FR-001, FR-007, FR-012, FR-015)
-- [ ] T025 [US2] Execute and record network-disabled local operation and keyword fallback evidence under `specs/001-feasibility-bootstrap/evidence/offline/` (FR-008, FR-015)
-- [ ] T026 [US2] Record the reviewed Basic Memory version, startup/distribution approach, AGPL-3.0 obligations, pilot status, and release blocker in `specs/001-feasibility-bootstrap/evidence/basic-memory-license.md` (FR-009, FR-015)
+- [X] T021 [P] [US2] Define compact approved-only backend fixtures covering metadata, provenance, versions, status, relationships, keyword matches, and deletion in `tests/fixtures/approved_knowledge.json` (FR-007)
+- [X] T022 [US2] Build public-interface Basic Memory create/current-read/exact-historical-read/search/metadata/relation/delete/rebuild/health and same-command replay/divergent-input conflict feasibility checks in `tests/integration/test_backend_feasibility.py` (FR-007, FR-012)
+- [X] T023 [US2] Add an outbound-blocked post-setup fixture with explicit semantic/keyword mode assertions in `tests/integration/test_local_backend_offline.py` (FR-008)
+- [X] T024 [US2] Execute and record the pinned Basic Memory version, OS, public-interface current/historical round trips, identity mapping, metadata/relations, mutation replay/conflict, delete/rebuild, and health results under `specs/001-feasibility-bootstrap/evidence/basic-memory/` (FR-001, FR-007, FR-012, FR-015)
+- [X] T025 [US2] Execute and record network-disabled local operation and keyword fallback evidence under `specs/001-feasibility-bootstrap/evidence/offline/` (FR-008, FR-015)
+- [X] T026 [US2] Record the reviewed Basic Memory version, startup/distribution approach, AGPL-3.0 obligations, pilot status, and release blocker in `specs/001-feasibility-bootstrap/evidence/basic-memory-license.md` (FR-009, FR-015)
 
 **Checkpoint**: Canonical approved data round-trips locally through supported interfaces and release constraints are explicit.
 
@@ -81,10 +81,10 @@ Each task follows `[ID] [P?] [Story?] Description with exact file path` and cite
 
 **Independent Test**: In a clean environment, install/import the package and run static, contract, and integration checks without live hosts, network, or production Basic Memory.
 
-- [ ] T027 [US3] Add a downstream-consumer smoke test importing both protocols and exercising both deterministic fakes in `tests/integration/test_downstream_bootstrap.py` (FR-010, FR-011, FR-012, FR-013)
-- [ ] T028 [US3] Run format, Ruff, strict mypy, import, unit, and integration commands and record exact results in `specs/001-feasibility-bootstrap/evidence/bootstrap-verification.md` (FR-010, FR-015)
-- [ ] T029 [US3] Audit the component diff for excluded feature logic and prohibited infrastructure, recording results in `specs/001-feasibility-bootstrap/evidence/scope-audit.md` (FR-016)
-- [ ] T030 [US3] Produce integration-ready compatibility and implementation-status content with evidence links, without editing integration-owned shared docs, in `specs/001-feasibility-bootstrap/evidence/integration-handoff.md` (FR-001, FR-009, FR-015)
+- [X] T027 [US3] Add a downstream-consumer smoke test importing both protocols and exercising both deterministic fakes in `tests/integration/test_downstream_bootstrap.py` (FR-010, FR-011, FR-012, FR-013)
+- [X] T028 [US3] Run format, Ruff, strict mypy, import, unit, and integration commands and record exact results in `specs/001-feasibility-bootstrap/evidence/bootstrap-verification.md` (FR-010, FR-015)
+- [X] T029 [US3] Audit the component diff for excluded feature logic and prohibited infrastructure, recording results in `specs/001-feasibility-bootstrap/evidence/scope-audit.md` (FR-016)
+- [X] T030 [US3] Produce integration-ready compatibility and implementation-status content with evidence links, without editing integration-owned shared docs, in `specs/001-feasibility-bootstrap/evidence/integration-handoff.md` (FR-001, FR-009, FR-015)
 
 **Checkpoint**: Package, contracts, fakes, and evidence are ready for serial integration and downstream promotion.
 
