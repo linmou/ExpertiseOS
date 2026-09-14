@@ -8,7 +8,7 @@
 - Immutable baseline: `4213d8bd6b21448401f9aba9a10208303672c7c6`
 - Integration branch: `integration/expertiseos-mvp`
 - Started: 2026-09-14
-- Current state: `dag_building` with Allocation Packet V2 review pending
+- Current state: `implementation_ready`
 - Fast multi-agent TDD: not used, per explicit user direction
 - Development method: Spec Kit tasks with proportionate unit, integration, end-to-end, static, and smoke verification
 
@@ -96,11 +96,11 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 
 ## Allocation Packet V2
 
-- Status: awaiting explicit human approval.
+- Status: explicitly approved by the user on 2026-09-14 with `approve V2`.
 - Unchanged: component scope, public contracts, ownership, exclusions, prefixes, branches, worktrees, and stable owners.
 - Changed: C004 is now a prerequisite for C005, C006, and C007 because their completed tasks require promoted control-resolution, exclusion, and learner/control-state producer interfaces for local verification.
 - Resulting waves: C001 -> C002 -> C003 -> C004 -> parallel C005/C006/C007 -> C008.
-- No edge work packet or implementation activation is authorized until approval.
+- The revised graph is authoritative. Eleven edge work packets and the integration test plan are recorded in `dependency-graph.md`.
 
 ## Integration History
 
