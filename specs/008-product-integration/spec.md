@@ -2,9 +2,9 @@
 
 **Intent**: Define the smallest host-neutral product surface and acceptance coverage that proves the expertiseOS MVP works end to end without weakening upstream consent, storage, retrieval, learning, or reliability contracts.
 
-**Feature Branch**: `008-product-integration`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `008-product-integration`
+**Created**: 2026-09-14
+**Status**: Draft
 **Input**: Integrate the shared expertiseOS behavior, guarded local service surface, reference scenarios, and deterministic AT-01 through AT-16 validation after components 001-007 are promoted.
 
 ## User Scenarios & Testing

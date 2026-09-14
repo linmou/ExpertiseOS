@@ -2,7 +2,7 @@
 
 **Intent**: Provide an executable, dependency-ordered task list that completes C008 without reopening upstream semantics or adding speculative infrastructure.
 
-**Input**: Design documents from `/specs/008-product-integration/`  
+**Input**: Design documents from `/specs/008-product-integration/`
 **Prerequisites**: `spec.md`, `plan.md`, `research.md`, `data-model.md`, `contracts/`, and a recorded green integration promotion SHA containing C002-C007
 
 **Tests**: Verification is required by the product specification. Use task-based implementation with focused contract, integration, end-to-end, static, and smoke checks; strict multi-agent TDD is not required.

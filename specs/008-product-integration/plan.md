@@ -11,14 +11,14 @@ Implement one thin composition service and MCP-facing tool registry over promote
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Python standard library; upstream-pinned MCP SDK and Basic Memory integration consumed through existing package contracts  
-**Storage**: No C008-owned persistence; promoted Basic Memory adapter and SQLite state are accessed only through upstream services  
-**Testing**: pytest unit/contract/integration/end-to-end tests, repository static/type checks, pinned live-host fixtures where supported  
-**Target Platform**: Local macOS environment proven by C001, with Codex and Claude Code as local clients of one service  
-**Project Type**: Single installable Python package with one local service process and host packaging artifacts  
-**Performance Goals**: Preserve upstream targets: lifecycle bookkeeping p95 below 200 ms, warm retrieval p95 below 1 second for 10,000 small approved objects, and approved-write acknowledgment p95 below 1 second excluding indexing and host-model latency  
-**Constraints**: Local-first; no second model; no direct backend writes; no unapproved persistence; bounded retrieval; fail open for ordinary work and closed for unverifiable writes; no background worker  
+**Language/Version**: Python 3.12
+**Primary Dependencies**: Python standard library; upstream-pinned MCP SDK and Basic Memory integration consumed through existing package contracts
+**Storage**: No C008-owned persistence; promoted Basic Memory adapter and SQLite state are accessed only through upstream services
+**Testing**: pytest unit/contract/integration/end-to-end tests, repository static/type checks, pinned live-host fixtures where supported
+**Target Platform**: Local macOS environment proven by C001, with Codex and Claude Code as local clients of one service
+**Project Type**: Single installable Python package with one local service process and host packaging artifacts
+**Performance Goals**: Preserve upstream targets: lifecycle bookkeeping p95 below 200 ms, warm retrieval p95 below 1 second for 10,000 small approved objects, and approved-write acknowledgment p95 below 1 second excluding indexing and host-model latency
+**Constraints**: Local-first; no second model; no direct backend writes; no unapproved persistence; bounded retrieval; fail open for ordinary work and closed for unverifiable writes; no background worker
 **Scale/Scope**: Two supported local hosts, one repository/service, four reference scenarios, AT-01 through AT-16, and a deterministic 10,000-object performance corpus supplied by C007
 
 ## Constitution Check
