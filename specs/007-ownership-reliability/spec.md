@@ -2,9 +2,9 @@
 
 **Intent**: Define the MVP behavior that keeps approved expertiseOS data portable, removable, recoverable, local, and safe under failure.
 
-**Feature Branch**: `007-ownership-reliability`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `007-ownership-reliability`
+**Created**: 2026-09-14
+**Status**: Draft
 **Input**: User description: "Implement the ownership, reliability, privacy, security-boundary, degraded-search, and performance requirements in the expertiseOS MVP agent plan without expanding the product architecture."
 
 ## User Scenarios & Testing *(mandatory)*
@@ -180,4 +180,3 @@ As the repository owner, I receive useful local keyword results when semantic in
 - **Upstream C004**: Supplies learner evidence, summaries, controls, progress, and deferred-reference enumeration/restore/delete capabilities.
 - **Downstream C008**: Owns shared service/MCP/skill wiring, host-facing orchestration, cross-host and complete acceptance scenarios.
 - **Excluded**: Candidate recovery, host-specific adapter behavior, shared service/MCP wiring, cloud sync, telemetry, IAM/RBAC, DLP systems, distributed transactions, job queues, migration frameworks, and background workers.
-

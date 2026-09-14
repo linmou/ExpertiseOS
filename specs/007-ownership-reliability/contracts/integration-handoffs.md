@@ -52,4 +52,3 @@ C008 consumes export/restore/delete/uninstall/recovery results and explicit sear
 - C007 deletion invokes actual C003/C004 cleanup; the audit reads their actual controlled locations.
 - C003 index failure enters C007 degradation and actual keyword results reach C008 tagged `untrusted_data`.
 - C008's network-denied scenario calls actual C007/C003 local paths and records no remote dependency.
-

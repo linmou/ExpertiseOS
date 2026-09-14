@@ -65,4 +65,3 @@
 **Rationale**: The targets require reproducible evidence, not telemetry infrastructure.
 
 **Alternatives considered**: Remote monitoring and always-on metrics add no acceptance value.
-

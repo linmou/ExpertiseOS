@@ -11,14 +11,14 @@ Add portable export/restore, retire/delete support, explicit uninstall data choi
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Python standard library plus the C001-pinned Basic Memory adapter behind C003's `KnowledgeBackend` contract  
-**Storage**: Basic Memory for canonical approved knowledge/indexes; SQLite `state.db` for receipts, learner/control state, and content-free recovery markers; JSON/JSONL and Markdown exports  
-**Testing**: pytest unit/integration tests, mypy for modified Python, deterministic benchmark CLI, network-disabled integration fixture  
-**Target Platform**: Local user-owned macOS/Linux environments supported by pinned Codex and Claude Code integrations  
-**Project Type**: Single installable local Python package and one local service process  
-**Performance Goals**: bookkeeping p95 <200 ms; warm retrieval p95 <1 s over 10,000 objects; approved-write acknowledgment p95 <1 s excluding indexing and host-model latency  
-**Constraints**: no unapproved persistence; ordinary work continues while unsafe writes stop; no public listener by default; no external memory/embedding call after setup; no semantic recovery or silent collision merge  
+**Language/Version**: Python 3.12
+**Primary Dependencies**: Python standard library plus the C001-pinned Basic Memory adapter behind C003's `KnowledgeBackend` contract
+**Storage**: Basic Memory for canonical approved knowledge/indexes; SQLite `state.db` for receipts, learner/control state, and content-free recovery markers; JSON/JSONL and Markdown exports
+**Testing**: pytest unit/integration tests, mypy for modified Python, deterministic benchmark CLI, network-disabled integration fixture
+**Target Platform**: Local user-owned macOS/Linux environments supported by pinned Codex and Claude Code integrations
+**Project Type**: Single installable local Python package and one local service process
+**Performance Goals**: bookkeeping p95 <200 ms; warm retrieval p95 <1 s over 10,000 objects; approved-write acknowledgment p95 <1 s excluding indexing and host-model latency
+**Constraints**: no unapproved persistence; ordinary work continues while unsafe writes stop; no public listener by default; no external memory/embedding call after setup; no semantic recovery or silent collision merge
 **Scale/Scope**: one local user's repository, deterministic 10,000-object corpus, bounded retrieval and bounded content-free repair records
 
 ## Constitution Check

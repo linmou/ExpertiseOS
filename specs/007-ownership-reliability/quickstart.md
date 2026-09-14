@@ -31,4 +31,3 @@ python benchmarks/benchmark_mvp.py --corpus-size 10000 --output artifacts/benchm
 ## Integration Gate
 
 C008 passes actual C002-C004 output into C007 and actual C007 results into AT-13 through AT-16. Synthetic replacement at either edge is not integration evidence.
-

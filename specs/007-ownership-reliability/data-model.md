@@ -82,4 +82,3 @@ Contains operation, samples, p50/p95/p99, units, threshold, verdict, warm-up cou
 ## Upstream Records
 
 C007 consumes but never duplicates `KnowledgeObject`, `Relationship`, `SourceReference`, `ApprovalReceipt`, `LearnerEvidence`, learner summary, control settings, period progress, or deferred activity records.
-

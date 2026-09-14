@@ -40,4 +40,3 @@ No operation accepts `approved=true`, free-form approval claims, retrieved text 
 - Delete reports exact target outcomes and never claims deletion outside product control.
 - Uninstall deletion is explicit and reuses the deletion routine.
 - Retrieved content stays tagged as data and cannot invoke authorization/control constructors.
-
