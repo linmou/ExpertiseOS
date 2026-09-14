@@ -8,7 +8,7 @@
 - Immutable baseline: `4213d8bd6b21448401f9aba9a10208303672c7c6`
 - Integration branch: `integration/expertiseos-mvp`
 - Started: 2026-09-14
-- Current state: `planning`
+- Current state: `dag_building` with Allocation Packet V2 review pending
 - Fast multi-agent TDD: not used, per explicit user direction
 - Development method: Spec Kit tasks with proportionate unit, integration, end-to-end, static, and smoke verification
 
@@ -67,14 +67,14 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 
 | Component | Specify | Clarify | Plan | Tasks | Analyze | Planning commit |
 |---|---|---|---|---|---|---|
-| C001 | passed | passed | passed | passed | passed | `0ff21bc4b959a02b28243d6fcff0b3b4fa761c71` |
-| C002 | passed | passed | passed | passed | passed | `74f0222` |
-| C003 | passed | passed | passed | passed | passed | `bb347db` |
+| C001 | passed | passed | passed | passed | passed | `b00db7e41ba5d995bb9030c7b81476f845043509` |
+| C002 | passed | passed | passed | passed | passed | `7308d25` |
+| C003 | passed | passed | passed | passed | passed | `b767834` |
 | C004 | passed | passed with D001 | passed | passed | passed | `f29c148` |
 | C005 | passed | passed | passed | passed | passed | `a2d6508439c751830b2348d95fed7e9ea0624c1f` |
 | C006 | passed | passed | passed | passed | passed | `044bad2a0bd15b4abce4a240d6b4e80444be427d` |
-| C007 | passed | passed | passed | passed | passed | `2fd3696` |
-| C008 | passed | passed | passed | passed | passed | `87b3910` |
+| C007 | passed | passed | passed | passed | passed | `71db13c` |
+| C008 | passed | passed | passed | passed | passed | `a364d99` |
 
 ### Global Artifact Gate
 
@@ -84,6 +84,23 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Initial baseline-to-branch `git diff --check` failed on Markdown trailing whitespace for C001-C006 and C008; C006 also contained a malformed generated command line in `AGENTS.md`.
 - Defects were returned to their stable owners. Corrective commits are the planning commits recorded above; all eight baseline-to-branch diff checks now pass and every worktree is clean.
 - Integration consolidated component-specific generated `AGENTS.md` content into one repository-wide ownership and verification guide.
+
+## Cross-Component Reconciliation
+
+- Planning packages were merged serially into integration with explicit merge commits.
+- Reconciliation identified R001-R005 in `dependency-graph.md`: backend identity/signatures, shared documentation ownership, SQLite ownership, ownership-operation authorization/status, and acceptance SHA ordering.
+- Deterministic canonical resolutions were returned to the existing component owners; every affected package was corrected, reanalyzed, committed cleanly, and merged back into integration.
+- Final scans found no unresolved clarification markers, old operation identity aliases, generic backend mutation API, premature promotion SHA requirement, duplicate SQLite ownership, or `saved` contract status.
+- Integration SHA containing all reconciled planning packages: `2a05780`.
+- Reconciliation verdict: passed; no material product or scientific-meaning question remains.
+
+## Allocation Packet V2
+
+- Status: awaiting explicit human approval.
+- Unchanged: component scope, public contracts, ownership, exclusions, prefixes, branches, worktrees, and stable owners.
+- Changed: C004 is now a prerequisite for C005, C006, and C007 because their completed tasks require promoted control-resolution, exclusion, and learner/control-state producer interfaces for local verification.
+- Resulting waves: C001 -> C002 -> C003 -> C004 -> parallel C005/C006/C007 -> C008.
+- No edge work packet or implementation activation is authorized until approval.
 
 ## Integration History
 
