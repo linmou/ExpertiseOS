@@ -32,10 +32,10 @@
 **Purpose**: Establish shared component-local helpers without reimplementing upstream domain behavior.
 
 - [ ] T006 Implement fixtures that construct the real promoted service graph and normalized host clients in `tests/e2e/conftest.py` (FR-009, SC-010)
-- [ ] T007 [P] Implement a safe acceptance-evidence builder matching `contracts/acceptance-evidence.md` in `tests/e2e/evidence.py` (FR-010, FR-011)
+- [ ] T007 [P] Implement a safe acceptance-evidence builder that records `tested_sha` without requiring a future promotion SHA, matching `contracts/acceptance-evidence.md`, in `tests/e2e/evidence.py` (FR-010, FR-011)
 - [ ] T008 [P] Implement assertions for approved-store deltas, volatile-state expiry, and marker absence without persisting candidate content in `tests/e2e/assertions.py` (FR-009, SC-001)
 - [ ] T009 Add a test that fails when an E2E boundary replaces a required promoted producer with a synthetic substitute in `tests/e2e/test_handoff_integrity.py` (FR-009, SC-010)
-- [ ] T010 Run the foundational E2E support checks and record command, exit code, tested SHA, promotion SHA, and output path through `tests/e2e/evidence.py`
+- [ ] T010 Run the foundational E2E support checks and record command, exit code, tested SHA, and output path through `tests/e2e/evidence.py`; leave later promotion mapping to integration review
 
 **Checkpoint**: Tests can consume actual promoted upstream artifacts and emit safe, complete evidence.
 
@@ -49,16 +49,16 @@
 
 ### Verification
 
-- [ ] T011 [P] [US1] Add composition-facade contract cases for typed read, rejection, conflict, degraded, unavailable, and durable-success results in `tests/e2e/test_service_surface.py` (FR-001, FR-003, FR-006)
-- [ ] T012 [P] [US1] Add MCP registry allowlist and forbidden backend/boolean-approval exposure checks in `tests/e2e/test_mcp_surface.py` (FR-001, FR-002)
-- [ ] T013 [US1] Add actual guarded commit tests covering exact decision binding, one-use behavior, stale version, changed digest, cross-session grant, and idempotent retry in `tests/e2e/test_acceptance_consent.py` (AT-04, AT-05, AT-06, AT-07, AT-08)
+- [ ] T011 [P] [US1] Add composition-facade contract cases for read `ok` and mutation `committed`, `rejected`, `conflict`, `failed`, `incomplete`, `degraded`, and `unavailable` results in `tests/e2e/test_service_surface.py` (FR-001, FR-003, FR-006)
+- [ ] T012 [P] [US1] Add MCP registry allowlist, forbidden backend/boolean-approval exposure checks, trusted user-event-bound export/restore selection cases, and guarded deferred-removal cases in `tests/e2e/test_mcp_surface.py`, including rejection of activity-reference-only removal and model/caller authorization assertions (FR-001, FR-002)
+- [ ] T013 [US1] Add actual guarded commit tests covering exact decision binding, one-use behavior, stale version, changed digest, cross-session grant, and retry using canonical `operation_id` as the sole idempotency identity in `tests/e2e/test_acceptance_consent.py` (AT-04, AT-05, AT-06, AT-07, AT-08)
 
 ### Implementation
 
-- [ ] T014 [US1] Implement the stateless dependency-composition facade and consistent `ToolResult` mapping in `src/expertiseos/service.py` (FR-001, FR-003, FR-006)
+- [ ] T014 [US1] Implement the stateless dependency-composition facade with canonical mutation `operation_id` handling and precise read/mutation `ToolResult` mapping in `src/expertiseos/service.py` (FR-001, FR-003, FR-006)
 - [ ] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002)
-- [ ] T016 [US1] Ensure `src/expertiseos/mcp_server.py` exposes no backend writer, generic execute operation, direct mastery setter, or caller-supplied approval assertion (FR-002)
-- [ ] T017 [US1] Run `tests/e2e/test_service_surface.py`, `tests/e2e/test_mcp_surface.py`, and `tests/e2e/test_acceptance_consent.py`; record evidence and inspect the persistent-state delta (SC-001)
+- [ ] T016 [US1] Ensure `src/expertiseos/mcp_server.py` exposes no backend writer, generic execute operation, direct mastery setter, caller-supplied approval assertion, or mutation idempotency identity other than `operation_id` (FR-002)
+- [ ] T017 [US1] Run `tests/e2e/test_service_surface.py`, `tests/e2e/test_mcp_surface.py`, and `tests/e2e/test_acceptance_consent.py`; prove Saved derives only from `committed`, then record evidence and inspect the persistent-state delta (SC-001)
 
 **Checkpoint**: The host-neutral surface is useful for reads and guarded workflows, but structurally cannot bypass promoted approval semantics.
 

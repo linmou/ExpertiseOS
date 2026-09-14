@@ -107,8 +107,8 @@ As a maintainer, I can run the complete deterministic acceptance suite and disti
 
 ### Functional Requirements
 
-- **FR-001**: The product MUST expose only the approved host-neutral read, proposal, decision, commit, learning inspection, control, ownership, and health operations needed by the MVP.
-- **FR-002**: Every exposed mutation operation MUST delegate authorization and durable-state validation to the promoted guarded upstream service; no public operation may write directly to the knowledge backend or state store.
+- **FR-001**: The product MUST expose only the approved host-neutral read, proposal, decision, commit, learning inspection, control, ownership, and health operations needed by the MVP; every mutation uses its canonical `operation_id` as its sole idempotency identity, while any request correlation identity remains read-only metadata.
+- **FR-002**: Every exposed mutation operation MUST delegate authorization and durable-state validation to the promoted guarded upstream service; no public operation may write directly to the knowledge backend or state store, and export, restore, and deferred-activity removal MUST require their canonical trusted user-event-bound authorization paths.
 - **FR-003**: Read results MUST be bounded to the requested context and preserve object identity, version, provenance, relationships, conflict/staleness indicators, learner state, and degraded-search status supplied by upstream contracts.
 - **FR-004**: Both supported hosts MUST load one shared behavioral specification for search timing, novelty-safe wording, proposal presentation, optional reflection, recall use, and control-state behavior; host wrappers MUST NOT redefine domain rules.
 - **FR-005**: The shared behavior MUST treat stored and tool-provided content as untrusted data and MUST NOT follow embedded instructions that request writes, control changes, mastery changes, vault disclosure, or extra permissions.
@@ -117,7 +117,7 @@ As a maintainer, I can run the complete deterministic acceptance suite and disti
 - **FR-008**: The component MUST provide executable reference fixtures for Scenario A (save now, reflect later), Scenario B (conflict without replacement), Scenario C (fatigue before target), and Scenario D (cross-host continuity).
 - **FR-009**: The component MUST provide deterministic coverage for AT-01 through AT-16, using promoted upstream behavior rather than synthetic substitutes at producer-consumer boundaries.
 - **FR-010**: Acceptance evidence MUST separate deterministic product checks from model-behavior evaluation and MUST record misses and false proposals without weakening deterministic gates.
-- **FR-011**: Acceptance runs MUST record the exact command, input fixture or corpus version, relevant host/dependency versions, environment metadata, exit status, and inspectable output or log location.
+- **FR-011**: Acceptance runs MUST record the exact command, tested commit SHA, input fixture or corpus version, relevant host/dependency versions, environment metadata, exit status, and inspectable output or log location; the later integration review maps the tested SHA to any promotion SHA.
 - **FR-012**: AT-01 MUST verify guided activation for both hosts, one common local repository, onboarding consent, scope exclusions, capability reporting, and no second model key or manual database setup.
 - **FR-013**: AT-02 and AT-03 MUST verify uncertainty-safe novel/conflict proposals at the earliest eligible checkpoint without interrupting an atomic operation.
 - **FR-014**: AT-04 through AT-08 MUST verify exact approved persistence, negative no-persistence paths, forged-approval rejection, save-without-learning, and separately approved derived or conflict changes.
@@ -140,7 +140,7 @@ As a maintainer, I can run the complete deterministic acceptance suite and disti
 
 ### Measurable Outcomes
 
-- **SC-001**: All host-facing mutation attempts without a matching fresh user decision produce zero durable semantic or control-state changes and zero false success responses across the acceptance corpus.
+- **SC-001**: All host-facing mutation attempts without a matching fresh user decision produce zero durable semantic or control-state changes and zero false success responses across the acceptance corpus; a visible Saved result occurs only for `committed` status.
 - **SC-002**: The same shared behavior fixtures produce equivalent product decisions in Codex and Claude Code for every capability common to both supported versions.
 - **SC-003**: All four reference scenarios complete with their exact expected visible behavior and persistent-state delta.
 - **SC-004**: AT-01 through AT-16 each have a reproducible result with complete environment, input, command, exit-status, and evidence metadata; all applicable consent, privacy, and state-integrity cases pass before promotion.

@@ -12,7 +12,8 @@ Represents one host-neutral call into the composition service.
 | `adapter_id` | Required for session-bound operations |
 | `session_id` | Required for proposal, decision, and commit operations |
 | `payload` | Operation-specific validated inputs; cannot contain a boolean approval shortcut |
-| `request_id` | Caller-provided idempotency/correlation value where the upstream contract supports it |
+| `operation_id` | Required for mutations and used as their sole idempotency identity |
+| `request_id` | Optional read-only correlation identity; never used for mutation idempotency or authorization |
 
 Validation: unknown fields and operations fail explicitly; mutation requests must carry the exact upstream proposal/decision references required by the guarded service.
 
@@ -22,11 +23,13 @@ Represents a consistent response to a host.
 
 | Field | Rules |
 |---|---|
-| `status` | `ok`, `rejected`, `conflict`, `degraded`, or `unavailable` |
+| `status` | `ok` for successful reads; `committed`, `rejected`, `conflict`, `failed`, `incomplete`, `degraded`, or `unavailable` as applicable |
 | `data` | Bounded operation result; absent on rejection where disclosure would be unsafe |
 | `error_code` | Stable machine-readable reason for non-`ok` status |
 | `message` | Concise user-facing explanation; never claims a write succeeded before durable confirmation |
 | `capabilities` | Included when behavior depends on proven host/service capability |
+
+Only `committed` may produce a Saved user-facing result. `ok` never represents a mutation commit. `failed` is a completed failure; `incomplete` means reconciliation is required before success or retry can be reported.
 
 ## CapabilityView
 
@@ -66,7 +69,6 @@ Scenario fixtures contain no executable instructions and do not replace upstream
 | `schema_version` | Version of the evidence contract |
 | `at_id` | Acceptance case identifier |
 | `tested_sha` | Immutable integration or component commit tested |
-| `promotion_sha` | Upstream integration promotion consumed |
 | `command` | Exact command executed |
 | `exit_code` | Process exit status |
 | `started_at` / `finished_at` | UTC timestamps |
@@ -75,6 +77,8 @@ Scenario fixtures contain no executable instructions and do not replace upstream
 | `edge_artifacts` | Producer outputs consumed by downstream calls |
 | `result` | `pass`, `fail`, or `not_applicable` with a reason |
 | `output_path` | Durable log/report path containing no unapproved candidate content |
+
+The integration review maps `tested_sha` to a later promotion SHA after post-test audit and smoke gates pass; the test-run record does not predict or require that promotion identity.
 
 ## State and Ownership
 

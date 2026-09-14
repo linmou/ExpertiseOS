@@ -21,7 +21,7 @@
 
 Run the repository-provided targeted command for `tests/e2e`, then the full test, static, and type-check commands defined by the promoted project configuration. Run live-host cases only against the pinned supported versions and record exact environment metadata.
 
-For each run, retain command, exit code, tested SHA, promotion SHA, fixture versions, environment, actual edge artifacts, and safe output path. A failing upstream semantic assertion returns to its component owner; do not patch the shared skill to conceal it.
+For each run, retain command, exit code, tested SHA, fixture versions, environment, actual edge artifacts, and safe output path. The integration review maps the tested SHA to a promotion SHA only after its audit and smoke gates. A failing upstream semantic assertion returns to its component owner; do not patch the shared skill to conceal it.
 
 ## Expected Product Checks
 

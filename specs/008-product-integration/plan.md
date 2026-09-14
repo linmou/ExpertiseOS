@@ -53,11 +53,11 @@ If an integration test exposes an upstream defect, return it to that owner. Do n
 
 ### Composition Service
 
-`src/expertiseos/service.py` is a small facade that groups promoted read, proposal, guarded mutation, learning/control, ownership, and health capabilities. It holds no canonical business state and performs only input shaping, dependency dispatch, consistent typed result assembly, and capability filtering.
+`src/expertiseos/service.py` is a small facade that groups promoted read, proposal, guarded mutation, learning/control, ownership, and health capabilities. It holds no canonical business state and performs only input shaping, dependency dispatch, consistent typed result assembly, and capability filtering. Mutations preserve the upstream `operation_id` as the sole idempotency identity; a separate request ID, if present, is correlation metadata only.
 
 ### MCP Tool Surface
 
-`src/expertiseos/mcp_server.py` registers the minimum operations in [contracts/tool-surface.md](contracts/tool-surface.md). Backend methods are never registered. Public tools do not accept `approved=true` or equivalent model assertions as authorization.
+`src/expertiseos/mcp_server.py` registers the minimum operations in [contracts/tool-surface.md](contracts/tool-surface.md). Backend methods are never registered. Public tools do not accept `approved=true` or equivalent model assertions as authorization. Export, restore, and deferred-activity removal accept only their promoted trusted user-event-bound authorization inputs.
 
 ### Shared Behavioral Skill
 
@@ -65,7 +65,7 @@ If an integration test exposes an upstream defect, return it to that owner. Do n
 
 ### Fixtures and Evidence
 
-`examples/reference_scenarios/` contains concise versioned scenario inputs and expected observable/persistence deltas. `tests/e2e/` exercises these scenarios and maps AT-01 through AT-16. Component-local evidence uses the metadata shape in [contracts/acceptance-evidence.md](contracts/acceptance-evidence.md); the integration owner retains final coverage-manifest and verdict ownership.
+`examples/reference_scenarios/` contains concise versioned scenario inputs and expected observable/persistence deltas. `tests/e2e/` exercises these scenarios and maps AT-01 through AT-16. Component-local evidence uses the metadata shape in [contracts/acceptance-evidence.md](contracts/acceptance-evidence.md) and records the tested SHA; the integration owner later maps that SHA to the promotion SHA and retains final coverage-manifest and verdict ownership.
 
 ## Project Structure
 
@@ -110,12 +110,12 @@ examples/reference_scenarios/
 
 ## Verification Strategy
 
-1. Contract checks prove every public tool maps to an approved upstream service and no backend writer is exposed.
+1. Contract checks prove every public tool maps to an approved upstream service, uses canonical mutation identity and authorization inputs, and exposes no backend writer.
 2. Scenario tests pass normalized host events through the actual composition service to promoted upstream implementations.
 3. Acceptance tests cover AT-01 through AT-16 and preserve the original producer-consumer boundary in each run.
 4. Adversarial marker audits assert zero unauthorized grants, writes, controls, mastery changes, broad disclosure, or permissions.
 5. Offline runs block expertiseOS process network access and verify local operations and degraded keyword search.
-6. Run targeted C008 tests, the full repository suite, static/type checks, and integration-owner handoff tests before commit.
+6. Run targeted C008 tests, the full repository suite, static/type checks, and integration-owner handoff tests before commit; Saved UI assertions pass only for `committed` results.
 
 ## Ownership and Exclusions
 
