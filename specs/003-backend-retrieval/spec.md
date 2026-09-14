@@ -72,6 +72,7 @@ Users can retire or delete approved knowledge through the guarded mutation bound
 2. **Given** an approved deletion, **When** recall and direct active reads run, **Then** deleted content and derived index entries are absent within the requested product scope.
 3. **Given** an index containing obsolete entries, **When** rebuild completes, **Then** the index is recreated only from current approved canonical knowledge and produces no approval or learning event.
 4. **Given** provenance whose source is no longer accessible, **When** the object is read, **Then** the original reference remains and is marked unavailable without fabricated replacement evidence.
+5. **Given** a deletion based on a stale expected version, **When** it is attempted, **Then** the current object remains unchanged and a version conflict is returned.
 
 ### Edge Cases
 
@@ -105,11 +106,11 @@ Users can retire or delete approved knowledge through the guarded mutation bound
 - **FR-013**: Search and direct reads MUST expose canonical-data and index readiness separately so an index failure does not hide a successful canonical approved write.
 - **FR-014**: Retrieval and fallback MUST operate locally after setup and MUST NOT silently call a remote memory, embedding, or reranking service.
 - **FR-015**: Approved retirement MUST exclude an object from ordinary recall while preserving explicitly requested history and resolvable lineage.
-- **FR-016**: Approved deletion MUST remove in-scope canonical content and derived index entries so deleted content is not returned by active reads or recall.
+- **FR-016**: Approved deletion MUST require the current expected version and remove in-scope canonical content and derived index entries so deleted content is not returned by active reads or recall; a stale version MUST leave the object unchanged.
 - **FR-017**: Index rebuild MUST derive only from approved canonical knowledge and MUST NOT create approval, mutation, or learning events.
 - **FR-018**: Missing source material MUST remain represented by its original source reference with an unavailable status; the system MUST NOT generate substitute provenance.
 - **FR-019**: Backend and index failures MUST be surfaced accurately, MUST NOT report false mutation success, and MUST allow the host's unrelated work to continue.
-- **FR-020**: Approved mutation retries MUST be idempotent so a timeout or duplicate delivery cannot create an extra object, version, relationship, or index event.
+- **FR-020**: Every approved semantic create, update, relationship, retire, or delete mutation MUST receive its C002 `operation_id`; retrying the same operation MUST NOT create an extra object, version, relationship, or index event, and reusing the identifier for different semantic input MUST fail.
 - **FR-021**: Storage-specific identifiers and metadata names MUST remain behind the backend contract; downstream callers consume host-neutral knowledge and retrieval results.
 
 ### Key Entities
@@ -140,7 +141,7 @@ Users can retire or delete approved knowledge through the guarded mutation bound
 ## Assumptions
 
 - G0 supplies a tested local Basic Memory version, supported public interfaces, dependency constraints, and a narrow host-neutral backend contract.
-- G1 supplies the guarded `KnowledgeService` mutation boundary, approval receipts, optimistic concurrency rules, domain objects, and approved-operation idempotency keys.
+- G1 supplies the guarded `KnowledgeService` mutation boundary, approval receipts, optimistic concurrency rules, domain objects, and the canonical `operation_id` for each approved semantic mutation.
 - The product maximum recall limit is a small configuration value fixed during implementation planning; callers may request a lower bound but cannot bypass it.
 - Semantic search is optional for MVP operation; local keyword retrieval is the required fallback.
 - Learner-state enrichment is owned by the learning component and may be joined downstream without changing canonical knowledge storage semantics.

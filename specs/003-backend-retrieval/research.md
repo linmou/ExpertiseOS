@@ -12,7 +12,7 @@
 
 ## Identity and Version Mapping
 
-**Decision**: Treat upstream expertiseOS IDs as canonical and persist them, versions, lifecycle status, and operation keys as supported metadata. Backend paths and titles remain implementation details.
+**Decision**: Treat upstream expertiseOS IDs as canonical and persist them, versions, lifecycle status, and the C002 `operation_id` as supported metadata. Backend paths and titles remain implementation details.
 
 **Rationale**: Cross-host continuity, optimistic concurrency, lineage, deletion, and retry behavior require identity independent of display names or storage paths.
 

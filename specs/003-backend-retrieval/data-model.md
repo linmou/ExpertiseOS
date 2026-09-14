@@ -17,7 +17,7 @@
 | `source_refs` | Zero or more approved source references. |
 | `contribution_origin` | `user`, `assistant`, or `joint`. |
 | `created_at`, `updated_at` | Upstream timestamps preserved on round-trip. |
-| `operation_key` | Idempotency key for the authorized mutation; not semantic content. |
+| `operation_id` | Canonical C002 identifier for the approved semantic mutation that produced this version; not semantic content. |
 
 Only approved records reach canonical storage. Stale expected versions cannot replace current versions. Retired records remain explicitly readable but leave ordinary recall. Deleted records and content are absent from active direct reads and search.
 
@@ -43,7 +43,7 @@ Only approved records reach canonical storage. Stale expected versions cannot re
 | `explanation` | Optional approved semantic explanation. |
 | `source_ref` | Optional approved provenance for the link. |
 
-Duplicate delivery is idempotent by relationship identity and operation key. Missing or deleted endpoints are disclosed as unavailable rather than retargeted.
+Duplicate delivery is idempotent by relationship identity and `operation_id`. Reusing an `operation_id` for different relationship input fails. Missing or deleted endpoints are disclosed as unavailable rather than retargeted.
 
 ## Recall Query
 
@@ -85,7 +85,8 @@ approved create -> active version 1
 active version N -> approved revise -> active version N+1
 active version N -> approved retire -> retired version N+1
 retired version N -> approved restore/revise -> active version N+1
-active/retired -> approved delete -> absent from canonical active scope and index
+active/retired version N -> approved delete with expected version N -> absent from canonical active scope and index
+active/retired version N -> delete with stale expected version -> unchanged version N
 
 index healthy -> update failure -> rebuild required
 rebuild required -> successful rebuild from approved canonical state -> healthy
@@ -95,4 +96,4 @@ canonical unavailable -> unavailable response; no false mutation success
 
 ## Backend Mapping
 
-Mapping keys and Basic Memory paths are private to `basic_memory.py`. If C001 proves a sidecar necessary, it may contain only stable IDs, backend locators, versions, statuses, operation keys, and index state. It must not duplicate canonical knowledge content, source excerpts, or candidate/query text.
+Mapping keys and Basic Memory paths are private to `basic_memory.py`. If C001 proves a sidecar necessary, it may contain only stable IDs, backend locators, versions, statuses, `operation_id` replay records, and index state. It must not duplicate canonical knowledge content, source excerpts, or candidate/query text.

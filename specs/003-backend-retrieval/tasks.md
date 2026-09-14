@@ -15,11 +15,11 @@
 **Purpose**: Consume verified upstream contracts without guessing external APIs.
 
 - [ ] T001 Merge the recorded C001 green integration SHA into `003-backend-retrieval` and verify pinned Basic Memory API/version evidence in `docs/compatibility.md` and `docs/basic-memory-license.md`
-- [ ] T002 Merge the recorded C002 green integration SHA into `003-backend-retrieval` and inspect guarded mutation, domain, version, and idempotency contracts in `src/expertiseos/knowledge/service.py`, `src/expertiseos/knowledge/backend.py`, and `src/expertiseos/domain/models.py`
+- [ ] T002 Merge the recorded C002 green integration SHA into `003-backend-retrieval` and inspect guarded mutation, domain, version, and `operation_id` replay contracts in `src/expertiseos/knowledge/service.py`, `src/expertiseos/knowledge/backend.py`, and `src/expertiseos/domain/models.py`
 - [ ] T003 Reconcile proposed additions in `specs/003-backend-retrieval/contracts/backend-contract.md` with C001/C002 owners and record accepted signatures in `specs/003-backend-retrieval/contracts/backend-contract.md`
 - [ ] T004 Verify the project test, type-check, and lint commands from `pyproject.toml` without adding a second toolchain
 
-**Checkpoint**: Stop if C001 lacks supported public metadata/relation/history/delete/rebuild evidence or C002 lacks an authorized mutation/idempotency boundary.
+**Checkpoint**: Stop if C001 lacks supported public metadata/relation/history/delete/rebuild evidence or C002 lacks an authorized mutation boundary with canonical `operation_id` replay semantics.
 
 ---
 
@@ -27,9 +27,9 @@
 
 **Purpose**: Stabilize shared result and error values before story-specific adapter behavior.
 
-- [ ] T005 Add only reconciled host-neutral retrieval/status values and compatible protocol signatures in `src/expertiseos/knowledge/backend.py` (FR-013, FR-019, FR-021)
-- [ ] T006 [P] Add backend contract fixtures for approved objects, provenance, relationships, conflicts, filters, and health states in `tests/contract/test_knowledge_backend_contract.py` (FR-002-FR-004, FR-007-FR-013)
-- [ ] T007 Implement explicit Basic Memory metadata mapping helpers for stable IDs, versions, lifecycle, semantic fields, operation keys, and source references in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-003, FR-018, FR-021)
+- [ ] T005 Add only reconciled host-neutral retrieval/status values, `operation_id` parameters on every explicit semantic mutation, versioned get, and batch current-version lookup in `src/expertiseos/knowledge/backend.py` (FR-005, FR-013, FR-019-FR-021)
+- [ ] T006 [P] Add backend contract fixtures for canonical signatures, `operation_id` replay on every semantic mutation, versioned get, batch current-version lookup, approved objects, provenance, relationships, conflicts, filters, and health states in `tests/contract/test_knowledge_backend_contract.py` (FR-002-FR-005, FR-007-FR-013, FR-020)
+- [ ] T007 Implement explicit Basic Memory metadata mapping helpers for stable IDs, versions, lifecycle, semantic fields, `operation_id`, and source references in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-003, FR-018, FR-020, FR-021)
 - [ ] T008 Implement typed canonical/index health and failure translation without private table access in `src/expertiseos/backends/basic_memory.py` (FR-013, FR-019, FR-021)
 - [ ] T009 Run `pytest tests/contract/test_knowledge_backend_contract.py` and the C001/C002 focused suites; record exact command and result for the component report
 
@@ -69,13 +69,13 @@
 
 ### Tests
 
-- [ ] T018 [P] [US2] Add real-adapter exact create/read/version/status round-trip cases in `tests/integration/test_basic_memory_adapter.py` (FR-001-FR-003, FR-005; SC-001)
+- [ ] T018 [P] [US2] Add real-adapter exact create/read/version/status round-trip, versioned get, and batch current-version lookup cases in `tests/integration/test_basic_memory_adapter.py` (FR-001-FR-003, FR-005; SC-001)
 - [ ] T019 [US2] Add stale update and stable-ID version-history cases in `tests/integration/test_basic_memory_adapter.py` after T018 (FR-002, FR-005; SC-001)
-- [ ] T020 [P] [US2] Add duplicate mutation and relationship delivery cases in `tests/integration/test_relationships.py` (FR-004, FR-020; SC-006)
+- [ ] T020 [P] [US2] Add relationship `operation_id` replay and different-input reuse rejection in `tests/integration/test_relationships.py` (FR-004, FR-020; SC-006)
 
 ### Implementation
 
-- [ ] T021 [US2] Implement approved create, current/historical get, and exact semantic metadata/provenance mapping in `src/expertiseos/backends/basic_memory.py` (FR-001-FR-005, FR-018)
+- [ ] T021 [US2] Implement approved create, versioned get, batch current-version lookup, and exact semantic metadata/provenance mapping in `src/expertiseos/backends/basic_memory.py` (FR-001-FR-005, FR-018, FR-020)
 - [ ] T022 [US2] Implement expected-version update and stable-ID monotonic revision behavior in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-019)
 - [ ] T023 [US2] Implement idempotent approved relationship writes and reconstruction in `src/expertiseos/backends/basic_memory.py` (FR-004, FR-011, FR-020)
 - [ ] T024 [US2] Run `pytest tests/integration/test_basic_memory_adapter.py tests/integration/test_provenance.py tests/integration/test_relationships.py` and record exact results
@@ -115,13 +115,13 @@
 
 ### Tests
 
-- [ ] T032 [P] [US4] Add retire/current-versus-history and delete index-removal cases in `tests/integration/test_retire_delete_backend.py` (FR-005, FR-009, FR-015, FR-016; SC-005)
+- [ ] T032 [P] [US4] Add retire/current-versus-history, delete expected-version conflict, delete `operation_id` replay, and index-removal cases in `tests/integration/test_retire_delete_backend.py` (FR-005, FR-009, FR-015, FR-016, FR-020; SC-005, SC-006)
 - [ ] T033 [P] [US4] Add idempotent rebuild, partial failure, and approved-canonical-only cases in `tests/integration/test_index_failure_rebuild.py` (FR-017, FR-019, FR-020; SC-005, SC-006)
 
 ### Implementation
 
 - [ ] T034 [US4] Implement approved retirement and explicit retired-history reads in `src/expertiseos/backends/basic_memory.py` (FR-005, FR-015)
-- [ ] T035 [US4] Implement idempotent backend-scope canonical/index deletion in `src/expertiseos/backends/basic_memory.py` and leave cross-store cleanup to C007 (FR-016, FR-020)
+- [ ] T035 [US4] Implement expected-version checked, `operation_id` replay-safe backend-scope canonical/index deletion in `src/expertiseos/backends/basic_memory.py` and leave cross-store cleanup to C007 (FR-016, FR-020)
 - [ ] T036 [US4] Implement idempotent index rebuild from active approved canonical objects only in `src/expertiseos/backends/basic_memory.py` (FR-017, FR-019, FR-020)
 - [ ] T037 [US4] Run `pytest tests/integration/test_retire_delete_backend.py tests/integration/test_index_failure_rebuild.py` and record exact results
 
