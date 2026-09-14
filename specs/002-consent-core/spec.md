@@ -1,8 +1,8 @@
 # Feature Specification: Consent Core
 
-**Feature Branch**: `002-consent-core`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `002-consent-core`
+**Created**: 2026-09-14
+**Status**: Draft
 **Input**: Domain types, volatile candidate lifecycle, exact user-decision grants, guarded knowledge mutations, optimistic versioning, approval receipts, and idempotent reconciliation for the expertiseOS MVP.
 
 ## User Scenarios & Testing *(mandatory)*

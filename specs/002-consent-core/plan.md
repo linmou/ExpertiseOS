@@ -1,6 +1,6 @@
 # Implementation Plan: Consent Core
 
-**Branch**: `002-consent-core` | **Date**: 2026-09-14 | **Spec**: [spec.md](spec.md)  
+**Branch**: `002-consent-core` | **Date**: 2026-09-14 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/002-consent-core/spec.md`
 
 ## Summary
@@ -9,14 +9,14 @@ Implement the MVP's consent boundary as host-neutral Python domain models, a pro
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Python standard library plus the model/validation choice and narrow `HostAdapter`/`KnowledgeBackend` contracts delivered by C001  
-**Storage**: Volatile Python memory for candidates and grants; SQLite `state.db` for minimal approval receipts  
-**Testing**: pytest with C001 fake host/backend; mypy and repository static checks  
-**Target Platform**: Local Codex and Claude Code environments through one local service process  
-**Project Type**: Installable Python package with host-neutral core services  
-**Performance Goals**: Consent bookkeeping stays within the MVP approved-write acknowledgement target; benchmark ownership remains C007  
-**Constraints**: No unapproved content on disk, no unrestricted host-facing backend mutation, fail closed for writes and open for ordinary host work, offline-capable, optimistic versions, no dataclass field defaults  
+**Language/Version**: Python 3.12
+**Primary Dependencies**: Python standard library plus the model/validation choice and narrow `HostAdapter`/`KnowledgeBackend` contracts delivered by C001
+**Storage**: Volatile Python memory for candidates and grants; SQLite `state.db` for minimal approval receipts
+**Testing**: pytest with C001 fake host/backend; mypy and repository static checks
+**Target Platform**: Local Codex and Claude Code environments through one local service process
+**Project Type**: Installable Python package with host-neutral core services
+**Performance Goals**: Consent bookkeeping stays within the MVP approved-write acknowledgement target; benchmark ownership remains C007
+**Constraints**: No unapproved content on disk, no unrestricted host-facing backend mutation, fail closed for writes and open for ordinary host work, offline-capable, optimistic versions, no dataclass field defaults
 **Scale/Scope**: One user, one local repository/service, concurrent host sessions, bounded active in-memory proposals; approved corpus scale is tested by C007
 
 ## Constitution Check

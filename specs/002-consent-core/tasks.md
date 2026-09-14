@@ -1,6 +1,6 @@
 # Tasks: Consent Core
 
-**Input**: Design documents from `/specs/002-consent-core/`  
+**Input**: Design documents from `/specs/002-consent-core/`
 **Prerequisites**: C001 package/bootstrap, host/backend contracts, and fakes; `plan.md`, `spec.md`, `research.md`, `data-model.md`, and `contracts/`
 
 **Verification approach**: Implement in small task groups, then run the named focused checks. Tests include happy paths, lifecycle boundaries, forged authorization, stale versions, restart loss, and interrupted writes; this is task-based development rather than the strict multi-agent TDD workflow. Every new Python code file begins with a shebang and a concise purpose comment. Every new test also begins with a comment naming the production file and behavior it verifies.
