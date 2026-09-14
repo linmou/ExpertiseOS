@@ -39,10 +39,15 @@ from expertiseos.domain.models import (
 from expertiseos.hosts.contract import DecisionObservation
 from expertiseos.knowledge.backend import (
     ApprovedKnowledgeInput,
+    IndexState,
     KnowledgeBackend,
     KnowledgeRecord,
     KnowledgeStatus,
     RelationshipInput,
+    RetrievalResponse,
+    SearchMode,
+    SearchQuery,
+    StoreState,
     VersionConflictError,
 )
 
@@ -511,3 +516,23 @@ class KnowledgeService:
         include_retired: bool,
     ) -> KnowledgeRecord | None:
         return self._backend.get(knowledge_id, version, include_retired)
+
+    def search(self, query: SearchQuery) -> RetrievalResponse:
+        results = self._backend.search(query)
+        health = self._backend.health()
+        mode = results[0].match_mode if results else health.search_mode
+        index_state = results[0].index_state if results else health.index
+        degraded = mode is not SearchMode.LOCAL_INDEXED or index_state is not IndexState.READY
+        complete = (
+            health.canonical_store is StoreState.READY
+            and index_state is IndexState.READY
+            and mode is SearchMode.LOCAL_INDEXED
+        )
+        return RetrievalResponse(
+            results,
+            mode,
+            degraded,
+            health.canonical_store,
+            index_state,
+            complete,
+        )

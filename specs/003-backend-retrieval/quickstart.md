@@ -38,7 +38,10 @@ Record Basic Memory version, OS, index mode, and whether a local model download 
 ## Performance Evidence
 
 ```bash
-pytest tests/performance/test_retrieval_benchmark.py --benchmark-corpus-size=10000
+EXPERTISEOS_BENCHMARK_EVIDENCE=specs/003-backend-retrieval/evidence/retrieval-benchmark.json \
+  .venv-arm64/bin/python -m pytest tests/performance/test_retrieval_benchmark.py
 ```
 
 Record hardware, OS, Python and Basic Memory versions, index configuration, corpus size, warm-up, samples, and p95. Correctness remains release-blocking even if latency passes.
+
+The benchmark exercises `BasicMemoryBackend` parsing, filtering, bounding, and local indexed retrieval over a deterministic 10,000-note canonical fixture. The real Basic Memory public CLI round trip remains a separate integration test because creating 10,000 subprocess-backed notes is setup throughput, not warm retrieval latency.

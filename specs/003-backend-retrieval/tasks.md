@@ -14,10 +14,10 @@
 
 **Purpose**: Consume verified upstream contracts without guessing external APIs.
 
-- [ ] T001 Merge the recorded C001 green integration SHA into `003-backend-retrieval` and verify pinned Basic Memory API/version evidence in `docs/compatibility.md` and `docs/basic-memory-license.md`
-- [ ] T002 Merge the recorded C002 green integration SHA into `003-backend-retrieval` and inspect guarded mutation, domain, version, and `operation_id` replay contracts in `src/expertiseos/knowledge/service.py`, `src/expertiseos/knowledge/backend.py`, and `src/expertiseos/domain/models.py`
-- [ ] T003 Reconcile proposed additions in `specs/003-backend-retrieval/contracts/backend-contract.md` with C001/C002 owners and record accepted signatures in `specs/003-backend-retrieval/contracts/backend-contract.md`
-- [ ] T004 Verify the project test, type-check, and lint commands from `pyproject.toml` without adding a second toolchain
+- [X] T001 Merge the recorded C001 green integration SHA into `003-backend-retrieval` and verify pinned Basic Memory API/version evidence in `docs/compatibility.md` and `docs/basic-memory-license.md`
+- [X] T002 Merge the recorded C002 green integration SHA into `003-backend-retrieval` and inspect guarded mutation, domain, version, and `operation_id` replay contracts in `src/expertiseos/knowledge/service.py`, `src/expertiseos/knowledge/backend.py`, and `src/expertiseos/domain/models.py`
+- [X] T003 Reconcile proposed additions in `specs/003-backend-retrieval/contracts/backend-contract.md` with C001/C002 owners and record accepted signatures in `specs/003-backend-retrieval/contracts/backend-contract.md`
+- [X] T004 Verify the project test, type-check, and lint commands from `pyproject.toml` without adding a second toolchain
 
 **Checkpoint**: Stop if C001 lacks supported public metadata/relation/history/delete/rebuild evidence or C002 lacks an authorized mutation boundary with canonical `operation_id` replay semantics.
 
@@ -27,11 +27,11 @@
 
 **Purpose**: Stabilize shared result and error values before story-specific adapter behavior.
 
-- [ ] T005 Add only reconciled host-neutral retrieval/status values, `operation_id` parameters on every explicit semantic mutation, versioned get, and batch current-version lookup in `src/expertiseos/knowledge/backend.py` (FR-005, FR-013, FR-019-FR-021)
-- [ ] T006 [P] Add backend contract fixtures for canonical signatures, `operation_id` replay on every semantic mutation, versioned get, batch current-version lookup, approved objects, provenance, relationships, conflicts, filters, and health states in `tests/contract/test_knowledge_backend_contract.py` (FR-002-FR-005, FR-007-FR-013, FR-020)
-- [ ] T007 Implement explicit Basic Memory metadata mapping helpers for stable IDs, versions, lifecycle, semantic fields, `operation_id`, and source references in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-003, FR-018, FR-020, FR-021)
-- [ ] T008 Implement typed canonical/index health and failure translation without private table access in `src/expertiseos/backends/basic_memory.py` (FR-013, FR-019, FR-021)
-- [ ] T009 Run `pytest tests/contract/test_knowledge_backend_contract.py` and the C001/C002 focused suites; record exact command and result for the component report
+- [X] T005 Add only reconciled host-neutral retrieval/status values, `operation_id` parameters on every explicit semantic mutation, versioned get, and batch current-version lookup in `src/expertiseos/knowledge/backend.py` (FR-005, FR-013, FR-019-FR-021)
+- [X] T006 [P] Add backend contract fixtures for canonical signatures, `operation_id` replay on every semantic mutation, versioned get, batch current-version lookup, approved objects, provenance, relationships, conflicts, filters, and health states in `tests/contract/test_knowledge_backend_contract.py` (FR-002-FR-005, FR-007-FR-013, FR-020)
+- [X] T007 Implement explicit Basic Memory metadata mapping helpers for stable IDs, versions, lifecycle, semantic fields, `operation_id`, and source references in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-003, FR-018, FR-020, FR-021)
+- [X] T008 Implement typed canonical/index health and failure translation without private table access in `src/expertiseos/backends/basic_memory.py` (FR-013, FR-019, FR-021)
+- [X] T009 Run `pytest tests/contract/test_knowledge_backend_contract.py` and the C001/C002 focused suites; record exact command and result for the component report
 
 **Checkpoint**: Host-neutral contract values compile and upstream behavior remains unchanged.
 
@@ -45,17 +45,17 @@
 
 ### Tests
 
-- [ ] T010 [P] [US1] Add bounded approved-only and scope/subject/category recall cases in `tests/integration/test_recall.py` (FR-006-FR-009; SC-002, SC-003)
-- [ ] T011 [P] [US1] Add provenance availability and missing-source cases in `tests/integration/test_provenance.py` (FR-003, FR-007, FR-018; SC-001)
-- [ ] T012 [P] [US1] Add relation/conflict coexistence and missing-target cases in `tests/integration/test_relationships.py` (FR-004, FR-007, FR-011; SC-001)
-- [ ] T013 [US1] Add hostile recalled-content side-effect assertions in `tests/integration/test_recall.py` after T010 (FR-010; SC-009)
+- [X] T010 [P] [US1] Add bounded approved-only and scope/subject/category recall cases in `tests/integration/test_recall.py` (FR-006-FR-009; SC-002, SC-003)
+- [X] T011 [P] [US1] Add provenance availability and missing-source cases in `tests/integration/test_provenance.py` (FR-003, FR-007, FR-018; SC-001)
+- [X] T012 [P] [US1] Add relation/conflict coexistence and missing-target cases in `tests/integration/test_relationships.py` (FR-004, FR-007, FR-011; SC-001)
+- [X] T013 [US1] Add hostile recalled-content side-effect assertions in `tests/integration/test_recall.py` after T010 (FR-010; SC-009)
 
 ### Implementation
 
-- [ ] T014 [US1] Implement approved/active filtering, scope exclusions, positive limit validation, and hard cap 20 in `src/expertiseos/backends/basic_memory.py` (FR-006, FR-008, FR-009)
-- [ ] T015 [US1] Reconstruct source availability, relevant relationships, and distinct conflicts in `src/expertiseos/backends/basic_memory.py` (FR-004, FR-007, FR-011, FR-018)
-- [ ] T016 [US1] Add the narrow bounded retrieval composition and untrusted-data labeling to `src/expertiseos/knowledge/service.py` without changing guarded mutation behavior (FR-006-FR-010, FR-021)
-- [ ] T017 [US1] Run `pytest tests/integration/test_recall.py tests/integration/test_provenance.py tests/integration/test_relationships.py` and record exact results
+- [X] T014 [US1] Implement approved/active filtering, scope exclusions, positive limit validation, and hard cap 20 in `src/expertiseos/backends/basic_memory.py` (FR-006, FR-008, FR-009)
+- [X] T015 [US1] Reconstruct source availability, relevant relationships, and distinct conflicts in `src/expertiseos/backends/basic_memory.py` (FR-004, FR-007, FR-011, FR-018)
+- [X] T016 [US1] Add the narrow bounded retrieval composition and untrusted-data labeling to `src/expertiseos/knowledge/service.py` without changing guarded mutation behavior (FR-006-FR-010, FR-021)
+- [X] T017 [US1] Run `pytest tests/integration/test_recall.py tests/integration/test_provenance.py tests/integration/test_relationships.py` and record exact results
 
 **Checkpoint**: Ordinary recall exposes no unapproved, retired, deleted, or excluded record and has no grant/control/evidence side effect.
 
@@ -69,16 +69,16 @@
 
 ### Tests
 
-- [ ] T018 [P] [US2] Add real-adapter exact create/read/version/status round-trip, versioned get, and batch current-version lookup cases in `tests/integration/test_basic_memory_adapter.py` (FR-001-FR-003, FR-005; SC-001)
-- [ ] T019 [US2] Add stale update and stable-ID version-history cases in `tests/integration/test_basic_memory_adapter.py` after T018 (FR-002, FR-005; SC-001)
-- [ ] T020 [P] [US2] Add relationship `operation_id` replay and different-input reuse rejection in `tests/integration/test_relationships.py` (FR-004, FR-020; SC-006)
+- [X] T018 [P] [US2] Add real-adapter exact create/read/version/status round-trip, versioned get, and batch current-version lookup cases in `tests/integration/test_basic_memory_adapter.py` (FR-001-FR-003, FR-005; SC-001)
+- [X] T019 [US2] Add stale update and stable-ID version-history cases in `tests/integration/test_basic_memory_adapter.py` after T018 (FR-002, FR-005; SC-001)
+- [X] T020 [P] [US2] Add relationship `operation_id` replay and different-input reuse rejection in `tests/integration/test_relationships.py` (FR-004, FR-020; SC-006)
 
 ### Implementation
 
-- [ ] T021 [US2] Implement approved create, versioned get, batch current-version lookup, and exact semantic metadata/provenance mapping in `src/expertiseos/backends/basic_memory.py` (FR-001-FR-005, FR-018, FR-020)
-- [ ] T022 [US2] Implement expected-version update and stable-ID monotonic revision behavior in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-019)
-- [ ] T023 [US2] Implement idempotent approved relationship writes and reconstruction in `src/expertiseos/backends/basic_memory.py` (FR-004, FR-011, FR-020)
-- [ ] T024 [US2] Run `pytest tests/integration/test_basic_memory_adapter.py tests/integration/test_provenance.py tests/integration/test_relationships.py` and record exact results
+- [X] T021 [US2] Implement approved create, versioned get, batch current-version lookup, and exact semantic metadata/provenance mapping in `src/expertiseos/backends/basic_memory.py` (FR-001-FR-005, FR-018, FR-020)
+- [X] T022 [US2] Implement expected-version update and stable-ID monotonic revision behavior in `src/expertiseos/backends/basic_memory.py` (FR-002, FR-019)
+- [X] T023 [US2] Implement idempotent approved relationship writes and reconstruction in `src/expertiseos/backends/basic_memory.py` (FR-004, FR-011, FR-020)
+- [X] T024 [US2] Run `pytest tests/integration/test_basic_memory_adapter.py tests/integration/test_provenance.py tests/integration/test_relationships.py` and record exact results
 
 **Checkpoint**: Canonical approved knowledge round-trips exactly before downstream adapters consume it.
 
@@ -92,16 +92,16 @@
 
 ### Tests
 
-- [ ] T025 [P] [US3] Add index initialization/query failure and bounded keyword cases in `tests/integration/test_keyword_fallback.py` (FR-006, FR-008, FR-012-FR-014; SC-003, SC-004)
-- [ ] T026 [P] [US3] Add canonical-write-success/index-failure status cases in `tests/integration/test_index_failure_rebuild.py` (FR-013, FR-019; SC-010)
-- [ ] T027 [US3] Add network-disabled direct-read and keyword-fallback smoke cases in `tests/integration/test_keyword_fallback.py` after T025 (FR-014; SC-007)
+- [X] T025 [P] [US3] Add index initialization/query failure and bounded keyword cases in `tests/integration/test_keyword_fallback.py` (FR-006, FR-008, FR-012-FR-014; SC-003, SC-004)
+- [X] T026 [P] [US3] Add canonical-write-success/index-failure status cases in `tests/integration/test_index_failure_rebuild.py` (FR-013, FR-019; SC-010)
+- [X] T027 [US3] Add network-disabled direct-read and keyword-fallback smoke cases in `tests/integration/test_keyword_fallback.py` after T025 (FR-014; SC-007)
 
 ### Implementation
 
-- [ ] T028 [US3] Implement local keyword matching over approved active canonical records with identical filters and cap in `src/expertiseos/backends/basic_memory.py` (FR-006, FR-008, FR-009, FR-012)
-- [ ] T029 [US3] Implement indexed-to-keyword fallback and explicit mode/completeness/canonical/index status in `src/expertiseos/backends/basic_memory.py` (FR-012-FR-014, FR-019)
-- [ ] T030 [US3] Surface retrieval degradation through `src/expertiseos/knowledge/service.py` without blocking unrelated host work or persisting queries (FR-012-FR-014, FR-019)
-- [ ] T031 [US3] Run `pytest tests/integration/test_keyword_fallback.py tests/integration/test_index_failure_rebuild.py` including the network-disabled marker and record exact results
+- [X] T028 [US3] Implement local keyword matching over approved active canonical records with identical filters and cap in `src/expertiseos/backends/basic_memory.py` (FR-006, FR-008, FR-009, FR-012)
+- [X] T029 [US3] Implement indexed-to-keyword fallback and explicit mode/completeness/canonical/index status in `src/expertiseos/backends/basic_memory.py` (FR-012-FR-014, FR-019)
+- [X] T030 [US3] Surface retrieval degradation through `src/expertiseos/knowledge/service.py` without blocking unrelated host work or persisting queries (FR-012-FR-014, FR-019)
+- [X] T031 [US3] Run `pytest tests/integration/test_keyword_fallback.py tests/integration/test_index_failure_rebuild.py` including the network-disabled marker and record exact results
 
 **Checkpoint**: Every forced index failure is visible and uses no remote fallback.
 
@@ -115,15 +115,15 @@
 
 ### Tests
 
-- [ ] T032 [P] [US4] Add retire/current-versus-history, delete expected-version conflict, delete `operation_id` replay, and index-removal cases in `tests/integration/test_retire_delete_backend.py` (FR-005, FR-009, FR-015, FR-016, FR-020; SC-005, SC-006)
-- [ ] T033 [P] [US4] Add idempotent rebuild, partial failure, and approved-canonical-only cases in `tests/integration/test_index_failure_rebuild.py` (FR-017, FR-019, FR-020; SC-005, SC-006)
+- [X] T032 [P] [US4] Add retire/current-versus-history, delete expected-version conflict, delete `operation_id` replay, and index-removal cases in `tests/integration/test_retire_delete_backend.py` (FR-005, FR-009, FR-015, FR-016, FR-020; SC-005, SC-006)
+- [X] T033 [P] [US4] Add idempotent rebuild, partial failure, and approved-canonical-only cases in `tests/integration/test_index_failure_rebuild.py` (FR-017, FR-019, FR-020; SC-005, SC-006)
 
 ### Implementation
 
-- [ ] T034 [US4] Implement approved retirement and explicit retired-history reads in `src/expertiseos/backends/basic_memory.py` (FR-005, FR-015)
-- [ ] T035 [US4] Implement expected-version checked, `operation_id` replay-safe backend-scope canonical/index deletion in `src/expertiseos/backends/basic_memory.py` and leave cross-store cleanup to C007 (FR-016, FR-020)
-- [ ] T036 [US4] Implement idempotent index rebuild from active approved canonical objects only in `src/expertiseos/backends/basic_memory.py` (FR-017, FR-019, FR-020)
-- [ ] T037 [US4] Run `pytest tests/integration/test_retire_delete_backend.py tests/integration/test_index_failure_rebuild.py` and record exact results
+- [X] T034 [US4] Implement approved retirement and explicit retired-history reads in `src/expertiseos/backends/basic_memory.py` (FR-005, FR-015)
+- [X] T035 [US4] Implement expected-version checked, `operation_id` replay-safe backend-scope canonical/index deletion in `src/expertiseos/backends/basic_memory.py` and leave cross-store cleanup to C007 (FR-016, FR-020)
+- [X] T036 [US4] Implement idempotent index rebuild from active approved canonical objects only in `src/expertiseos/backends/basic_memory.py` (FR-017, FR-019, FR-020)
+- [X] T037 [US4] Run `pytest tests/integration/test_retire_delete_backend.py tests/integration/test_index_failure_rebuild.py` and record exact results
 
 **Checkpoint**: Retired/deleted markers are absent from ordinary recall and active index state after rebuild.
 
@@ -131,11 +131,11 @@
 
 ## Phase 7: Cross-Cutting Verification and Handoff
 
-- [ ] T038 Add the deterministic 10,000-object warm retrieval benchmark and environment metadata output in `tests/performance/test_retrieval_benchmark.py` (FR-006, FR-014; SC-008)
-- [ ] T039 Run the complete component pytest suite plus the repository lint command and `mypy src/expertiseos`; record command, exit status, dependency versions, OS, hardware, corpus, and p95 evidence
+- [X] T038 Add the deterministic 10,000-object warm retrieval benchmark and environment metadata output in `tests/performance/test_retrieval_benchmark.py` (FR-006, FR-014; SC-008)
+- [X] T039 Run the complete component pytest suite plus the repository lint command and `mypy src/expertiseos`; record command, exit status, dependency versions, OS, hardware, corpus, and p95 evidence
 - [ ] T040 Run the integration-owned real C002-authorized-write-to-C003-recall scenario in `tests/integration/test_authorized_write_to_recall.py` after serial integration (FR-001-FR-021; SC-001-SC-010)
 - [ ] T041 Update C003 compatibility limits and verification evidence in integration-owned `docs/implementation-status.md` through the main integration owner
-- [ ] T042 Review implementation against `specs/003-backend-retrieval/quickstart.md` and confirm no private-table access, remote fallback, custom ranking, query persistence, or unrestricted write surface was added
+- [X] T042 Review implementation against `specs/003-backend-retrieval/quickstart.md` and confirm no private-table access, remote fallback, custom ranking, query persistence, or unrestricted write surface was added
 
 ---
 

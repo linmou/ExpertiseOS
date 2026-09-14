@@ -43,8 +43,13 @@ class IndexState(StrEnum):
 
 class SearchMode(StrEnum):
     LOCAL_SEMANTIC = "local_semantic"
+    LOCAL_INDEXED = "local_indexed"
     KEYWORD = "keyword"
     UNAVAILABLE = "unavailable"
+
+
+class TrustLevel(StrEnum):
+    UNTRUSTED_DATA = "untrusted_data"
 
 
 @dataclass(frozen=True)
@@ -110,12 +115,15 @@ class SearchQuery:
     text: str
     limit: int
     scope: str | None
+    subjects: tuple[str, ...]
+    categories: tuple[str, ...]
+    exclusions: tuple[str, ...]
 
     def __post_init__(self) -> None:
         if not self.text:
             raise BackendContractError("search text is required")
-        if self.limit < 1:
-            raise BackendContractError("search limit must be positive")
+        if not 1 <= self.limit <= 20:
+            raise BackendContractError("search limit must be between 1 and 20")
 
 
 @dataclass(frozen=True)
@@ -123,11 +131,27 @@ class SearchResult:
     knowledge_id: str
     version: int
     excerpt: str
+    categories: tuple[str, ...]
+    subjects: tuple[str, ...]
+    applicability_scope: str | None
+    evidential_status: str | None
     source_refs: tuple[str, ...]
+    provenance_available: bool
     relationships: tuple[RelationshipInput, ...]
     conflicts: tuple[str, ...]
+    trust: TrustLevel
     match_mode: SearchMode
     index_state: IndexState
+
+
+@dataclass(frozen=True)
+class RetrievalResponse:
+    results: tuple[SearchResult, ...]
+    mode: SearchMode
+    degraded: bool
+    canonical_store: StoreState
+    index_state: IndexState
+    complete_for_query: bool
 
 
 @dataclass(frozen=True)
