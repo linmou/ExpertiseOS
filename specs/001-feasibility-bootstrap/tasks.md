@@ -92,8 +92,8 @@ Each task follows `[ID] [P?] [Story?] Description with exact file path` and cite
 
 ## Phase 6: G0 Gate
 
-- [ ] T031 Rerun all unchanged verification commands at the committed candidate SHA and record immutable command results in `specs/001-feasibility-bootstrap/evidence/g0-gate.md` (SC-003, SC-005, SC-006)
-- [ ] T032 Evaluate host decision fixtures, capability completeness, backend/offline results, license status, scope audit, and static checks and record `PASS`, `PASS WITH DOCUMENTED COMPATIBILITY LIMIT`, or `BLOCKED` in `specs/001-feasibility-bootstrap/evidence/g0-verdict.md` (SC-001, SC-002, SC-004, SC-007, SC-008)
+- [X] T031 Rerun all unchanged verification commands at the committed candidate SHA and record immutable command results in `specs/001-feasibility-bootstrap/evidence/g0-gate.md` (SC-003, SC-005, SC-006)
+- [X] T032 Evaluate host decision fixtures, capability completeness, backend/offline results, license status, scope audit, and static checks and record `PASS`, `PASS WITH DOCUMENTED COMPATIBILITY LIMIT`, or `BLOCKED` in `specs/001-feasibility-bootstrap/evidence/g0-verdict.md` (SC-001, SC-002, SC-004, SC-007, SC-008)
 
 ## Dependencies & Execution Order
 
