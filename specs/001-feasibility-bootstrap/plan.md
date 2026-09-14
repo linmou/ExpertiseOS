@@ -102,7 +102,7 @@ tests/
 ### Phase 1 - Minimal Contracts and Bootstrap
 
 1. Configure the installable package and verification entrypoints.
-2. Implement only normalized host values/protocol and approved-data backend values/protocol in owned paths.
+2. Implement only normalized host values/protocol and the approved-data backend protocol in owned paths, keeping `operation_id` as the final separate argument on every semantic mutation and supporting current/exact historical reads, explicit retired inclusion, and batched current-version lookup.
 3. Implement deterministic fakes without persistence or host/vendor imports.
 4. Add focused unit and integration fixtures that exercise contracts and replay verified G0 boundaries.
 5. Supply integration-owned documentation content as evidence references, not concurrent edits.
@@ -123,8 +123,8 @@ tests/
 
 ## Verification Strategy
 
-- **Unit**: protocol shape, normalized event validation, capability truthfulness, fake backend approved-input guard, expected-version conflicts, stable fake identity/order.
-- **Integration**: reproducible host/backend feasibility fixtures, actual-user-event distinction, service failure continuity, supported backend round trips, delete/rebuild, and offline behavior.
+- **Unit**: protocol shape, normalized event validation, capability truthfulness, fake backend approved-input guard, explicit current/historical reads, expected-version conflicts, same-command replay, divergent-input idempotency conflicts, and stable fake identity/order.
+- **Integration**: reproducible host/backend feasibility fixtures, actual-user-event distinction, service failure continuity, supported current/historical backend round trips, mutation replay/conflict behavior, delete/rebuild, and offline behavior.
 - **Live/manual**: pinned Codex and Claude Code activation/config preservation/uninstall/event observations where supported automation is unavailable.
 - **Static**: Ruff check/format and strict mypy over owned source and tests.
 - **Gate evidence**: exact command, exit status, environment, version, timestamp, fixture, and limitation for every claimed capability.

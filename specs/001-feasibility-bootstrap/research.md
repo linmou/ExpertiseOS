@@ -36,9 +36,9 @@
 
 ## Approved-Data Backend Boundary
 
-**Decision**: Backend mutation methods represent already-authorized operations and accept no approval boolean.
+**Decision**: Backend mutation methods represent already-authorized operations and accept no approval boolean. `operation_id` is the sole idempotency identity and is supplied separately from approved semantic content to every semantic mutation.
 
-**Rationale**: Authorization belongs to the guarded service and must not be forgeable at storage.
+**Rationale**: Authorization belongs to the guarded service and must not be forgeable at storage. Separating command identity prevents retry metadata from becoming part of approved knowledge content.
 
 **Alternatives considered**: Per-backend approval logic and unrestricted vendor methods duplicate or bypass enforcement.
 

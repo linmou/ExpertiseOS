@@ -27,11 +27,20 @@ Transitions: session start activates; atomic begin/end adjusts operation depth; 
 
 ## ApprovedKnowledgeInput
 
-Required fields: `operation_id`, `content`, `content_digest`, `categories`, `subjects`, `applicability_scope`, `evidential_status`, `source_refs`, and `contribution_origin`.
+Required fields: `content`, `content_digest`, `categories`, `subjects`, `applicability_scope`, `evidential_status`, `source_refs`, and `contribution_origin`.
 
 - It contains no approval boolean.
+- It contains no `operation_id`; command identity is runtime metadata supplied separately to mutation methods.
 - Every field is explicitly supplied; constructors provide no defaults.
 - Fake backend rejects unapproved test wrappers before retaining data.
+
+## Mutation Command
+
+Every create, update, relationship, retire, and delete call receives `operation_id` as its sole idempotency identity, separate from approved semantic values. The normalized command input comprises the method, target identity, expected version or versions, and semantic payload.
+
+- Repeating the same `operation_id` with identical normalized command input returns the originally recorded result without another semantic mutation.
+- Reusing the same `operation_id` with any different normalized command input returns a typed idempotency conflict.
+- A new `operation_id` represents a new command and remains subject to ordinary existence and expected-version checks.
 
 ## KnowledgeRecord
 
@@ -39,6 +48,8 @@ Required fields: `id`, `version`, all approved knowledge fields, `status`, `rela
 
 - Identity is stable and version is monotonic.
 - Update and retire require matching expected versions.
+- `get` returns the current active record by default, supports an exact retained historical version, and includes retired records only when explicitly requested.
+- Batched current-version lookup returns identity-to-version mappings without semantic content.
 - Search defaults to active records.
 
 ## RelationshipInput
