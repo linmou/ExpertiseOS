@@ -273,3 +273,21 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 60 source files checked.
 - `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
 - `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 60 files formatted.
+
+### C003 Integration Gate
+
+- Tested integration SHA: `031f00bcb2e508de7c0121f89aae71af6476fe92`.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 39 passed in 70.14 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 4 passed in 0.08 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 121 passed in 69.00 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_local_backend_offline.py`: exit 0; 1 passed in 10.83 seconds with outbound network denied.
+- `rtk env EXPERTISEOS_BENCHMARK_EVIDENCE=/tmp/expertiseos-c003-integration-benchmark.json .venv-arm64/bin/python -m pytest -q tests/performance/test_retrieval_benchmark.py`: exit 0; 1 passed; 10,000-note warm p95 `7.286 ms`.
+- `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 60 files formatted.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 60 source files checked.
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0.
+- E02 consumes the record produced by the actual C002 commit in the same test and passes its identity, version, provenance, and content into C003 exact read, indexed retrieval, and keyword fallback; no synthetic boundary object is constructed.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c003.json`; schema version 2; cumulative E00-E02 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
