@@ -291,3 +291,26 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c003.json`; schema version 2; cumulative E00-E02 coverage.
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+### C003 Promotion And C004 Receipt
+
+- Promotion candidate and immutable promotion SHA: `166f196638e66e4aea324ee12d117507963e7629`.
+- Promotion smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; bootstrap-ready JSON.
+- `promote_green_state`: exit 0; accepted from `promotion_ready` to `propagating` for C003.
+- Downstream branch: `004-learning-controls`.
+- Exact promotion SHA received in merge commit: `a951492366e1d4e1245d2b31bbd197f7ef99bbab`.
+- Initial receipt test and smoke commands using C004-local `.venv-arm64/bin/python`: exit 127 before code execution because that worktree has no local virtual environment.
+- Receipt verification rerun: `rtk env PYTHONPATH=src /Users/admin/Documents/GitHub.nosynchr/expertiseOS_full-worktrees/expertiseos-mvp/integration/.venv-arm64/bin/python -m pytest -q tests/integration/test_authorized_backend_retrieval_handoff.py tests/e2e/test_acceptance_consent.py`; exit 0; 5 passed in 0.06 seconds.
+- Receipt smoke rerun with the same verified interpreter and C004 `PYTHONPATH=src`: exit 0; bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0; C004 worktree clean.
+- `propagation_complete`: exit 0; accepted from `propagating` to `final_verification`.
+- C003 owner released after successful propagation; C004 remains assigned to `/root/owner_learning`.
+
+### C004 Wave Activation
+
+- Activated: 2026-09-14.
+- Satisfied prerequisite promotion: C003 `166f196638e66e4aea324ee12d117507963e7629`, which contains promoted C002 state `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`.
+- Starting receipt commit: `a951492366e1d4e1245d2b31bbd197f7ef99bbab`.
+- Mastery policy: only `pass` evidence contributes to configurable positive, nondecreasing integer thresholds; defaults are `1, 1, 1, 1, 2`; all autonomous safeguards remain mandatory.
+- `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
+- C005-C008 remain blocked by the authoritative DAG.

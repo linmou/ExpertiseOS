@@ -9,7 +9,7 @@
 
 - C001 feasibility/bootstrap is promoted at `f7b1eb59a7d1837c367095e195ea7a42ead20098`.
 - C002 consent core is promoted at `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`.
-- C003 backend retrieval component commit `7165dee61c87aaca598d90227dc6bfd4fa7a5105` is under integration verification.
+- C003 backend retrieval is promoted at `166f196638e66e4aea324ee12d117507963e7629`.
 
 ## C003 Verified Behavior
 
