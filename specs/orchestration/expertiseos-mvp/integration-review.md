@@ -59,7 +59,7 @@ All branches and worktrees were created from the immutable baseline without coll
 | C007 | `007-ownership-reliability` | `ownership-reliability` | created |
 | C008 | `008-product-integration` | `product-integration` | created |
 
-Runtime agent identities will be appended after each stable owner is delegated. Component agents must not edit this file or `dependency-graph.md`.
+Stable owners were delegated as `/root/owner_feasibility`, `/root/owner_consent`, `/root/owner_backend`, `/root/owner_learning`, `/root/owner_codex`, `/root/owner_claude`, `/root/owner_reliability`, and `/root/owner_product`. Component agents did not edit this file or `dependency-graph.md`.
 
 Allocation passed after all nine worktrees were confirmed present on their approved branches and baseline commit.
 
@@ -67,14 +67,23 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 
 | Component | Specify | Clarify | Plan | Tasks | Analyze | Planning commit |
 |---|---|---|---|---|---|---|
-| C001 | passed | passed | passed | passed | passed | `195a5c08a464f088b115c5c82e62b7bea0c57180` |
-| C002 | passed | passed | passed | passed | passed | `379f9a7` |
-| C003 | passed | passed | passed | passed | passed | `5b756a1` |
-| C004 | pending | pending | pending | pending | pending | pending |
-| C005 | passed | passed | passed | passed | passed | `fa9ed86b908e91b1f925525580d8e6ee10eb4922` |
-| C006 | passed | passed | passed | passed | passed | `ee8b4297c5001a18dc9c5280008f8b78250049a3` |
-| C007 | pending | pending | pending | pending | pending | pending |
-| C008 | pending | pending | pending | pending | pending | pending |
+| C001 | passed | passed | passed | passed | passed | `0ff21bc4b959a02b28243d6fcff0b3b4fa761c71` |
+| C002 | passed | passed | passed | passed | passed | `74f0222` |
+| C003 | passed | passed | passed | passed | passed | `bb347db` |
+| C004 | passed | passed with D001 | passed | passed | passed | `f29c148` |
+| C005 | passed | passed | passed | passed | passed | `a2d6508439c751830b2348d95fed7e9ea0624c1f` |
+| C006 | passed | passed | passed | passed | passed | `044bad2a0bd15b4abce4a240d6b4e80444be427d` |
+| C007 | passed | passed | passed | passed | passed | `2fd3696` |
+| C008 | passed | passed | passed | passed | passed | `87b3910` |
+
+### Global Artifact Gate
+
+- Every component contains `spec.md`, `plan.md`, `tasks.md`, a completed requirements checklist, research/design artifacts, and relevant contracts.
+- Final component analyses report 100% requirement coverage and no unresolved CRITICAL or HIGH findings.
+- No `[NEEDS CLARIFICATION: ...]` markers remain.
+- Initial baseline-to-branch `git diff --check` failed on Markdown trailing whitespace for C001-C006 and C008; C006 also contained a malformed generated command line in `AGENTS.md`.
+- Defects were returned to their stable owners. Corrective commits are the planning commits recorded above; all eight baseline-to-branch diff checks now pass and every worktree is clean.
+- Integration consolidated component-specific generated `AGENTS.md` content into one repository-wide ownership and verification guide.
 
 ## Integration History
 
