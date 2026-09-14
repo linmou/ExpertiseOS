@@ -10,7 +10,6 @@ Each AT run records:
 schema_version
 at_id
 tested_sha
-promotion_sha
 command
 exit_code
 started_at
@@ -24,6 +23,8 @@ output_path
 ```
 
 `result` is `pass`, `fail`, or `not_applicable`. `not_applicable` requires an explicit host/capability reason and cannot be used to hide a required P0 case.
+
+The integration review records the later mapping from `tested_sha` to a promotion SHA only after post-test audit and smoke gates pass. The test-run evidence does not require or predict that promotion SHA.
 
 ## Handoff Proof
 
