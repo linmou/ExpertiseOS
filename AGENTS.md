@@ -15,7 +15,11 @@ tests/
 
 ## Commands
 
-cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] pytest [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] ruff check .
+```bash
+pytest
+ruff check .
+mypy src/expertiseos/hosts/claude_code.py tests/contract/test_claude_code_adapter.py tests/integration/test_claude_code_service.py
+```
 
 ## Code Style
 

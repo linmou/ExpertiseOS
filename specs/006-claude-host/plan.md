@@ -2,7 +2,7 @@
 
 **Intent**: Plan the smallest evidence-gated Claude Code translation layer that preserves shared consent, controls, retrieval, and failure semantics.
 
-**Branch**: `006-claude-host` | **Date**: 2026-09-14 | **Spec**: [spec.md](spec.md)  
+**Branch**: `006-claude-host` | **Date**: 2026-09-14 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `specs/006-claude-host/spec.md`
 
 ## Summary
@@ -11,14 +11,14 @@ Implement a thin Claude Code adapter in `src/expertiseos/hosts/claude_code.py`. 
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Python standard library plus only the Claude Code integration mechanism/version proven and pinned by C001 G0; no new model or network service  
-**Storage**: None owned by the adapter; volatile per-session state only, with all durable operations delegated to the shared local service  
-**Testing**: pytest, Ruff, mypy; sanitized recorded contract fixtures plus a reproducible pinned live-host check  
-**Target Platform**: Only the Claude Code version, OS, registration mechanism, and permission mode that pass C001 G0  
-**Project Type**: One installable local Python package with one shared local service process  
-**Performance Goals**: Constant-time event normalization and no model call per low-level event; component checks also preserve the project lifecycle bookkeeping p95 target below 200 ms  
-**Constraints**: Real-user event proof is mandatory for writes; public supported host interfaces only; no candidate persistence; no direct backend/SQLite access; host work continues on failures  
+**Language/Version**: Python 3.12
+**Primary Dependencies**: Python standard library plus only the Claude Code integration mechanism/version proven and pinned by C001 G0; no new model or network service
+**Storage**: None owned by the adapter; volatile per-session state only, with all durable operations delegated to the shared local service
+**Testing**: pytest, Ruff, mypy; sanitized recorded contract fixtures plus a reproducible pinned live-host check
+**Target Platform**: Only the Claude Code version, OS, registration mechanism, and permission mode that pass C001 G0
+**Project Type**: One installable local Python package with one shared local service process
+**Performance Goals**: Constant-time event normalization and no model call per low-level event; component checks also preserve the project lifecycle bookkeeping p95 target below 200 ms
+**Constraints**: Real-user event proof is mandatory for writes; public supported host interfaces only; no candidate persistence; no direct backend/SQLite access; host work continues on failures
 **Scale/Scope**: One local user, one adapter instance per active Claude session, bounded retrieval of at most 20 approved records
 
 ## Constitution Check

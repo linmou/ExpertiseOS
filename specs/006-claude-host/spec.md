@@ -2,9 +2,9 @@
 
 **Intent**: Define the supported Claude Code experience that connects users to the shared local expertiseOS service without duplicating domain policy or weakening consent.
 
-**Feature Branch**: `006-claude-host`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `006-claude-host`
+**Created**: 2026-09-14
+**Status**: Draft
 **Input**: Claude Code onboarding, activation, normalized lifecycle events, actual-user decision registration, safe checkpoints, proposal expiry, capability reporting, shared local service use, and failure-open host behavior.
 
 ## User Scenarios & Testing

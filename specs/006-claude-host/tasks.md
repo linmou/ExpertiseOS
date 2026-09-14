@@ -2,7 +2,7 @@
 
 **Intent**: Implement and verify the Claude adapter in dependency order without duplicating shared domain behavior.
 
-**Input**: Design documents from `specs/006-claude-host/`  
+**Input**: Design documents from `specs/006-claude-host/`
 **Prerequisites**: Approved C001-C004 integration promotion SHA, especially passed Claude G0 evidence
 
 ## Format: `[ID] [P?] [Story] Description`
