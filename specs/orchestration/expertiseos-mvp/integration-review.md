@@ -242,4 +242,20 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
 - C004-C008 remain blocked by the authoritative DAG.
 
-No C003 implementation or integration has completed yet.
+### C003 Local Component Gate
+
+- Completed component tasks: 40/42; integration-owned T040 and T041 remain open.
+- Component commit: `7165dee61c87aaca598d90227dc6bfd4fa7a5105`
+- Worktree status: clean
+- Owner evidence: `specs/003-backend-retrieval/evidence/verification.md` and `retrieval-benchmark.json`
+- Independent `rtk .venv-arm64/bin/python -m pytest -ra`: exit 0; 119 passed in 69.19 seconds, including the real Basic Memory public-CLI round trip and outbound-network-denied local retrieval.
+- Independent `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- Independent `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 59 files formatted.
+- Independent `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 59 source files checked under strict project configuration.
+- Independent benchmark: `rtk env EXPERTISEOS_BENCHMARK_EVIDENCE=/tmp/expertiseos-c003-retrieval-benchmark.json .venv-arm64/bin/python -m pytest tests/performance/test_retrieval_benchmark.py -q`; exit 0; 10,000 canonical fixture notes, 30 samples after one warm-up, warm p95 `5.200 ms` on macOS 15.1.1 arm64 with Python 3.12.10.
+- `rtk .venv-arm64/bin/basic-memory --version`: exit 0; Basic Memory `0.23.2`.
+- Import smoke: `BasicMemoryBackend` and `KnowledgeService`; exit 0 with `backend-retrieval-import-ok`.
+- Health smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0 with bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0.
+- Protected boundary: local Basic Memory public CLI only; no private table, remote fallback, unrestricted host writer, or query persistence is introduced.
+- Local transition validation: `local_component_passed`, C003, exit 0, accepted from `implementing` to `integration_queue`.
