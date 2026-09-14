@@ -11,14 +11,22 @@ Prove the supported Codex, Claude Code, and Basic Memory boundaries before later
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
-**Primary Dependencies**: Python standard library for contracts/fakes; pytest for verification; exact supported Codex, Claude Code, Basic Memory, and host integration versions selected and pinned by G0 evidence  
-**Storage**: No product storage in this component; fake backend uses process memory only, and feasibility fixtures use disposable approved test data  
-**Testing**: pytest unit and integration markers; mypy strict checks for owned package paths; Ruff check/format verification  
-**Target Platform**: Local macOS and/or Linux combinations actually proven for pinned Codex and Claude Code releases  
-**Project Type**: Installable local Python package with one development process entrypoint stub  
-**Performance Goals**: Bootstrap contract checks complete in under 30 seconds excluding dependency installation and live-host manual validation  
-**Constraints**: Local-first; no second model API; supported public interfaces only; no public listener; unverified write capability becomes read-only/blocked; shared documentation files are integration-owned  
+**Language/Version**: Python 3.12
+
+**Primary Dependencies**: Python standard library for contracts/fakes; pytest for verification; exact supported Codex, Claude Code, Basic Memory, and host integration versions selected and pinned by G0 evidence
+
+**Storage**: No product storage in this component; fake backend uses process memory only, and feasibility fixtures use disposable approved test data
+
+**Testing**: pytest unit and integration markers; mypy strict checks for owned package paths; Ruff check/format verification
+
+**Target Platform**: Local macOS and/or Linux combinations actually proven for pinned Codex and Claude Code releases
+
+**Project Type**: Installable local Python package with one development process entrypoint stub
+
+**Performance Goals**: Bootstrap contract checks complete in under 30 seconds excluding dependency installation and live-host manual validation
+
+**Constraints**: Local-first; no second model API; supported public interfaces only; no public listener; unverified write capability becomes read-only/blocked; shared documentation files are integration-owned
+
 **Scale/Scope**: Two hosts, one backend, two protocols, deterministic fakes, and the G0 evidence matrix only
 
 ## Constitution Check

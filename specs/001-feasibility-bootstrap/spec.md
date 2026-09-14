@@ -2,9 +2,12 @@
 
 **Intent**: Define the evidence and minimal shared contracts required before expertiseOS feature development starts.
 
-**Feature Branch**: `001-feasibility-bootstrap`  
-**Created**: 2026-09-14  
-**Status**: Draft  
+**Feature Branch**: `001-feasibility-bootstrap`
+
+**Created**: 2026-09-14
+
+**Status**: Draft
+
 **Input**: User description: "Initialize and develop the expertiseOS MVP from the approved agent plan without over-design or missing features."
 
 ## User Scenarios & Testing *(mandatory)*
