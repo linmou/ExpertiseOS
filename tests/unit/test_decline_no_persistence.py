@@ -17,7 +17,7 @@ def test_decline_suppression_is_session_only_and_volatile() -> None:
     assert bundle.candidates.is_suppressed("session-1", "fingerprint-1")
     assert not CandidateStore().is_suppressed("session-1", "fingerprint-1")
     assert bundle.receipts.get_receipt("operation-1") is None
-    query = SearchQuery("UNAPPROVED_MARKER_74E9", 10, None)
+    query = SearchQuery("UNAPPROVED_MARKER_74E9", 10, None, (), (), ())
     assert bundle.backend.search(query) == ()
 
 

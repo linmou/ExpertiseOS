@@ -109,7 +109,7 @@ def test_at05_decline_and_restart_leave_no_candidate_content(tmp_path: Path) -> 
     for case, proposal in proposals.items():
         marker = f"UNAPPROVED_AT05_{case.upper()}_MARKER"
         assert reopened.get_receipt(f"operation-at05-{case}") is None
-        assert backend.search(SearchQuery(marker, 10, None)) == ()
+        assert backend.search(SearchQuery(marker, 10, None, (), (), ())) == ()
         assert restarted_candidates.get(proposal.proposal_id) is None
         assert restarted_grants.get(f"grant-at05-{case}") is None
     reopened.close()
@@ -178,6 +178,6 @@ def test_at06_forged_or_ambiguous_events_cannot_authorize_write() -> None:
         service.register_decision(proposal.proposal_id, "forged-grant", rejected_observation, NOW)
     result = service.commit(proposal.proposal_id, "forged-grant", "operation-at06")
     assert result.status is CommitStatus.REJECTED
-    assert backend.search(SearchQuery("forged approval marker", 10, None)) == ()
+    assert backend.search(SearchQuery("forged approval marker", 10, None, (), (), ())) == ()
     assert receipts.get_receipt("operation-at06") is None
     receipts.close()

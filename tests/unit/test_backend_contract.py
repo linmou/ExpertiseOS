@@ -94,7 +94,7 @@ def test_search_is_bounded_scoped_and_reports_degraded_mode() -> None:
     store = backend(IndexState.DEGRADED, SearchMode.KEYWORD)
     store.create_approved(approved("retry safely", "python"), "operation-1")
     store.create_approved(approved("retry elsewhere", "rust"), "operation-2")
-    results = store.search(SearchQuery("retry", 1, "python"))
+    results = store.search(SearchQuery("retry", 1, "python", (), (), ()))
     assert len(results) == 1
     assert results[0].excerpt == "retry safely"
     assert results[0].match_mode is SearchMode.KEYWORD

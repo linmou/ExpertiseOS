@@ -33,6 +33,7 @@ from expertiseos.knowledge.backend import (
     SearchQuery,
     SearchResult,
     StoreState,
+    TrustLevel,
     VersionConflictError,
 )
 
@@ -283,6 +284,12 @@ class FakeKnowledgeBackend(KnowledgeBackend):
                 continue
             if query.scope is not None and record.applicability_scope != query.scope:
                 continue
+            if record.id in query.exclusions or record.applicability_scope in query.exclusions:
+                continue
+            if query.subjects and not set(query.subjects).intersection(record.subjects):
+                continue
+            if query.categories and not set(query.categories).intersection(record.categories):
+                continue
             if needle not in record.content.casefold():
                 continue
             matches.append(
@@ -290,9 +297,21 @@ class FakeKnowledgeBackend(KnowledgeBackend):
                     record.id,
                     record.version,
                     record.content[:240],
+                    record.categories,
+                    record.subjects,
+                    record.applicability_scope,
+                    record.evidential_status,
                     record.source_refs,
+                    all(not ref.startswith("unavailable:") for ref in record.source_refs),
                     record.relationships,
-                    (),
+                    tuple(
+                        sorted(
+                            relationship.target_id
+                            for relationship in record.relationships
+                            if relationship.type == "contradicts"
+                        )
+                    ),
+                    TrustLevel.UNTRUSTED_DATA,
                     self._search_mode,
                     self._index_state,
                 )

@@ -40,9 +40,9 @@ def test_actual_proposal_grant_gate_backend_readback_and_sqlite_receipt() -> Non
     assert result.receipt is not None
     assert result.records[0] == bundle.backend.get("knowledge-1", 1)
     assert bundle.receipts.get_receipt("operation-1") == result.receipt
-    assert bundle.backend.search(SearchQuery("approved marker", 1, None))[0].knowledge_id == (
-        "knowledge-1"
-    )
+    assert bundle.backend.search(SearchQuery("approved marker", 1, None, (), (), ()))[
+        0
+    ].knowledge_id == ("knowledge-1")
 
 
 def test_unapproved_marker_never_crosses_into_backend_or_sqlite() -> None:
@@ -50,7 +50,7 @@ def test_unapproved_marker_never_crosses_into_backend_or_sqlite() -> None:
     marker = "UNAPPROVED_INTEGRATION_MARKER_91B2"
     proposal_id, _ = present_create(bundle, marker)
     bundle.service.decline(proposal_id, None)
-    assert bundle.backend.search(SearchQuery(marker, 10, None)) == ()
+    assert bundle.backend.search(SearchQuery(marker, 10, None, (), (), ())) == ()
     assert bundle.receipts.get_receipt("operation-1") is None
 
 
