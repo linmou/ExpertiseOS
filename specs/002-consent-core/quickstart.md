@@ -14,7 +14,7 @@
 2. Run approval tests and verify all forged, replayed, cross-proposal, cross-session, cross-adapter, changed-digest, and stale-version cases produce no mutation or receipt.
 3. Run the exact commit flow against the conforming fake backend and temporary SQLite state store. Verify canonical write, exact read-back, receipt, grant consumption, and approved candidate ordering.
 4. Inject a backend failure and verify no receipt or Saved result.
-5. Inject receipt failure after backend success, retry with the same operation key, and verify exactly one object/version and one receipt.
+5. Inject receipt failure after backend success, retry with the same `operation_id`, and verify exactly one object/version and one receipt.
 6. Run revision, relationship, contradiction-coexistence, provenance, retirement, and direct-save boundary scenarios.
 7. Run all component tests, mypy for modified modules, and repository static checks.
 
@@ -31,5 +31,5 @@
 - Any unauthorized or stale case mutates state.
 - Any non-committed result can be mistaken for Saved.
 - Candidate content appears in SQLite, files, logs, or other component-controlled durable artifacts.
-- Retrying the same operation key creates another object/version or a divergent receipt.
-- Implementing the required backend operation-key contract would contradict C001's frozen interface; return the contract conflict to integration rather than adding a bypass.
+- Retrying the same `operation_id` creates another object/version or a divergent receipt.
+- Any C002 implementation adds a generic backend mutation method instead of calling C001's explicit methods with `operation_id`.

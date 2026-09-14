@@ -16,8 +16,8 @@
 **Purpose**: Verify the C001 baseline before creating component code.
 
 - [ ] T001 Inspect C001's model-library choice, package layout, Python configuration, and test commands in `pyproject.toml` and record compatible implementation constraints in `specs/002-consent-core/quickstart.md` (FR-001, SC-008)
-- [ ] T002 Inspect C001 `HostAdapter` and `KnowledgeBackend` interfaces in `src/expertiseos/hosts/contract.py` and `src/expertiseos/knowledge/backend.py`; reconcile the operation-key, expected-version, and exact-read-back requirements from `specs/002-consent-core/contracts/consent-api.md` before implementation (FR-010, FR-012, FR-014)
-- [ ] T003 Inspect and minimally extend C001 test doubles in `tests/fakes.py` only through the reconciled contract so they can count mutation calls, preserve operation-key results, expose versions, and inject failures without storing unapproved candidates (FR-010, FR-012, SC-004)
+- [ ] T002 Inspect C001 `HostAdapter` and explicit `KnowledgeBackend` methods in `src/expertiseos/hosts/contract.py` and `src/expertiseos/knowledge/backend.py`; confirm every semantic mutation accepts canonical final `operation_id` and exact read-back uses versioned `get` plus `get_current_versions` as specified in `specs/002-consent-core/contracts/consent-api.md` (FR-010, FR-012, FR-014)
+- [ ] T003 Verify C001 test doubles in `tests/fakes.py` count explicit mutation calls, preserve `operation_id` results, expose versioned/current reads, and inject failures without storing unapproved candidates; return any missing capability to C001 through integration reconciliation instead of editing this shared file (FR-010, FR-012, SC-004)
 
 **Checkpoint**: C001 contracts can express guarded mutation, exact read-back, version conflict, and idempotent retry without a bypass.
 
@@ -46,7 +46,7 @@
 
 ### Verification
 
-- [ ] T010 [P] [US1] Add deterministic digest vectors covering key order, unordered categories/subjects/version maps, optional fields, exact content, shown provenance, relationship changes, and exclusion of runtime IDs/timestamps in `tests/unit/test_approval_gate.py` (FR-008)
+- [ ] T010 [P] [US1] Add deterministic digest vectors covering key order, unordered categories/subjects/version maps, optional fields, exact content, shown provenance, relationship changes, exclusion of runtime IDs/timestamps from the semantic digest, and rejection when commit `operation_id` differs from the proposal in `tests/unit/test_approval_gate.py` (FR-008, FR-010)
 - [ ] T011 [P] [US1] Add exact create/edit/direct-save/read-back/receipt and save-without-learning scenarios in `tests/unit/test_exact_write.py` (FR-010, FR-013, FR-019, FR-020, FR-023; SC-001)
 - [ ] T012 [US1] Add the full producer-to-consumer consent scenario with real candidate/grant/gate/service, C001 fake backend, and temporary SQLite receipt store in `tests/integration/test_consent_commit_flow.py` (FR-006 through FR-014; SC-001, SC-008)
 
@@ -108,12 +108,12 @@
 
 **Goal**: Preserve truthful results and exactly-once semantic effects across backend, read-back, and receipt interruptions.
 
-**Independent Test**: Inject failure at each commit boundary, retry with the same operation key, and assert one mutation result, one object/version, and one exact receipt.
+**Independent Test**: Inject failure at each commit boundary, retry with the same `operation_id`, and assert one mutation result, one object/version, and one exact receipt.
 
 ### Verification
 
-- [ ] T028 [P] [US4] Add backend-before-write failure, backend-after-write timeout, exact read-back mismatch, receipt-write failure, same-key retry, divergent-key reuse, and post-success retry cases in `tests/unit/test_exact_write.py` (FR-010 through FR-013, FR-022; SC-004)
-- [ ] T029 [US4] Extend the integration flow in `tests/integration/test_consent_commit_flow.py` to fail SQLite receipt insertion after canonical success and reconcile through the actual operation-key contract without duplicate mutation (FR-012, FR-013; SC-004)
+- [ ] T028 [P] [US4] Add backend-before-write failure, backend-after-write timeout, exact read-back mismatch, receipt-write failure, same-`operation_id` retry, divergent-`operation_id` reuse, and post-success retry cases in `tests/unit/test_exact_write.py` (FR-010 through FR-013, FR-022; SC-004)
+- [ ] T029 [US4] Extend the integration flow in `tests/integration/test_consent_commit_flow.py` to fail SQLite receipt insertion after canonical success and reconcile through the explicit backend method's `operation_id` contract without duplicate mutation (FR-012, FR-013; SC-004)
 
 ### Implementation
 
@@ -133,14 +133,14 @@
 
 ### Verification
 
-- [ ] T033 [P] [US5] Add revision version increment, stable identity, retirement-not-deletion, categorization, and grouped split/merge binding cases in `tests/unit/test_version_conflict.py` (FR-015, FR-016; SC-007)
+- [ ] T033 [P] [US5] Add revision version increment, stable identity, retirement-not-deletion, categorization, and grouped split/merge replay with deterministic child `operation_id` values in `tests/unit/test_version_conflict.py` (FR-015, FR-016; SC-007)
 - [ ] T034 [P] [US5] Add relation add/remove/change approval, unsupported-type validation, source/target expected versions, coexistence of contradictions, and no silent consolidation cases in `tests/unit/test_relationship_approval.py` (FR-015, FR-017, FR-018; SC-007)
 - [ ] T035 [P] [US5] Add exact approved excerpt/scope, contribution origin, source-unavailable preservation, and no replacement-evidence cases in `tests/unit/test_provenance.py` (FR-002, FR-020; SC-007)
 
 ### Implementation
 
-- [ ] T036 [US5] Implement revision, relationship change, and retirement proposal/commit operations in `src/expertiseos/knowledge/service.py` using the same gate, operation key, read-back, and expected-version path as create (FR-015 through FR-018)
-- [ ] T037 [US5] Implement grouped approval binding for categorization, split, merge, and conflict-resolution effects in `src/expertiseos/knowledge/service.py` using existing create/revision/relationship/retirement primitives, with no separate workflow engine or silent source-object changes (FR-015, FR-018)
+- [ ] T036 [US5] Implement revision, relationship change, and retirement proposal/commit operations in `src/expertiseos/knowledge/service.py` using the same gate, canonical final `operation_id`, versioned `get`, `get_current_versions`, and expected-version path as create (FR-015 through FR-018)
+- [ ] T037 [US5] Implement grouped approval binding for categorization, split, merge, and conflict-resolution effects in `src/expertiseos/knowledge/service.py` using existing explicit backend methods and deterministic child `operation_id` values derived from the approved parent and ordered effect identity, with no generic workflow engine or silent source-object changes (FR-015, FR-018)
 - [ ] T038 [US5] Run US5 tests and the integration commit flow, then verify stable IDs, monotonic versions, approved provenance, relationship traceability, retired status, and contradiction coexistence (SC-006, SC-007)
 
 **Checkpoint**: Later components receive one guarded semantic-mutation API with predictable version and conflict behavior.
@@ -156,7 +156,7 @@
 - [ ] T041 Run mypy against `src/expertiseos/domain/models.py`, `src/expertiseos/domain/candidate_store.py`, `src/expertiseos/domain/errors.py`, `src/expertiseos/approval/gate.py`, `src/expertiseos/knowledge/service.py`, and `src/expertiseos/state/sqlite.py`, then run the static/lint checks defined by `pyproject.toml`; fix all errors within C002 ownership and record exact commands/results (FR-024, SC-008)
 - [ ] T042 Validate every scenario and stop condition in `specs/002-consent-core/quickstart.md`, including persistent-marker absence and actual producer-to-consumer reconciliation (SC-001 through SC-008)
 - [ ] T043 Reconcile downstream contracts: confirm C003 cannot bypass guarded writes, give C004 the receipt/migration extension boundary, give C005/C006 grant-registration rules, and give C007/C008 result/idempotency constraints using `specs/002-consent-core/contracts/consent-api.md` and `specs/002-consent-core/contracts/state-schema.md` (FR-014, FR-021, FR-022)
-- [ ] T044 Update `docs/implementation-status.md` with implemented scope, tests/commands, external assumptions, known limitations, and intentionally excluded files; do not claim real Basic Memory or live-host coverage from C002 (SC-008)
+- [ ] T044 Create `specs/002-consent-core/implementation-handoff.md` with an opening intent statement for the integration owner, followed by implemented scope, tests/commands, external assumptions, known limitations, and intentionally excluded files; do not directly edit shared implementation-status documentation or claim real Basic Memory/live-host coverage from C002 (SC-008)
 
 ---
 
@@ -176,7 +176,7 @@ Phase 1 upstream reconciliation
 ```
 
 - US2 and US3 can proceed independently after US1 establishes the gate/service path.
-- US4 depends on US1 commit ordering and the reconciled backend operation-key contract.
+- US4 depends on US1 commit ordering and the reconciled backend `operation_id` contract.
 - US5 depends on US1 and the foundational versioned records; it does not depend on US3.
 - C003-C008 remain blocked from relying on C002 contracts until Phase 8 integration promotion.
 

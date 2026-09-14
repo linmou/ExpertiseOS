@@ -30,10 +30,10 @@ CREATE TABLE approval_receipts (
 
 `record_receipt(receipt)` has two valid outcomes:
 
-1. The operation ID is absent: insert the exact receipt atomically.
-2. The operation ID exists and all fields match: return the existing receipt as reconciled success.
+1. The `operation_id` is absent: insert the exact receipt atomically.
+2. The `operation_id` exists and all fields match: return the existing receipt as reconciled success.
 
-If the operation ID exists with any different field, return an integrity conflict. Never overwrite an existing receipt.
+If the `operation_id` exists with any different field, return an integrity conflict. Never overwrite an existing receipt.
 
 ## Queries
 
