@@ -5,7 +5,7 @@
 
 ## Summary
 
-Implement the MVP's consent boundary as host-neutral Python domain models, a process-local candidate/grant lifecycle, a deterministic approval digest and gate, a guarded `KnowledgeService`, and minimal SQLite approval receipts. Every semantic write is tied to one exact actual-user decision and expected object versions. Backend operation keys make a retry idempotent when the canonical write succeeds before receipt completion. Basic Memory mapping, learning behavior, production host adapters, and final service wiring remain outside this component.
+Implement the MVP's consent boundary as host-neutral Python domain models, a process-local candidate/grant lifecycle, a deterministic approval digest and gate, a guarded `KnowledgeService`, and minimal SQLite approval receipts. Every semantic write is tied to one exact actual-user decision and expected object versions. C001's explicit mutation methods receive a canonical `operation_id`, making retries idempotent when the canonical write succeeds before receipt completion. Basic Memory mapping, learning behavior, production host adapters, and final service wiring remain outside this component.
 
 ## Technical Context
 
@@ -49,6 +49,7 @@ specs/002-consent-core/
 │   └── state-schema.md
 ├── checklists/
 │   └── requirements.md
+├── implementation-handoff.md # implementation closeout output for integration owner
 └── tasks.md
 ```
 
@@ -99,7 +100,9 @@ One function builds a semantic approval document from typed fields and hashes ca
 
 ### Commit and retry
 
-`KnowledgeService.commit()` validates through the gate, calls the backend with a stable operation key, reads back the exact resulting object/version, writes one receipt keyed by operation ID, then consumes the grant and approves the candidate. Repeating the same operation key must return the original backend result and receipt. A separate operation journal is deferred because it cannot improve recovery when SQLite itself is unavailable and the backend operation key already supplies the required bounded reconciliation.
+`KnowledgeService.commit()` validates through the gate, calls the matching explicit backend mutation with a stable `operation_id`, reads back the exact resulting record with versioned `get`, confirms current versions through `get_current_versions`, writes one receipt keyed by `operation_id`, then consumes the grant and approves the candidate. Repeating the same `operation_id` must return the original backend result and receipt. A separate operation journal is deferred because it cannot improve recovery when SQLite itself is unavailable and backend `operation_id` replay already supplies the required bounded reconciliation.
+
+Grouped categorization, split, merge, or conflict-resolution effects are an approved ordered list of the same explicit create, update, relationship, and retirement primitives. Each effect receives a deterministic child `operation_id` derived from the approved parent `operation_id` and its ordered effect identity. Retrying the parent reuses the same child values, so completed effects reconcile without a generic workflow engine.
 
 ### Version and conflict semantics
 
@@ -107,7 +110,7 @@ Proposals capture every affected object version. The service verifies them at co
 
 ### Shared-file coordination
 
-- C001 owns `knowledge/backend.py` and `tests/fakes.py`; C002 consumes their frozen contracts and requests only the operation-key/read-back capabilities described in [consent-api.md](contracts/consent-api.md).
+- C001 owns `knowledge/backend.py` and `tests/fakes.py`; C002 consumes the explicit mutation methods with final `operation_id` parameters, versioned `get`, and `get_current_versions` described in [consent-api.md](contracts/consent-api.md), without editing those shared files or adding another backend mutation API. Missing fake/backend behavior is returned to C001 through integration reconciliation.
 - C002 owns the initial `knowledge/service.py` and `state/sqlite.py` contracts.
 - C003 may add retrieval-facing methods without bypassing guarded mutations.
 - C004 must submit learner/control migration extensions to this owner after reconciliation; no learner/control table is created here.

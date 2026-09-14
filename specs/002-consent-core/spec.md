@@ -64,14 +64,14 @@ As a user, I receive a truthful result when durable storage or receipt recording
 
 **Why this priority**: Partial failures must not create duplicate knowledge or false Saved messages.
 
-**Independent Test**: Inject failures before the canonical write, after the canonical write but before receipt completion, and during a retry; verify deterministic recovery by operation key.
+**Independent Test**: Inject failures before the canonical write, after the canonical write but before receipt completion, and during a retry; verify deterministic recovery by `operation_id`.
 
 **Acceptance Scenarios**:
 
-1. **Given** a valid approval, **When** the durable knowledge write fails, **Then** no success receipt is created, no success is reported, and the active interaction may retry with the same operation key.
+1. **Given** a valid approval, **When** the durable knowledge write fails, **Then** no success receipt is created, no success is reported, and the active interaction may retry with the same `operation_id`.
 2. **Given** the knowledge write and read-back succeeded but receipt storage failed, **When** the same operation is retried, **Then** the existing exact object is reconciled, the missing receipt is completed, and no duplicate object/version is created.
 3. **Given** the backend returns content or version different from the approved write on read-back, **When** commit is finalized, **Then** success is withheld and the grant is not consumed as a completed authorization.
-4. **Given** an interrupted operation is reconciled, **When** the same operation key is submitted again, **Then** the previously completed result is returned without another semantic mutation.
+4. **Given** an interrupted operation is reconciled, **When** the same `operation_id` is submitted again, **Then** the previously completed result is returned without another semantic mutation.
 
 ---
 
@@ -115,18 +115,18 @@ As a user, I can approve revisions, relationships, conflict resolutions, and ret
 - **FR-007**: A decision grant MUST authorize at most one proposal resolution, MUST expire with its proposal/session, and MUST reject reuse or mismatch by proposal, session, adapter, action, or digest.
 - **FR-008**: The system MUST calculate one deterministic canonical digest over the displayed semantic fields, including operation kind, content and shown metadata, approved source scope, relationship changes, and relevant expected versions, while excluding timestamps and random identifiers.
 - **FR-009**: Before any semantic mutation, the approval gate MUST validate the active proposal state, session, adapter, unconsumed grant, decision action, exact digest, current expected versions, and domain-operation validity.
-- **FR-010**: The guarded commit MUST order successful work as approval validation, durable mutation with idempotency key, exact read-back, minimal approval-receipt storage, grant consumption, candidate approval, and only then success reporting.
+- **FR-010**: The guarded commit MUST require the submitted `operation_id` to match the active proposal, then order successful work as approval validation, explicit durable mutation with that canonical `operation_id`, exact read-back, minimal approval-receipt storage, grant consumption, candidate approval, and only then success reporting.
 - **FR-011**: A failed durable mutation or failed exact read-back MUST create no success receipt and MUST report no false success.
-- **FR-012**: If the durable mutation succeeded but receipt storage did not, a bounded retry with the same operation key MUST reconcile the existing mutation and complete the receipt without duplicating the object or semantic version.
+- **FR-012**: If the durable mutation succeeded but receipt storage did not, a bounded retry with the same `operation_id` MUST reconcile the existing mutation and complete the receipt without duplicating the object or semantic version.
 - **FR-013**: Each successful semantic mutation MUST produce one minimal receipt containing operation and proposal IDs, operation kind, affected object IDs/versions, canonical digest, user-event reference, adapter ID, and timestamp, without candidate content or unrelated prompt text.
 - **FR-014**: The guarded knowledge service MUST provide proposal, decline, commit, and approved-read operations without exposing an unrestricted backend mutation path to host-facing callers.
-- **FR-015**: Create, revision, relationship change, conflict resolution, categorization, split, merge, retirement, and deletion proposals MUST use the same approval and version-binding primitives; this component implements create, revision, relationship change, retirement, and grouped approval binding for organization, while preserving compatible contracts for later deletion integration.
+- **FR-015**: Create, revision, relationship change, conflict resolution, categorization, split, merge, retirement, and deletion proposals MUST use the same approval and version-binding primitives; this component implements create, revision, relationship change, retirement, and grouped approval binding for organization, while preserving compatible contracts for later deletion integration. Grouped effects MUST use deterministic child `operation_id` values derived from the approved parent `operation_id` and ordered effect identity.
 - **FR-016**: Every semantic revision MUST verify captured expected versions and increment the affected object's version; stale writes MUST conflict rather than overwrite.
 - **FR-017**: Relationship mutations MUST use stable source and target IDs, supported relationship types, relevant expected versions, and approved relationship provenance.
 - **FR-018**: Contradictory approved claims MUST coexist unless an exact displayed resolution is approved; semantic consolidation MUST NOT occur silently.
 - **FR-019**: A direct save instruction MAY create a proposal and grant from one actual user event only when the identified material and scope are deterministic and no new semantic claims, categories, relations, or excerpts are inferred; otherwise a newly displayed proposal and decision are required.
 - **FR-020**: Approved provenance MUST be limited to shown source scope and MAY include host/session/event references, artifact locator, approved excerpt, date/checksum, accessibility status, and contribution origin; hidden reasoning and full unrelated sources MUST NOT be stored.
-- **FR-021**: The SQLite base state MUST persist approval receipts and, only if required for reconciliation, a content-free operation journal keyed by operation identity; learner and control tables are excluded from this component.
+- **FR-021**: The SQLite base state MUST persist approval receipts and, only if required for reconciliation, a content-free operation journal keyed by `operation_id`; learner and control tables are excluded from this component.
 - **FR-022**: A backend or state-store failure MUST block only the unsafe knowledge mutation, preserve ordinary host work, and return a truthful non-success or incomplete result.
 - **FR-023**: Saving knowledge MUST NOT create learner evidence or advance mastery; C004's separate learner-state projection treats an object with no qualifying approved evidence as `new`.
 - **FR-024**: Every dataclass introduced by this component MUST require callers to supply every field explicitly; defaults belong at construction call sites, not dataclass field definitions.
@@ -136,7 +136,7 @@ As a user, I can approve revisions, relationships, conflict resolutions, and ret
 - **KnowledgeObject**: Versioned approved semantic content with stable identity, optional categories, one or more subjects, scope/status/evidential metadata, provenance, contribution origin, and timestamps.
 - **SourceReference**: Approved, bounded provenance pointing to a host event, conversation, file, artifact, tool result, user reflection, or user-provided source, with accessibility status.
 - **Relationship**: A version-aware semantic link between stable knowledge IDs with one supported type and optional approved explanation/provenance.
-- **PendingOperation**: An in-memory proposal containing identity, host session/adapter ownership, operation kind, lifecycle state, volatile payload, canonical digest, expected versions, and creation time.
+- **PendingOperation**: An in-memory proposal containing proposal identity, canonical `operation_id`, host session/adapter ownership, operation kind, lifecycle state, volatile payload, canonical digest, expected versions, and creation time.
 - **DecisionGrant**: One-use, in-memory authorization derived from an actual host user event and exactly bound to a pending operation decision.
 - **ApprovalReceipt**: Minimal durable evidence written only after an exact approved mutation succeeds and is read back.
 
@@ -160,7 +160,7 @@ As a user, I can approve revisions, relationships, conflict resolutions, and ret
 - The Basic Memory mapping, retrieval implementation, real-backend round trips, index behavior, and deletion cleanup belong to C003/C007; this component tests against C001 fakes.
 - SQLite stores receipts and content-free reconciliation metadata only in this component. C004 requests learner/control schema additions through the consent owner after reconciliation.
 - One local service serializes access to the SQLite state store; cross-host semantic concurrency is governed by backend expected versions rather than distributed locking.
-- Timestamps are UTC and IDs/idempotency keys are opaque stable values supplied explicitly at object construction.
+- Timestamps are UTC, and IDs including `operation_id` values are opaque stable values supplied explicitly at object construction.
 
 ## Out of Scope
 

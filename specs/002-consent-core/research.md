@@ -28,11 +28,19 @@
 
 ## Idempotent Reconciliation
 
-**Decision**: Require the backend mutation contract to accept a stable operation key and return the same object/version for repeats. Key receipts by the same operation ID and use insert-or-read-exact semantics. Do not add an operation journal in C002.
+**Decision**: Pass a stable `operation_id` to each of C001's explicit backend mutation methods and require the same object/version result for repeats. Key receipts by the same `operation_id` and use insert-or-read-exact semantics. Do not add an operation journal or generic backend mutation method in C002.
 
-**Rationale**: This directly handles the only partial ordering gap: canonical storage succeeded but receipt recording failed. A SQLite journal cannot be relied on during a SQLite failure, while a backend operation key prevents duplicate creates or revisions at their source.
+**Rationale**: This directly handles the only partial ordering gap: canonical storage succeeded but receipt recording failed. A SQLite journal cannot be relied on during a SQLite failure, while `operation_id` replay on each narrow mutation prevents duplicate creates or revisions at their source.
 
-**Alternatives considered**: Distributed transactions, two-phase commit, queues, and event sourcing were rejected as disproportionate. A content-free operation journal remains permitted only if implementation evidence exposes a recovery gap not covered by backend idempotency.
+**Alternatives considered**: A second generic backend mutation API, distributed transactions, two-phase commit, queues, and event sourcing were rejected as disproportionate. A content-free operation journal remains permitted only if implementation evidence exposes a recovery gap not covered by backend `operation_id` replay.
+
+## Grouped Operation Replay
+
+**Decision**: Represent an approved grouped change as an ordered list of existing explicit mutation calls. Derive each child `operation_id` deterministically from the approved parent `operation_id` and the child's ordered effect identity.
+
+**Rationale**: The exact same child values are reproduced on retry, allowing completed effects to reconcile individually through C001's existing mutation methods.
+
+**Alternatives considered**: A generic mutation endpoint or workflow engine was rejected because neither is needed to bind or replay a small approved group.
 
 ## Optimistic Concurrency
 

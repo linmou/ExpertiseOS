@@ -62,6 +62,7 @@ Adding, removing, or changing a relationship is a semantic operation.
 | Field | Rule |
 |---|---|
 | `proposal_id` | Unique within active volatile state. |
+| `operation_id` | Canonical replay identity, fixed when the proposal is created and required to match at commit. |
 | `session_id`, `adapter_id` | Immutable origin binding. |
 | `kind` | One `PendingOperationKind`. |
 | `state` | One `CandidateState`. |
@@ -98,7 +99,7 @@ One grant resolves one proposal. Unused grants expire with the proposal/session 
 
 | Field | Rule |
 |---|---|
-| `operation_id` | Primary idempotency key. |
+| `operation_id` | Canonical `operation_id` used for bounded replay and receipt identity. |
 | `proposal_id` | Approved proposal identity. |
 | `operation_kind` | Exact semantic operation. |
 | `object_ids_versions` | Canonically serialized affected stable IDs and committed versions. |
