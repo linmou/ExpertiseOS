@@ -34,6 +34,15 @@
 - Approved capacity waves: feasibility, consent, backend, parallel learning/hosts/reliability, product integration
 - Unresolved allocation decisions: none
 
+### Canonical Decision D001: Numeric Mastery Thresholds
+
+- Asked: 2026-09-14 during C004 clarification
+- Human answer: only `pass` evidence advances mastery; advancement is adjustable numerically
+- Canonical interpretation: numeric integer pass-count thresholds may control learner-state advancement; `partial`, `fail`, and `insufficient_evidence` remain inspectable and contribute zero toward advancement
+- Preserved safeguards: numeric thresholds cannot bypass ordered learner states or the autonomous requirements for independent successes, distinct tasks and sessions, meaningful transfer, no unresolved relevant contradiction, and explicit user agreement
+- Affected components: C004 and C008
+- Required artifact updates: C004 specification, data model, learning/control contract, SQLite schema request, tasks, and analysis; C008 integration specification, contracts, tasks, and acceptance coverage
+
 ## Allocation
 
 All branches and worktrees were created from the immutable baseline without collisions:
@@ -58,12 +67,12 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 
 | Component | Specify | Clarify | Plan | Tasks | Analyze | Planning commit |
 |---|---|---|---|---|---|---|
-| C001 | pending | pending | pending | pending | pending | pending |
-| C002 | pending | pending | pending | pending | pending | pending |
-| C003 | pending | pending | pending | pending | pending | pending |
+| C001 | passed | passed | passed | passed | passed | `195a5c08a464f088b115c5c82e62b7bea0c57180` |
+| C002 | passed | passed | passed | passed | passed | `379f9a7` |
+| C003 | passed | passed | passed | passed | passed | `5b756a1` |
 | C004 | pending | pending | pending | pending | pending | pending |
-| C005 | pending | pending | pending | pending | pending | pending |
-| C006 | pending | pending | pending | pending | pending | pending |
+| C005 | passed | passed | passed | passed | passed | `fa9ed86b908e91b1f925525580d8e6ee10eb4922` |
+| C006 | passed | passed | passed | passed | passed | `ee8b4297c5001a18dc9c5280008f8b78250049a3` |
 | C007 | pending | pending | pending | pending | pending | pending |
 | C008 | pending | pending | pending | pending | pending | pending |
 
