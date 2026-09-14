@@ -8,7 +8,7 @@
 - Immutable baseline: `4213d8bd6b21448401f9aba9a10208303672c7c6`
 - Integration branch: `integration/expertiseos-mvp`
 - Started: 2026-09-14
-- Current state: `integration_queue`
+- Current state: `promotion_ready`
 - Fast multi-agent TDD: not used, per explicit user direction
 - Development method: Spec Kit tasks with proportionate unit, integration, end-to-end, static, and smoke verification
 
@@ -201,4 +201,26 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Evidence: `specs/002-consent-core/implementation-handoff.md` on the component branch.
 - Known integration risk: grouped explicit calls are sequential and report partial failure truthfully; C001 provides no cross-call rollback contract.
 
-No C002 integration or promotion has completed yet.
+### C002 Integration Gate
+
+- Integration began from clean audit commit `4d4b1e5`; `begin_integration` validation passed for C002.
+- Explicit merge commit: `d757d10d4a1e3a2bad1a40a71ecb60709f310501`
+- Integration-owned E01 and acceptance tests: `tests/integration/test_consent_foundation_handoff.py` and `tests/e2e/test_acceptance_consent.py`.
+- First Ruff format check: exit 1; both new tests required mechanical formatting. Correction: `rtk .venv-arm64/bin/ruff format tests/integration/test_consent_foundation_handoff.py tests/e2e/test_acceptance_consent.py`; exit 0.
+- First isolated-test mypy command: exit 1 with 20 import-resolution errors because the editable package was treated as an untyped installed dependency. Correction: use the repository-defined `rtk .venv-arm64/bin/mypy src tests` scope; no source fallback or ignore was added.
+- Tested integration SHA: `b6b6e1c23f5c7858e7b827bea72015dd9e312443`
+- `rtk .venv-arm64/bin/ruff format --check src tests`: exit 0; 46 files formatted
+- `rtk .venv-arm64/bin/ruff check src tests`: exit 0
+- `rtk .venv-arm64/bin/mypy src tests`: exit 0; 46 source files checked
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 20 passed in 30.55 seconds
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 4 passed in 0.05 seconds
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 96 passed in 30.57 seconds
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON
+- `rtk git diff --check`: exit 0
+- E01 evidence passes the actual C001 fake-host observation and fake-backend record through C002 proposal, grant, gate, commit, exact read-back, and SQLite receipt.
+- AT-04 through AT-06 include exact approved metadata/receipt, skip/cancel/unrelated/session-end/restart absence, and forged/ambiguous zero-write paths.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c002.json`; schema version 2; cumulative E00-E01 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+No C002 promotion has completed yet.
