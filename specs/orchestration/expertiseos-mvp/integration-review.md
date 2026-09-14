@@ -8,7 +8,7 @@
 - Immutable baseline: `4213d8bd6b21448401f9aba9a10208303672c7c6`
 - Integration branch: `integration/expertiseos-mvp`
 - Started: 2026-09-14
-- Current state: `implementation_ready`
+- Current state: `implementing`
 - Fast multi-agent TDD: not used, per explicit user direction
 - Development method: Spec Kit tasks with proportionate unit, integration, end-to-end, static, and smoke verification
 
@@ -104,4 +104,14 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 
 ## Integration History
 
-No component implementation or integration has started. Implementation remains closed until all planning packages, analysis remediation, reconciliation, DAG construction, and edge work packets pass.
+### Implementation Wave 1 Activation
+
+- Activated: 2026-09-14
+- Dependency-ready component: C001 feasibility/bootstrap
+- Stable owner: `/root/owner_feasibility`
+- Starting planning commit: `b00db7e41ba5d995bb9030c7b81476f845043509`
+- Downstream components remain blocked pending a green C001 integration promotion SHA.
+- State validation command: `python3 /Users/admin/.codex/skills/speckit-orchestrate/scripts/validate_orchestration_state.py --state implementation_ready --transition start_implementation_wave --actor main_agent --evidence activation_record=specs/orchestration/expertiseos-mvp/integration-review.md`
+- State validation result: exit 0; accepted transition from `implementation_ready` to `implementing`.
+
+No component implementation or integration has completed yet.
