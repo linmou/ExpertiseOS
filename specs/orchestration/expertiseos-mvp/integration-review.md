@@ -330,3 +330,20 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Verified semantics include pass-only advancement, explicit defaults `1,1,1,1,2`, adjustable valid thresholds, invalid numeric rejection, and every autonomous non-numeric safeguard.
 - Local transition validation: `local_component_passed`, C004, exit 0, accepted from `implementing` to `integration_queue`.
 - Evidence: `specs/004-learning-controls/verification.md` on the component branch.
+
+### C004 Integration Start And Persistence Handoffs
+
+- Integration began from clean audit commit `2445e98`; `begin_integration` validation passed for C004.
+- Explicit merge commit: `d818f59`.
+- C002-owned SQLite schema/API implementation commit: `38d170c`.
+- Integration-owned persistence suite: `tests/integration/test_learning_state_sqlite.py`.
+- Integration-owned E03 test: `tests/integration/test_approved_learning_state_handoff.py`.
+- Integration-owned E04 test: `tests/integration/test_retrieval_learning_handoff.py`.
+- Initial focused persistence run: exit 0; 3 passed.
+- Initial static pass found only mechanical formatting, one unused import, and two strict row/import typing errors. Ruff formatting and direct type/import corrections were applied without behavior changes.
+- First C002 regression run found one obsolete assertion that approval receipts were the only SQLite table. It was updated to the approved migrated schema and retains the no-candidate-table invariant.
+- Contract review found exclusion and deferred removal lacked required optimistic state versions. Both now require the current control version and advance it atomically; stale writes fail explicitly.
+- Focused E03/E04/persistence/schema verification: exit 0; 10 passed in 0.09 seconds.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 78 source files checked.
+- `rtk .venv-arm64/bin/python -m ruff check src tests`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check src tests`: exit 0; 78 files formatted.

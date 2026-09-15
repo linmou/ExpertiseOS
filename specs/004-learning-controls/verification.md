@@ -61,14 +61,20 @@ Initial environment diagnostics: the PATH `pytest` process terminated with signa
 
 ## Integration-Owned Work
 
-Tasks T038-T042 remain open by explicit orchestration instruction:
+Integration accepted the SQLite schema/API request in implementation commit `38d170c` after explicit component merge `d818f59`.
 
-- C002-owned `src/expertiseos/state/sqlite.py` must implement the exact schema/API request in `contracts/sqlite-schema-request.md`.
-- Integration must test migration/restart, durable idempotency, stale control versions, global cross-host counts, transaction failure, and bounded reads using the real state implementation.
+- `tests/integration/test_learning_state_sqlite.py` covers fresh and legacy migration, restart, actual approval-receipt binding, version/scope filtering, unavailable-state failure, configurable threshold persistence, stale control versions, global duplicate event handling, transaction rollback, bounded reads, and approved-reference-only deferred schema.
+- `tests/integration/test_approved_learning_state_handoff.py` consumes an actual C002 gate/grant/receipt result in C004 persistence and mastery summary.
+- `tests/integration/test_retrieval_learning_handoff.py` consumes an actual C003 retrieval result in C004 validation, summary, and inspection.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_learning_state_sqlite.py tests/integration/test_approved_learning_state_handoff.py tests/integration/test_retrieval_learning_handoff.py tests/unit/test_approval_receipts.py`: PASS; 10 passed in 0.09 seconds.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: PASS; 78 source files checked.
+- `rtk .venv-arm64/bin/python -m ruff check src tests`: PASS.
+- `rtk .venv-arm64/bin/python -m ruff format --check src tests`: PASS; 78 files formatted.
+
+Task T042 remains open until the green C004 promotion SHA is delivered downstream:
+
 - C008 must wire the tested C004 functions to the public service/MCP and real C005/C006 host control paths.
 - The integration owner must record actual producer-to-consumer edge evidence and promotion SHA.
-
-Unavailable-state and stale persisted-version assertions were kept in T039-T040 rather than replaced with synthetic local storage tests.
 
 ## Requirement Trace
 
