@@ -171,7 +171,7 @@
 - [X] T057 Run repository lint, formatting, and static/type checks, including mypy for modified Python modules
 - [X] T058 Run the repository smoke/install command and verify both host packages reference the same `skill/SKILL.md`
 - [X] T059 Inspect the final diff to confirm changes are limited to C008-owned source paths and `specs/008-product-integration/`
-- [ ] T060 Provide the integration owner with the component commit SHA, commands, exit codes, evidence paths, capability limits, upstream defects found, and files intentionally not added
+- [X] T060 Provide the integration owner with the component commit SHA, commands, exit codes, evidence paths, capability limits, upstream defects found, and files intentionally not added
 
 ---
 
