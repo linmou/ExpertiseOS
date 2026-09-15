@@ -347,3 +347,22 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 78 source files checked.
 - `rtk .venv-arm64/bin/python -m ruff check src tests`: exit 0.
 - `rtk .venv-arm64/bin/python -m ruff format --check src tests`: exit 0; 78 files formatted.
+
+### C004 Integration Gate
+
+- Final affected acceptance coverage added: `tests/e2e/test_acceptance_learning_controls.py` for AT-07 and AT-09 through AT-11.
+- Tested integration SHA: `276f4cd571c1eaddc6ea8d6c5abb06960dffcba3`.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 45 passed in 81.53 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 8 passed in 0.08 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 195 passed in 81.91 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_local_backend_offline.py`: exit 0; 1 passed in 11.53 seconds with outbound network denied.
+- `rtk env EXPERTISEOS_BENCHMARK_EVIDENCE=/tmp/expertiseos-c004-final-benchmark.json .venv-arm64/bin/python -m pytest -q tests/performance/test_retrieval_benchmark.py`: exit 0; 1 passed; 10,000-note warm p95 `5.640 ms`.
+- `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 79 files formatted.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 79 source files checked.
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0.
+- E03 consumes the actual receipt produced by C002's candidate/grant/gate path in C004 persistence and summary; E04 consumes the actual C003 retrieval output in C004 validation, summary, and inspection.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c004.json`; schema version 2; cumulative E00-E04 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
