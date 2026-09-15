@@ -2,9 +2,9 @@
 
 **Intent**: State what is integrated and verified without implying unfinished MVP capabilities are available.
 
-**Updated**: 2026-09-14  
+**Updated**: 2026-09-15  
 **Integration branch**: `integration/expertiseos-mvp`
-**Verified through**: C008 tested code `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`
+**Verified through**: C008 promotion `bcc5f8c0f4389442cad3675a1559e27384cfc40a`; tested code `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`
 
 ## Integrated Components
 
@@ -15,7 +15,7 @@
 - C005 Codex host is promoted at `edf03b653ee59f9c8a2db2f7c1df7b591e5a05d4`.
 - C006 Claude host is promoted at `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`.
 - C007 ownership/reliability is promoted at `2e9555772b6dfefd9aab8403910f4280ca3de44a`.
-- C008 product integration passed its complete integration gate at `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`.
+- C008 product integration is promoted at `bcc5f8c0f4389442cad3675a1559e27384cfc40a`; its complete integration gate passed at tested code `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`.
 
 ## C003 Verified Behavior
 

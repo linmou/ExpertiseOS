@@ -624,3 +624,15 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c008.json`; schema version 2; cumulative E00-E11 coverage.
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+### C008 Promotion And Final Verification
+
+- Fully tested code SHA: `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`.
+- Integration audit candidate and immutable C008 promotion SHA: `bcc5f8c0f4389442cad3675a1559e27384cfc40a`.
+- Candidate smoke command: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; `{"service": "expertiseos", "status": "bootstrap-ready"}`.
+- `promote_green_state`: exit 0; accepted from `promotion_ready` to `propagating` for C008.
+- C008 has no downstream component; no branch receipt is required.
+- `propagation_complete`: exit 0; accepted from `propagating` to `final_verification`.
+- Final gates at the fully tested code SHA: 97 integration tests, 62 end-to-end tests, 397 full-suite tests, four offline tests with zero outbound attempts, strict mypy across 135 files, Ruff check and format across 136 files, health smoke, diff check, and all three 10,000-object benchmark thresholds passed.
+- Final verification retains the proven host limits: authenticated Codex and Claude persistent writes remain unavailable, and public distribution remains blocked pending Basic Memory AGPL packaging review.
+- This final audit changes documentation only; its commit is smoke-verified after creation and reported separately so the document does not claim its own SHA.
