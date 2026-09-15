@@ -443,3 +443,38 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - No downstream branch was unblocked because C008 also requires promoted C006 and C007 states.
 - `propagation_complete`: exit 0; accepted from `propagating` to `final_verification` with no premature downstream merge.
 - C005 owner released after successful promotion.
+
+### C006 Local Component Gate
+
+- Completed component tasks: 26/31; five authenticated live/configuration tasks remain open.
+- Component implementation commit: `0dbabb2a6dd4630a5f9ae01bb078b2c1e6b57137`.
+- Final component audit commit: `199ceb657d506d13ec291ad7ba4aaed4b731123c`.
+- Worktree status: clean.
+- Component suite: 49 passed; full local suite: 244 passed.
+- Ruff format/check, strict mypy over `src tests`, import, and bootstrap smoke passed.
+- Proven behavior: exact environment capability gating, event normalization, C004 controls/exclusions, bounded C003 retrieval, C002 expiry and decision binding, exact Save/Skip/Edit/direct-save parsing, and Saved only for typed committed results.
+- Capability limits: automatic activation, configuration preservation, live atomic ordering, actual-user decision validation, and persistent writes remain unavailable without the authenticated live fixture.
+- Local transition validation: `local_component_passed`, C006, exit 0, accepted from `implementing` to `integration_queue`.
+- Evidence: `specs/006-claude-host/implementation-evidence.md` on the component branch.
+
+### C006 Integration Gate
+
+- Integration began from clean C005 receipt-audit commit `e209b69`; `begin_integration` validation passed for C006.
+- Explicit merge commit: `58a07e6`.
+- Integration-owned E06 test: `tests/integration/test_claude_control_handoff.py`.
+- Integration-owned deterministic acceptance coverage: `tests/e2e/test_acceptance_claude.py` for applicable AT-01, AT-03, AT-06, and AT-11 behavior.
+- E06 passes actual C004 active, pause, fatigue-rest, target-satisfied, and disabled resolutions through all C006 interaction guards. Source, path, and session exclusions block all interaction kinds; paused approved recall reaches the actual adapter search guard.
+- Tested integration SHA: `034476ed95f48de552f58c85e5e6010e55fd7ce9`.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 78 passed in 69.55 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 17 passed in 0.08 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 308 passed in 70.68 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_local_backend_offline.py`: exit 0; 1 passed in 9.61 seconds with outbound network denied.
+- `rtk env EXPERTISEOS_BENCHMARK_EVIDENCE=/tmp/expertiseos-c006-integration-benchmark.json .venv-arm64/bin/python -m pytest -q tests/performance/test_retrieval_benchmark.py`: exit 0; 1 passed; 10,000-note warm retrieval p95 `5.363 ms`.
+- `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 97 files formatted.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 97 source files checked.
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c006.json`; schema version 2; cumulative E00-E06 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
