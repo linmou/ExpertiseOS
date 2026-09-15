@@ -71,10 +71,7 @@ Integration accepted the SQLite schema/API request in implementation commit `38d
 - `rtk .venv-arm64/bin/python -m ruff check src tests`: PASS.
 - `rtk .venv-arm64/bin/python -m ruff format --check src tests`: PASS; 78 files formatted.
 
-Task T042 remains open until the green C004 promotion SHA is delivered downstream:
-
-- C008 must wire the tested C004 functions to the public service/MCP and real C005/C006 host control paths.
-- The integration owner must record actual producer-to-consumer edge evidence and promotion SHA.
+The tested contract and green C004 promotion SHA `633961d62a63ff761b992df768b1c04b173e2cd4` were delivered to C005-C007. The C004-to-C008 contract and SHA are recorded in the integration edge packet for delivery after C008's remaining prerequisites promote. T042 is complete; C008 still owns public service/MCP wiring.
 
 ## Requirement Trace
 

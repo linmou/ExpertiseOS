@@ -161,6 +161,29 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
 
+### C004 Promotion And Wave 5 Receipts
+
+- Promotion candidate and immutable promotion SHA: `633961d62a63ff761b992df768b1c04b173e2cd4`.
+- Promotion smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; bootstrap-ready JSON.
+- `promote_green_state`: exit 0; accepted from `promotion_ready` to `propagating` for C004.
+- C005 receipt merge: `12664ee3959bd736d1214533fb1ae21a1fb8c34a`.
+- C006 receipt merge: `649cb66533e78901a71a0a1c7fbd268cb9929fe2`.
+- C007 receipt merge: `a121bf560a20937fa8d0e7017a13bd402427bb33`.
+- Each downstream worktree passed `tests/integration/test_approved_learning_state_handoff.py`, `test_retrieval_learning_handoff.py`, and `tests/e2e/test_acceptance_learning_controls.py`: 6 passed in 0.08 seconds; health smoke passed with bootstrap-ready JSON.
+- One C005 pytest cleanup warning reported a non-empty prior temporary garbage directory after all tests passed; it did not affect repository files or behavior.
+- All three downstream worktrees are clean.
+- `propagation_complete`: exit 0; accepted from `propagating` to `final_verification`.
+- C004 owner released after successful propagation.
+
+### Wave 5 Activation
+
+- Activated: 2026-09-14.
+- Dependency-ready components: C005 Codex host, C006 Claude host, and C007 ownership/reliability.
+- Satisfied prerequisite promotion: C004 `633961d62a63ff761b992df768b1c04b173e2cd4`.
+- Stable owners: `/root/owner_codex`, `/root/owner_claude`, and `/root/owner_reliability`.
+- `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
+- C008 remains blocked until C005-C007 all promote.
+
 ### C001 Promotion And C002 Receipt
 
 - Promotion candidate and immutable promotion SHA: `f7b1eb59a7d1837c367095e195ea7a42ead20098`

@@ -10,7 +10,7 @@
 - C001 feasibility/bootstrap is promoted at `f7b1eb59a7d1837c367095e195ea7a42ead20098`.
 - C002 consent core is promoted at `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`.
 - C003 backend retrieval is promoted at `166f196638e66e4aea324ee12d117507963e7629`.
-- C004 learner evidence and controls are under integration verification.
+- C004 learner evidence and controls are promoted at `633961d62a63ff761b992df768b1c04b173e2cd4`.
 
 ## C003 Verified Behavior
 
@@ -31,6 +31,6 @@
 
 ## Current Limits
 
-- C004-C008 remain unpromoted; host adapters, ownership/reliability, and final product wiring are not yet available.
+- C005-C008 remain unpromoted; host adapters, ownership/reliability, and final product wiring are not yet available.
 - Codex and Claude persistent writes remain unavailable until authenticated six-step host decision fixtures pass.
 - Public distribution remains blocked pending Basic Memory AGPL packaging review.

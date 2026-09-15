@@ -139,7 +139,7 @@
 - [X] T039 Add integration tests using the real C002 state adapter and C003 approved object facts for fresh migration, restart, receipt binding, version/scope filtering, and unavailable-state failure in `tests/integration/test_learning_state_sqlite.py`
 - [X] T040 Add integration tests for threshold persistence/update validation, duplicate evidence/reflection/effort delivery from distinct hosts, stale control versions, atomic counter failures, bounded inspection, and deferred schema without free-form content in `tests/integration/test_learning_state_sqlite.py`
 - [X] T041 Run `tests/integration/test_learning_state_sqlite.py` with the actual producer artifacts and record command, exit code, dependency SHAs, and result in `specs/004-learning-controls/verification.md`
-- [ ] T042 Provide C005-C008 with the tested control/inspection contract and integration SHA through the integration owner's edge packet, referencing `specs/004-learning-controls/contracts/learning-controls.md`
+- [X] T042 Provide C005-C008 with the tested control/inspection contract and integration SHA through the integration owner's edge packet, referencing `specs/004-learning-controls/contracts/learning-controls.md`
 
 **Checkpoint**: FR-024, SC-004 through SC-006, and the C002/C003 handoffs are proven with real artifacts.
 
