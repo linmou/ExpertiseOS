@@ -17,9 +17,25 @@ from enum import Enum, StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Protocol, cast
 
-from expertiseos.domain.models import ApprovalReceipt, PendingOperationKind
+from expertiseos.domain.models import ApprovalReceipt, LearnerState, PendingOperationKind
 from expertiseos.hosts.contract import EventKind, HostEvent
 from expertiseos.knowledge.backend import KnowledgeBackend, KnowledgeRecord, KnowledgeStatus
+from expertiseos.learning.controls import (
+    ApprovedKnowledgeRef,
+    ControlSettings,
+    DeferredActivity,
+    DeferredStatus,
+    ExclusionKind,
+    PeriodProgress,
+    ScopeExclusion,
+    TargetPeriod,
+)
+from expertiseos.learning.evidence import (
+    AdvancementThresholds,
+    AssistanceLevel,
+    EvidenceOutcome,
+    LearnerEvidence,
+)
 from expertiseos.state.sqlite import SQLiteState
 
 SCHEMA_VERSION = 1
@@ -33,6 +49,7 @@ ALLOWED_RECORD_TYPES = frozenset(
         "learner_summary",
         "control",
         "progress",
+        "scope_exclusion",
         "deferred_activity",
     }
 )
@@ -45,6 +62,7 @@ RESTORE_ORDER = (
     "learner_summary",
     "control",
     "progress",
+    "scope_exclusion",
     "deferred_activity",
 )
 
@@ -458,12 +476,27 @@ class SQLiteSnapshotSource:
             for item in self._state.list_evidence(ref.knowledge_id, ref.version, None, 20)
         )
         settings = self._state.read_control_state()
+        control: tuple[object, ...] = ()
+        if settings is not None:
+            control_record = cast(dict[str, object], _jsonable(settings))
+            control_record["approval_receipt_id"] = self._state.read_control_approval_receipt_id()
+            control = (control_record,)
+        progress: list[Mapping[str, object]] = []
+        for key in scope.period_keys:
+            if not self._state.has_period_progress(key):
+                continue
+            record = cast(dict[str, object], _jsonable(self._state.read_period_progress(key)))
+            record["effort_events"] = [
+                [event_id, str(units)] for event_id, units in self._state.read_effort_events(key)
+            ]
+            progress.append(record)
         values: dict[str, tuple[object, ...]] = {
             "approval_receipt": receipts,
             "learner_evidence": evidence,
             "learner_summary": (),
-            "control": () if settings is None else (settings,),
-            "progress": tuple(self._state.read_period_progress(key) for key in scope.period_keys),
+            "control": control,
+            "progress": tuple(progress),
+            "scope_exclusion": self._state.list_exclusions(20),
             "deferred_activity": self._state.list_deferred(None, 20),
         }
         return tuple(
@@ -473,6 +506,279 @@ class SQLiteSnapshotSource:
             )
             for record_type in scope.record_types
             if record_type in values
+        )
+
+
+def _record_text(record: Mapping[str, object], key: str) -> str:
+    value = record.get(key)
+    if not isinstance(value, str) or not value:
+        raise OwnershipError(f"portable {key} is invalid")
+    return value
+
+
+def _record_int(record: Mapping[str, object], key: str) -> int:
+    value = record.get(key)
+    if not isinstance(value, int) or isinstance(value, bool):
+        raise OwnershipError(f"portable {key} is invalid")
+    return value
+
+
+def _record_bool(record: Mapping[str, object], key: str) -> bool:
+    value = record.get(key)
+    if not isinstance(value, bool):
+        raise OwnershipError(f"portable {key} is invalid")
+    return value
+
+
+def _record_optional_text(record: Mapping[str, object], key: str) -> str | None:
+    value = record.get(key)
+    if value is not None and not isinstance(value, str):
+        raise OwnershipError(f"portable {key} is invalid")
+    return value
+
+
+def _record_text_tuple(record: Mapping[str, object], key: str) -> tuple[str, ...]:
+    value = record.get(key)
+    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+        raise OwnershipError(f"portable {key} is invalid")
+    return tuple(value)
+
+
+def _record_refs(record: Mapping[str, object], key: str) -> tuple[tuple[str, int], ...]:
+    value = record.get(key)
+    if not isinstance(value, list):
+        raise OwnershipError(f"portable {key} is invalid")
+    refs: list[tuple[str, int]] = []
+    for item in value:
+        if (
+            not isinstance(item, list)
+            or len(item) != 2
+            or not isinstance(item[0], str)
+            or not isinstance(item[1], int)
+            or isinstance(item[1], bool)
+        ):
+            raise OwnershipError(f"portable {key} is invalid")
+        refs.append((item[0], item[1]))
+    return tuple(refs)
+
+
+def _parse_receipt(record: Mapping[str, object]) -> ApprovalReceipt:
+    return ApprovalReceipt(
+        _record_text(record, "operation_id"),
+        _record_text(record, "proposal_id"),
+        PendingOperationKind(_record_text(record, "operation_kind")),
+        _record_refs(record, "object_ids_versions"),
+        _record_text(record, "content_digest"),
+        _record_text(record, "user_event_ref"),
+        _record_text(record, "adapter_id"),
+        datetime.fromisoformat(_record_text(record, "created_at")),
+    )
+
+
+def _parse_evidence(record: Mapping[str, object]) -> LearnerEvidence:
+    approved_state = _record_optional_text(record, "approved_state")
+    return LearnerEvidence(
+        _record_text(record, "id"),
+        _record_text(record, "knowledge_id"),
+        _record_int(record, "knowledge_version"),
+        _record_optional_text(record, "task_ref"),
+        _record_text(record, "session_id"),
+        _record_text(record, "criterion"),
+        EvidenceOutcome(_record_text(record, "outcome")),
+        AssistanceLevel(_record_text(record, "assistance_level")),
+        _record_optional_text(record, "scope"),
+        _record_optional_text(record, "user_contribution"),
+        LearnerState(_record_text(record, "proposed_state")),
+        None if approved_state is None else LearnerState(approved_state),
+        _record_bool(record, "is_meaningful_transfer"),
+        _record_text(record, "approval_receipt_id"),
+        datetime.fromisoformat(_record_text(record, "created_at")),
+    )
+
+
+def _parse_control(record: Mapping[str, object]) -> tuple[ControlSettings, str]:
+    thresholds = record.get("advancement_thresholds")
+    if not isinstance(thresholds, dict):
+        raise OwnershipError("portable advancement_thresholds is invalid")
+    pause_until = _record_optional_text(record, "pause_until")
+    fatigue_until = _record_optional_text(record, "fatigue_rest_until")
+    settings = ControlSettings(
+        _record_bool(record, "enabled"),
+        _record_bool(record, "learning_paused"),
+        None if pause_until is None else datetime.fromisoformat(pause_until),
+        TargetPeriod(_record_text(record, "target_period")),
+        _record_int(record, "reflection_target"),
+        Decimal(_record_text(record, "effort_limit")),
+        _record_int(record, "rest_interval_minutes"),
+        None if fatigue_until is None else datetime.fromisoformat(fatigue_until),
+        _record_text(record, "timezone_id"),
+        AdvancementThresholds(
+            _record_int(thresholds, "recognized_passes"),
+            _record_int(thresholds, "explained_passes"),
+            _record_int(thresholds, "applied_passes"),
+            _record_int(thresholds, "transferred_passes"),
+            _record_int(thresholds, "autonomous_passes"),
+        ),
+        _record_int(record, "version"),
+    )
+    return settings, _record_text(record, "approval_receipt_id")
+
+
+def _parse_progress(
+    record: Mapping[str, object],
+) -> tuple[PeriodProgress, tuple[tuple[str, Decimal], ...]]:
+    raw_events = record.get("effort_events")
+    if not isinstance(raw_events, list):
+        raise OwnershipError("portable effort_events is invalid")
+    effort_events: list[tuple[str, Decimal]] = []
+    for item in raw_events:
+        if (
+            not isinstance(item, list)
+            or len(item) != 2
+            or not isinstance(item[0], str)
+            or not isinstance(item[1], str)
+        ):
+            raise OwnershipError("portable effort_events is invalid")
+        effort_events.append((item[0], Decimal(item[1])))
+    progress = PeriodProgress(
+        _record_text(record, "period_key"),
+        _record_int(record, "reflection_count"),
+        Decimal(_record_text(record, "effort_units")),
+        _record_text_tuple(record, "reflection_event_ids"),
+        _record_text_tuple(record, "effort_event_ids"),
+    )
+    return progress, tuple(effort_events)
+
+
+def _parse_exclusion(record: Mapping[str, object]) -> ScopeExclusion:
+    return ScopeExclusion(
+        _record_text(record, "id"),
+        ExclusionKind(_record_text(record, "kind")),
+        _record_text(record, "value"),
+        datetime.fromisoformat(_record_text(record, "created_at")),
+        _record_text(record, "approval_receipt_id"),
+    )
+
+
+def _parse_deferred(record: Mapping[str, object]) -> DeferredActivity:
+    raw_refs = record.get("knowledge_refs")
+    if not isinstance(raw_refs, list):
+        raise OwnershipError("portable knowledge_refs is invalid")
+    refs: list[ApprovedKnowledgeRef] = []
+    for raw_ref in raw_refs:
+        if not isinstance(raw_ref, dict):
+            raise OwnershipError("portable knowledge_refs is invalid")
+        refs.append(
+            ApprovedKnowledgeRef(
+                _record_text(raw_ref, "knowledge_id"),
+                _record_int(raw_ref, "version"),
+            )
+        )
+    return DeferredActivity(
+        _record_text(record, "id"),
+        tuple(refs),
+        _record_text(record, "activity_type"),
+        datetime.fromisoformat(_record_text(record, "created_at")),
+        DeferredStatus(_record_text(record, "status")),
+        _record_text(record, "approval_receipt_id"),
+    )
+
+
+def _validate_sqlite_record(record_type: str, record: Mapping[str, object]) -> None:
+    if record_type == "approval_receipt":
+        _parse_receipt(record)
+    elif record_type == "learner_evidence":
+        _parse_evidence(record)
+    elif record_type == "control":
+        _parse_control(record)
+    elif record_type == "progress":
+        _parse_progress(record)
+    elif record_type == "scope_exclusion":
+        _parse_exclusion(record)
+    elif record_type == "deferred_activity":
+        _parse_deferred(record)
+    elif record_type == "learner_summary":
+        raise OwnershipError("learner summaries must be derived after restore")
+
+
+class SQLiteSnapshotIdentityLookup:
+    """Resolve identity digests from the actual destination SQLite state."""
+
+    def __init__(self, state: SQLiteState, scope: ExportScope) -> None:
+        self._digests: dict[tuple[str, str, int], str] = {}
+        for section in SQLiteSnapshotSource(state).snapshot(scope):
+            for record in section.records:
+                identity, version = _identity(section.record_type, record)
+                self._digests[(section.record_type, identity, version)] = _digest(record)
+
+    def digest_for(self, record_type: str, identity: str, version: int) -> str | None:
+        return self._digests.get((record_type, identity, version))
+
+
+class SQLiteLearningRestoreTarget:
+    """Apply validated C002/C004 portable sections to the shared SQLite state."""
+
+    def __init__(self, state: SQLiteState) -> None:
+        self._state = state
+
+    def restore_section(
+        self,
+        record_type: str,
+        records: tuple[Mapping[str, object], ...],
+        operation_id: str,
+    ) -> int:
+        if record_type == "approval_receipt":
+            for record in records:
+                self._state.record_receipt(_parse_receipt(record))
+        elif record_type == "learner_evidence":
+            for record in records:
+                self._state.insert_evidence_once(_parse_evidence(record))
+        elif record_type == "control":
+            for record in records:
+                settings, receipt_id = _parse_control(record)
+                self._state.restore_control_state(settings, receipt_id)
+        elif record_type == "progress":
+            for record in records:
+                progress, effort_events = _parse_progress(record)
+                self._state.restore_period_progress(progress, effort_events, operation_id)
+        elif record_type == "scope_exclusion":
+            for record in records:
+                self._state.restore_exclusion(_parse_exclusion(record))
+        elif record_type == "deferred_activity":
+            for record in records:
+                self._state.insert_deferred_once(_parse_deferred(record))
+        elif record_type == "learner_summary" and not records:
+            return 0
+        else:
+            raise OwnershipError(f"SQLite restore does not own {record_type}")
+        return len(records)
+
+    def rebuild_index(self) -> None:
+        return None
+
+
+class SQLiteLearningDeletionTarget:
+    """Apply C007 approved deletion plans to actual C004 SQLite state."""
+
+    def __init__(self, state: SQLiteState) -> None:
+        self._state = state
+
+    def delete_learning_scope(
+        self,
+        refs: tuple[KnowledgeRef, ...],
+        remove_evidence_excerpts: bool,
+        remove_deferred_activities: bool,
+        operation_id: str,
+    ) -> tuple[DeletionTargetResult, ...]:
+        evidence, deferred = self._state.delete_learning_scope(
+            tuple((item.knowledge_id, item.version) for item in refs),
+            remove_evidence_excerpts,
+            remove_deferred_activities,
+            operation_id,
+        )
+        return (
+            DeletionTargetResult("learner_evidence", True, str(evidence)),
+            DeletionTargetResult("deferred_activity", True, str(deferred)),
         )
 
 
@@ -654,6 +960,7 @@ def validate_restore(source: Path, lookup: ExistingIdentityLookup) -> RestorePla
                     raise OwnershipError("portable record is not an object")
                 record = cast(dict[str, object], value)
                 identity, version = _identity(record_type, record)
+                _validate_sqlite_record(record_type, record)
                 incoming = _digest(record)
                 local = lookup.digest_for(record_type, identity, version)
                 if local is not None and local != incoming:

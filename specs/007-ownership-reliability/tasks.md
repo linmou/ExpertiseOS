@@ -64,7 +64,7 @@
 - [X] T018 [P] [US2] Add retirement recall/history/link, scoped deletion, missing-source-unavailable, relationship, revision, excerpt, and invalid-deferred cases with the required header in `tests/integration/test_retire_delete.py` (FR-007 through FR-010, SC-003, SC-004)
 - [X] T019 [P] [US2] Add keep/delete uninstall-choice contract cases with the required header in `tests/integration/test_uninstall_data_choice.py` (FR-011, SC-013)
 - [X] T020 [US2] Implement exact approved retirement planning/result behavior against C002/C003 protocols in `src/expertiseos/ownership.py` (FR-007)
-- [ ] T021 [US2] Implement enumerated idempotent deletion plans, actual C003/C004 cleanup, dependent-reference handling, and per-location results in `src/expertiseos/ownership.py` (FR-008, FR-009, FR-023)
+- [X] T021 [US2] Implement enumerated idempotent deletion plans, actual C003/C004 cleanup, dependent-reference handling, and per-location results in `src/expertiseos/ownership.py` (FR-008, FR-009, FR-023)
 - [X] T022 [US2] Implement explicit external deletion-limit reporting and keep/delete uninstall plans in `src/expertiseos/ownership.py` (FR-010, FR-011)
 - [X] T023 [US2] Run `pytest tests/integration/test_retire_delete.py tests/integration/test_uninstall_data_choice.py` and record canonical/index/excerpt/evidence/deferred outcomes in `artifacts/verification/c007-delete-uninstall.json` (SC-003, SC-004, SC-013)
 

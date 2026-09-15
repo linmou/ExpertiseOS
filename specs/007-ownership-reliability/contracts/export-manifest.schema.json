@@ -18,7 +18,7 @@
         "additionalProperties": false,
         "required": ["record_type", "path", "sha256", "bytes", "count"],
         "properties": {
-          "record_type": {"enum": ["knowledge", "relationship", "source_reference", "approval_receipt", "learner_evidence", "learner_summary", "control", "progress", "deferred_activity"]},
+          "record_type": {"enum": ["knowledge", "relationship", "source_reference", "approval_receipt", "learner_evidence", "learner_summary", "control", "progress", "scope_exclusion", "deferred_activity"]},
           "path": {"type": "string", "minLength": 1},
           "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "bytes": {"type": "integer", "minimum": 0},

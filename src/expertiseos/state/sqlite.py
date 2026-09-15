@@ -447,6 +447,58 @@ class SQLiteState:
             int(row[14]),
         )
 
+    def read_control_approval_receipt_id(self) -> str | None:
+        row = self._connection.execute(
+            "SELECT approval_receipt_id FROM control_state WHERE singleton = 1"
+        ).fetchone()
+        return None if row is None else str(row[0])
+
+    def restore_control_state(
+        self, settings: ControlSettings, approval_receipt_id: str
+    ) -> ControlSettings:
+        """Restore one validated control snapshot without replaying change history."""
+        self._require_receipt(approval_receipt_id, PendingOperationKind.CONTROL_CHANGE)
+        current = self.read_control_state()
+        current_receipt = self.read_control_approval_receipt_id()
+        if current is not None:
+            if current != settings or current_receipt != approval_receipt_id:
+                raise ReceiptConflictError("restored control state conflicts with current state")
+            return current
+        thresholds = settings.advancement_thresholds
+        with self._connection:
+            self._connection.execute(
+                """
+                INSERT INTO control_state (
+                    singleton, enabled, learning_paused, pause_until, target_period,
+                    reflection_target, effort_limit, rest_interval_minutes,
+                    fatigue_rest_until, timezone_id, recognized_passes, explained_passes,
+                    applied_passes, transferred_passes, autonomous_passes, version,
+                    approval_receipt_id
+                ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    int(settings.enabled),
+                    int(settings.learning_paused),
+                    None if settings.pause_until is None else settings.pause_until.isoformat(),
+                    settings.target_period.value,
+                    settings.reflection_target,
+                    str(settings.effort_limit),
+                    settings.rest_interval_minutes,
+                    None
+                    if settings.fatigue_rest_until is None
+                    else settings.fatigue_rest_until.isoformat(),
+                    settings.timezone_id,
+                    thresholds.recognized_passes,
+                    thresholds.explained_passes,
+                    thresholds.applied_passes,
+                    thresholds.transferred_passes,
+                    thresholds.autonomous_passes,
+                    settings.version,
+                    approval_receipt_id,
+                ),
+            )
+        return settings
+
     def read_period_progress(self, period_key: str) -> PeriodProgress:
         row = self._connection.execute(
             "SELECT reflection_count, effort_units FROM period_progress WHERE period_key = ?",
@@ -473,6 +525,12 @@ class SQLiteState:
         return PeriodProgress(
             period_key, int(row[0]), Decimal(str(row[1])), reflection_ids, effort_ids
         )
+
+    def has_period_progress(self, period_key: str) -> bool:
+        row = self._connection.execute(
+            "SELECT 1 FROM period_progress WHERE period_key = ?", (period_key,)
+        ).fetchone()
+        return row is not None
 
     def _existing_progress_event(
         self, event_id: str, event_kind: str, period_key: str, units: str | None
@@ -531,6 +589,65 @@ class SQLiteState:
                 (str(total), period_key),
             )
         return self.read_period_progress(period_key)
+
+    def read_effort_events(self, period_key: str) -> tuple[tuple[str, Decimal], ...]:
+        rows = self._connection.execute(
+            "SELECT event_id, units FROM progress_events "
+            "WHERE period_key = ? AND event_kind = 'effort' ORDER BY event_id",
+            (period_key,),
+        ).fetchall()
+        return tuple((str(row[0]), Decimal(str(row[1]))) for row in rows)
+
+    def restore_period_progress(
+        self,
+        progress: PeriodProgress,
+        effort_events: tuple[tuple[str, Decimal], ...],
+        operation_id: str,
+    ) -> PeriodProgress:
+        """Restore a validated aggregate and its idempotency events."""
+        if not operation_id.strip():
+            raise DomainValidationError("restore operation id is required")
+        if progress.reflection_count != len(progress.reflection_event_ids):
+            raise DomainValidationError("reflection aggregate does not match event ids")
+        if tuple(event_id for event_id, _ in effort_events) != tuple(
+            sorted(progress.effort_event_ids)
+        ):
+            raise DomainValidationError("effort aggregate does not match event ids")
+        if (
+            any(units <= Decimal("0") for _, units in effort_events)
+            or sum((units for _, units in effort_events), Decimal("0")) != progress.effort_units
+        ):
+            raise DomainValidationError("effort aggregate does not match event units")
+        existing_row = self._connection.execute(
+            "SELECT 1 FROM period_progress WHERE period_key = ?", (progress.period_key,)
+        ).fetchone()
+        if existing_row is not None:
+            if (
+                self.read_period_progress(progress.period_key) != progress
+                or self.read_effort_events(progress.period_key) != effort_events
+            ):
+                raise ReceiptConflictError("restored progress conflicts with current state")
+            return progress
+        try:
+            with self._connection:
+                self._connection.execute(
+                    "INSERT INTO period_progress VALUES (?, ?, ?)",
+                    (progress.period_key, progress.reflection_count, str(progress.effort_units)),
+                )
+                self._connection.executemany(
+                    "INSERT INTO progress_events VALUES (?, 'reflection', ?, NULL)",
+                    ((event_id, progress.period_key) for event_id in progress.reflection_event_ids),
+                )
+                self._connection.executemany(
+                    "INSERT INTO progress_events VALUES (?, 'effort', ?, ?)",
+                    (
+                        (event_id, progress.period_key, str(units))
+                        for event_id, units in effort_events
+                    ),
+                )
+        except sqlite3.IntegrityError as error:
+            raise ReceiptConflictError("restored progress event identity conflicts") from error
+        return progress
 
     def _require_control_version(self, expected_version: int) -> ControlSettings:
         settings = self.read_control_state()
@@ -601,6 +718,38 @@ class SQLiteState:
             )
             for row in rows
         )
+
+    def restore_exclusion(self, exclusion: ScopeExclusion) -> ScopeExclusion:
+        """Restore one approved exclusion without changing snapshot control version."""
+        self._require_receipt(exclusion.approval_receipt_id, PendingOperationKind.CONTROL_CHANGE)
+        row = self._connection.execute(
+            "SELECT id, kind, value, created_at, approval_receipt_id "
+            "FROM scope_exclusions WHERE id = ?",
+            (exclusion.id,),
+        ).fetchone()
+        if row is not None:
+            existing = ScopeExclusion(
+                str(row[0]),
+                ExclusionKind(str(row[1])),
+                str(row[2]),
+                datetime.fromisoformat(str(row[3])),
+                str(row[4]),
+            )
+            if existing != exclusion:
+                raise ReceiptConflictError("restored exclusion conflicts with current state")
+            return existing
+        with self._connection:
+            self._connection.execute(
+                "INSERT INTO scope_exclusions VALUES (?, ?, ?, ?, ?)",
+                (
+                    exclusion.id,
+                    exclusion.kind.value,
+                    exclusion.value,
+                    exclusion.created_at.isoformat(),
+                    exclusion.approval_receipt_id,
+                ),
+            )
+        return exclusion
 
     def insert_deferred_once(self, activity: DeferredActivity) -> DeferredActivity:
         receipt = self._require_receipt(
@@ -705,6 +854,41 @@ class SQLiteState:
             ).fetchall()
         values = tuple(self._get_deferred(str(row[0])) for row in rows)
         return tuple(item for item in values if item is not None)
+
+    def delete_learning_scope(
+        self,
+        object_refs: tuple[tuple[str, int], ...],
+        remove_evidence_excerpts: bool,
+        remove_deferred_activities: bool,
+        operation_id: str,
+    ) -> tuple[int, int]:
+        """Apply an approved deletion scope to C004-owned records."""
+        receipt = self._require_receipt(operation_id, PendingOperationKind.DELETE)
+        if tuple(sorted(object_refs)) != tuple(sorted(receipt.object_ids_versions)):
+            raise ApprovalRejectedError("delete scope differs from approval receipt")
+        evidence_deleted = 0
+        deferred_deleted = 0
+        with self._connection:
+            for knowledge_id, version in object_refs:
+                if remove_evidence_excerpts:
+                    cursor = self._connection.execute(
+                        "DELETE FROM learner_evidence "
+                        "WHERE knowledge_id = ? AND knowledge_version = ?",
+                        (knowledge_id, version),
+                    )
+                    evidence_deleted += cursor.rowcount
+                if remove_deferred_activities:
+                    rows = self._connection.execute(
+                        "SELECT activity_id FROM deferred_activity_refs "
+                        "WHERE knowledge_id = ? AND knowledge_version = ?",
+                        (knowledge_id, version),
+                    ).fetchall()
+                    for row in rows:
+                        cursor = self._connection.execute(
+                            "DELETE FROM deferred_activities WHERE id = ?", (str(row[0]),)
+                        )
+                        deferred_deleted += cursor.rowcount
+        return evidence_deleted, deferred_deleted
 
     def table_names(self) -> tuple[str, ...]:
         rows: Sequence[tuple[str]] = self._connection.execute(
