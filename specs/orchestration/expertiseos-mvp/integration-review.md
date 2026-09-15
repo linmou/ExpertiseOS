@@ -603,3 +603,24 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Acceptance evidence: `specs/008-product-integration/evidence/`; exactly AT-01 through AT-16 are mapped at the tested SHA.
 - Live authenticated write, actual-user decision validation, atomic-boundary observation, and automatic activation remain unproven and false; model-quality misses and false proposals remain explicitly unmeasured and do not alter deterministic results.
 - Local `local_component_passed` transition: exit 0; accepted from `implementing` to `integration_queue`.
+
+### C008 Integration And Edge Handoffs
+
+- `begin_integration`: exit 0; accepted from `integration_queue` to `integrating` for C008.
+- Explicit C008 merge commit: `80eff3b9180859ef250be92b39f31e0bd97add85`.
+- Integration-owned E08-E11 commit and tested integration SHA: `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`.
+- E08 `tests/integration/test_learning_tool_surface_handoff.py` passes actual C004 pass/partial evidence and effective controls through C008 inspection and guarded mutation behavior.
+- E09 and E10 pass actual pinned Codex and Claude events/capability tuples into C008 and retain false write capability and rejected unproven decisions.
+- E11 passes an actual C007 trusted export result and actual C003 keyword fallback response through C008 without exposing authority or backend handles.
+- First focused fixture run: exit 1; two tests passed and two setup assertions failed because E08 supplied a canonical record instead of a C003 search projection and E11 used a selection secret shorter than 32 bytes. Inputs were corrected without product changes.
+- Second focused fixture run: exit 1; E08 correctly excluded an unscoped record and E11 correctly rejected an authority/event session mismatch. Fixture scope and authority identity were aligned with the actual producer data.
+- Final focused E08-E11 command: exit 0; 4 passed in 0.08 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 97 passed in 63.07 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 62 passed in 0.23 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 397 passed in 62.91 seconds.
+- Offline acceptance and fallback command: exit 0; 4 passed in 0.03 seconds with socket connections denied and zero outbound attempts.
+- Benchmark: `/tmp/expertiseos-c008-integration-benchmark.json`; 10,000 objects; bookkeeping p95 `0.000918 ms`, warm retrieval p95 `6.021081 ms`, and approved-write acknowledgement p95 `26.196539 ms`; all thresholds passed.
+- Strict mypy across 135 files, Ruff check and format across 136 files, health smoke, and `rtk git diff --check`: exit 0.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c008.json`; schema version 2; cumulative E00-E11 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.

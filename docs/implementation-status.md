@@ -4,7 +4,7 @@
 
 **Updated**: 2026-09-14  
 **Integration branch**: `integration/expertiseos-mvp`
-**Verified through**: C007 promotion `2e9555772b6dfefd9aab8403910f4280ca3de44a`
+**Verified through**: C008 tested code `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`
 
 ## Integrated Components
 
@@ -15,6 +15,7 @@
 - C005 Codex host is promoted at `edf03b653ee59f9c8a2db2f7c1df7b591e5a05d4`.
 - C006 Claude host is promoted at `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`.
 - C007 ownership/reliability is promoted at `2e9555772b6dfefd9aab8403910f4280ca3de44a`.
+- C008 product integration passed its complete integration gate at `c642f3dc214ef56059e6e87418e6f3732b7e3e4e`.
 
 ## C003 Verified Behavior
 
@@ -57,8 +58,15 @@
 - Canonical failure never renders Saved; index degradation remains separate from commit status and uses bounded local fallback.
 - Persistence audits, explicit uninstall data choices, local transport restrictions, and the deterministic 10,000-object benchmark pass.
 
+## C008 Verified Behavior
+
+- One stateless facade and explicit MCP allowlist expose bounded reads, proposals, guarded commits, learning/control inspection, ownership operations, capabilities, and health without backend writers or approval booleans.
+- Learning evidence, control changes, deferred removal, and deletion use exact C002 proposal/grant binding, actual C004/C007 writers, readback, and one canonical `operation_id`; only completed effects render Saved.
+- Codex and Claude use the same host-neutral behavior skill while retaining their proven capability limits.
+- Scenario A-D and deterministic AT-01 through AT-16 pass, including cross-host state, adversarial content, offline fallback, ownership, and pass-only adjustable mastery checks.
+- Integration verification passed 97 integration tests, 62 end-to-end tests, 397 full-suite tests, strict mypy, Ruff, offline checks, health smoke, and all 10,000-object benchmark thresholds.
+
 ## Current Limits
 
-- C008 product integration is implementing from receipt `d754a5a56596cce559688e4066042235bd3ea35e`; its final wiring remains unpromoted.
 - Codex and Claude persistent writes remain unavailable until authenticated six-step host decision fixtures pass.
 - Public distribution remains blocked pending Basic Memory AGPL packaging review.
