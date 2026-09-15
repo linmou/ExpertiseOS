@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "tested_sha": "03ea840d2b713d87fb6aa20fe1257c20268e2f92",
+  "run": {
+    "command": ["rtk", "env", "PYTHONPATH=src", "/Users/admin/Documents/GitHub.nosynchr/expertiseOS_full-worktrees/expertiseos-mvp/integration/.venv-arm64/bin/python", "-m", "pytest", "tests/e2e", "-q"],
+    "exit_code": 0,
+    "started_at": "2026-09-15T03:51:59Z",
+    "finished_at": "2026-09-15T03:52:00Z",
+    "summary": "62 passed in 0.21s",
+    "environment": [["os", "macOS 15.1.1 arm64"], ["python", "3.12.10"], ["basic_memory", "0.23.2"], ["network_mode", "normal"]]
+  },
+  "evidence": [
+    {"at_id":"AT-01","fixture_versions":["host-activation-v1"],"producer_consumer_edges":["C001->C005","C001->C006","C005->C008","C006->C008"],"edge_artifacts":["tests/e2e/test_acceptance_hosts.py","tests/e2e/test_acceptance_codex.py","tests/e2e/test_acceptance_claude.py"],"result":"pass"},
+    {"at_id":"AT-02","fixture_versions":["scenario-B","c008-acceptance-corpus-v1"],"producer_consumer_edges":["C003->C008"],"edge_artifacts":["tests/e2e/test_acceptance_hosts.py","tests/e2e/test_reference_scenarios.py"],"result":"pass"},
+    {"at_id":"AT-03","fixture_versions":["host-atomic-v1"],"producer_consumer_edges":["C005->C008","C006->C008"],"edge_artifacts":["tests/e2e/test_acceptance_hosts.py","tests/e2e/test_acceptance_codex.py","tests/e2e/test_acceptance_claude.py"],"result":"pass"},
+    {"at_id":"AT-04","fixture_versions":["scenario-A"],"producer_consumer_edges":["C002->C003","C003->C008"],"edge_artifacts":["tests/e2e/test_acceptance_consent.py","tests/e2e/test_reference_scenarios.py"],"result":"pass"},
+    {"at_id":"AT-05","fixture_versions":["negative-consent-v1"],"producer_consumer_edges":["C002->C008"],"edge_artifacts":["tests/e2e/test_acceptance_consent.py","tests/e2e/test_acceptance_reliability.py"],"result":"pass"},
+    {"at_id":"AT-06","fixture_versions":["forged-decision-v1"],"producer_consumer_edges":["C005->C002","C006->C002"],"edge_artifacts":["tests/e2e/test_acceptance_consent.py","tests/e2e/test_acceptance_cross_host.py"],"result":"pass"},
+    {"at_id":"AT-07","fixture_versions":["scenario-A"],"producer_consumer_edges":["C002->C004"],"edge_artifacts":["tests/e2e/test_acceptance_consent.py","tests/e2e/test_acceptance_learning_controls.py"],"result":"pass"},
+    {"at_id":"AT-08","fixture_versions":["scenario-B"],"producer_consumer_edges":["C002->C003"],"edge_artifacts":["tests/e2e/test_acceptance_consent.py","tests/e2e/test_reference_scenarios.py"],"result":"pass"},
+    {"at_id":"AT-09","fixture_versions":["mastery-v1"],"producer_consumer_edges":["C004->C008"],"edge_artifacts":["tests/e2e/test_acceptance_learning_controls.py","tests/e2e/test_acceptance_cross_host.py"],"result":"pass"},
+    {"at_id":"AT-10","fixture_versions":["scenario-C"],"producer_consumer_edges":["C004->C008"],"edge_artifacts":["tests/e2e/test_acceptance_learning_controls.py","tests/e2e/test_reference_scenarios.py"],"result":"pass"},
+    {"at_id":"AT-11","fixture_versions":["scenario-C"],"producer_consumer_edges":["C004->C005","C004->C006"],"edge_artifacts":["tests/e2e/test_acceptance_learning_controls.py","tests/e2e/test_acceptance_codex.py","tests/e2e/test_acceptance_claude.py"],"result":"pass"},
+    {"at_id":"AT-12","fixture_versions":["scenario-D"],"producer_consumer_edges":["C003->C005","C003->C006","C004->C008"],"edge_artifacts":["tests/e2e/test_acceptance_cross_host.py","tests/e2e/test_reference_scenarios.py"],"result":"pass"},
+    {"at_id":"AT-13","fixture_versions":["outage-recovery-v1"],"producer_consumer_edges":["C003->C007","C007->C008"],"edge_artifacts":["tests/e2e/test_acceptance_reliability.py","tests/e2e/test_service_surface.py"],"result":"pass"},
+    {"at_id":"AT-14","fixture_versions":["ownership-v1"],"producer_consumer_edges":["C007->C008"],"edge_artifacts":["tests/e2e/test_acceptance_reliability.py","tests/e2e/test_service_surface.py"],"result":"pass"},
+    {"at_id":"AT-15","fixture_versions":["adversarial-content-v1"],"producer_consumer_edges":["C003->C008"],"edge_artifacts":["tests/e2e/test_acceptance_reliability.py","tests/e2e/test_mcp_surface.py"],"result":"pass"},
+    {"at_id":"AT-16","fixture_versions":["offline-v1"],"producer_consumer_edges":["C001->C003","C003->C008"],"edge_artifacts":["tests/e2e/test_acceptance_reliability.py"],"result":"pass"}
+  ],
+  "output_path": "specs/008-product-integration/evidence/deterministic-at01-at16.json"
+}

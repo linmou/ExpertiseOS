@@ -153,10 +153,10 @@
 
 - [X] T049 [US5] Add a completeness test requiring exactly AT-01 through AT-16 mappings and all acceptance-evidence fields in `tests/e2e/test_acceptance_manifest.py` (FR-009, FR-011)
 - [X] T050 [US5] Add a verdict-input test where any applicable consent, privacy, or state-integrity failure blocks promotion regardless of model-behavior scores in `tests/e2e/test_acceptance_manifest.py` (FR-017)
-- [ ] T051 [US5] Run all deterministic automated AT cases at the immutable tested SHA and persist safe component evidence through `tests/e2e/evidence.py` (SC-004)
-- [ ] T052 [US5] Run pinned live Codex and Claude Code cases supported by C001/C005/C006, recording exact versions, capability limits, commands, input fixtures, outputs, and exit codes through `tests/e2e/evidence.py` (SC-004)
-- [ ] T053 [US5] Run the offline expertiseOS and keyword-fallback scenario with outbound access blocked and record network-mode evidence through `tests/e2e/evidence.py` (SC-007)
-- [ ] T054 [US5] Run model-behavior fixtures separately and record misses/false proposals without changing deterministic results in `tests/e2e/evidence.py` (FR-010)
+- [X] T051 [US5] Run all deterministic automated AT cases at the immutable tested SHA and persist safe component evidence through `tests/e2e/evidence.py` (SC-004)
+- [X] T052 [US5] Run pinned live Codex and Claude Code cases supported by C001/C005/C006, recording exact versions, capability limits, commands, input fixtures, outputs, and exit codes through `tests/e2e/evidence.py` (SC-004)
+- [X] T053 [US5] Run the offline expertiseOS and keyword-fallback scenario with outbound access blocked and record network-mode evidence through `tests/e2e/evidence.py` (SC-007)
+- [X] T054 [US5] Run model-behavior fixtures separately and record misses/false proposals without changing deterministic results in `tests/e2e/evidence.py` (FR-010)
 
 **Checkpoint**: C008 supplies complete reproducible evidence; the integration owner decides and records the authoritative final acceptance verdict.
 
@@ -166,11 +166,11 @@
 
 **Purpose**: Close the component with integration-ready evidence and no shared-file overreach.
 
-- [ ] T055 Run the full targeted `tests/e2e/` suite and record zero unexpected skips for required deterministic cases
-- [ ] T056 Run the full repository test suite against the promoted upstream components and route component-local regressions to their stable owners
-- [ ] T057 Run repository lint, formatting, and static/type checks, including mypy for modified Python modules
-- [ ] T058 Run the repository smoke/install command and verify both host packages reference the same `skill/SKILL.md`
-- [ ] T059 Inspect the final diff to confirm changes are limited to C008-owned source paths and `specs/008-product-integration/`
+- [X] T055 Run the full targeted `tests/e2e/` suite and record zero unexpected skips for required deterministic cases
+- [X] T056 Run the full repository test suite against the promoted upstream components and route component-local regressions to their stable owners
+- [X] T057 Run repository lint, formatting, and static/type checks, including mypy for modified Python modules
+- [X] T058 Run the repository smoke/install command and verify both host packages reference the same `skill/SKILL.md`
+- [X] T059 Inspect the final diff to confirm changes are limited to C008-owned source paths and `specs/008-product-integration/`
 - [ ] T060 Provide the integration owner with the component commit SHA, commands, exit codes, evidence paths, capability limits, upstream defects found, and files intentionally not added
 
 ---
