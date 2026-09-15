@@ -1,0 +1,33 @@
+[
+  {
+    "event_id": "start-1",
+    "hook_event_name": "SessionStart",
+    "session_id": "session-1"
+  },
+  {
+    "hook_event_name": "UserPromptSubmit",
+    "prompt": "Save",
+    "session_id": "session-1",
+    "turn_id": "turn-1"
+  },
+  {
+    "hook_event_name": "PreToolUse",
+    "session_id": "session-1",
+    "tool_use_id": "tool-1"
+  },
+  {
+    "hook_event_name": "PostToolUse",
+    "session_id": "session-1",
+    "tool_use_id": "tool-1"
+  },
+  {
+    "event_id": "stop-1",
+    "hook_event_name": "Stop",
+    "session_id": "session-1"
+  },
+  {
+    "event_id": "end-1",
+    "hook_event_name": "SessionEnd",
+    "session_id": "session-1"
+  }
+]
