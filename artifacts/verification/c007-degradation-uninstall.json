@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest tests/integration/test_keyword_fallback.py tests/integration/test_uninstall_data_choice.py tests/integration/test_no_network_runtime.py -q",
+  "exit_code": 0,
+  "passed": 5,
+  "failed": 0,
+  "duration_seconds": 0.15,
+  "result_limit": 20,
+  "degraded_mode": "keyword",
+  "remote_fallback_attempts": 0,
+  "uninstall_choices": ["keep", "delete"]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest tests/integration/test_backend_outage.py tests/integration/test_index_failure_rebuild.py tests/integration/test_idempotent_retry.py tests/integration/test_startup_recovery.py -q",
+  "exit_code": 0,
+  "passed": 6,
+  "failed": 0,
+  "duration_seconds": 0.11,
+  "injected_boundaries": [
+    "canonical backend unavailable",
+    "write acknowledgement lost after canonical storage",
+    "index rebuild unavailable",
+    "receipt missing after canonical commit",
+    "duplicate operation delivery"
+  ],
+  "duplicate_receipts": 0,
+  "semantic_recovery_payloads": 0
+}

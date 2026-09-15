@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest tests/integration/test_retire_delete.py tests/integration/test_uninstall_data_choice.py -q",
+  "exit_code": 0,
+  "passed": 4,
+  "failed": 0,
+  "duration_seconds": 0.11,
+  "outcomes": [
+    "retired version remains directly resolvable",
+    "approved canonical object is deleted",
+    "partial learner cleanup is incomplete",
+    "keep and approved-delete uninstall choices remain distinct"
+  ]
+}
