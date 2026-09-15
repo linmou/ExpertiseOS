@@ -11,6 +11,9 @@ propose_create(payload, origin, operation_id) -> PendingOperation
 propose_revision(object_id, expected_version, payload, origin, operation_id) -> PendingOperation
 propose_relation_change(change, expected_versions, origin, operation_id) -> PendingOperation
 propose_retirement(object_id, expected_version, origin, operation_id) -> PendingOperation
+propose_learning_evidence(payload, expected_versions, origin, operation_id) -> PendingOperation
+propose_control_change(payload, expected_versions, origin, operation_id) -> PendingOperation
+propose_delete(payload, expected_versions, origin, operation_id) -> PendingOperation
 decline(proposal_id, session_id, adapter_id) -> DeclineResult
 expire_session(session_id) -> ExpiryResult
 ```
@@ -92,6 +95,34 @@ Concrete Basic Memory mapping and retrieval are C003-owned.
 - `incomplete`: canonical mutation may have succeeded but receipt completion failed; retry only with the same proposal, grant, and `operation_id` while the interaction remains active.
 
 No status other than `committed` may be presented as Saved.
+
+## Delegated Mutation Boundary
+
+Learning evidence, control changes, and deletion use closed, named operation wrappers. They are
+part of `OperationPayload` but not the knowledge-only `MutationEffect` union and cannot enter the
+ordinary knowledge `commit` path.
+
+```text
+prepare_delegated_commit(proposal_id, grant_id, operation_id, current_versions)
+  -> AuthorizedOperation
+complete_delegated_commit(authorization, affected_object_versions)
+  -> ApprovalReceipt
+```
+
+Preparation validates the active actual-user grant, proposal origin, canonical digest, expected
+versions, and exact `operation_id`. It stores only a volatile prepared authorization and performs
+no downstream mutation, receipt write, grant consumption, or candidate approval.
+
+Trusted integration composition passes the authorized exact payload and same `operation_id` to
+the C004 or C007 producer, performs that domain's exact read-back, and only then calls completion.
+Completion accepts only an authorization prepared by the same service instance, reconciles an
+exact existing receipt or writes one receipt, consumes the grant, and marks the candidate approved.
+Receipt failure leaves the authorization retryable. C008 exposes neither completion nor receipt
+construction as a host-facing operation.
+
+An exact completed replay returns the stored receipt without reading a deleted backend object.
+Divergent affected versions or receipt identity reject. For deletion, the affected version is the
+approved version that was deleted; for retained state it is the stored resulting version.
 
 ## Exact Digest Document
 

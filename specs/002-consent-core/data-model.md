@@ -81,6 +81,14 @@ detected | awaiting_checkpoint | awaiting_decision -> declined | expired
 
 Terminal states never transition. Session end expires every unresolved candidate. An unrelated next user event expires `awaiting_decision` unless the adapter identifies it as that proposal's decision.
 
+### Delegated Operation Payloads
+
+`LearningEvidenceOperation`, `ControlChangeOperation`, and `DeleteOperation` are distinct frozen
+wrappers around the exact displayed downstream value. They form the closed `DelegatedOperation`
+union included in `OperationPayload`; they are excluded from the knowledge-only `MutationEffect`
+union. C002 hashes and retains the value only in volatile proposal state. C004 and C007 retain
+ownership of validation, persistence, and exact read-back for their respective values.
+
 ## DecisionGrant
 
 | Field | Rule |
@@ -95,6 +103,21 @@ Terminal states never transition. Session end expires every unresolved candidate
 
 One grant resolves one proposal. Unused grants expire with the proposal/session and have no durable serialization.
 
+## AuthorizedOperation
+
+| Field | Rule |
+|---|---|
+| `grant_id`, `proposal_id` | Exact volatile grant and proposal binding. |
+| `operation_id` | Canonical replay identity validated during preparation. |
+| `session_id`, `adapter_id`, `user_event_ref` | Exact actual-user origin binding. |
+| `kind`, `payload`, `content_digest` | Closed delegated kind and exact canonical content binding. |
+| `expected_versions` | Exact versions checked against trusted producer state. |
+| `existing_receipt` | Explicit `None` for pending work or the exact receipt for completed replay. |
+
+The service keeps a matching volatile prepared authorization. The record alone is not proof of a
+completed mutation and cannot create a receipt until trusted composition has executed and read back
+the downstream state.
+
 ## ApprovalReceipt
 
 | Field | Rule |
@@ -102,7 +125,7 @@ One grant resolves one proposal. Unused grants expire with the proposal/session 
 | `operation_id` | Canonical `operation_id` used for bounded replay and receipt identity. |
 | `proposal_id` | Approved proposal identity. |
 | `operation_kind` | Exact semantic operation. |
-| `object_ids_versions` | Canonically serialized affected stable IDs and committed versions. |
+| `object_ids_versions` | Canonically serialized affected stable IDs and versions: resulting stored versions, or the approved pre-delete versions for deleted objects. |
 | `content_digest` | Digest validated by the gate. |
 | `user_event_ref` | Actual user-event reference from the consumed grant. |
 | `adapter_id` | Origin adapter identity. |
