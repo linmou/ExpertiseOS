@@ -487,3 +487,44 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - No downstream branch was unblocked because C008 also requires promoted C007 state.
 - `propagation_complete`: exit 0; accepted from `propagating` to `final_verification` with no premature downstream merge.
 - C006 owner released after successful promotion.
+
+### C007 Local Component Gate
+
+- Completed component tasks before integration: 42/45; actual producer restore/delete and downstream C008 handoffs remained integration-owned.
+- Component commit: `005bafcba37b09f4ca995a12f3dd0db384c7ce2b`.
+- Worktree status: clean.
+- Focused C007 suite: 31 passed; full local suite: 218 passed and 3 optional skips.
+- Strict mypy passed across 18 modified source/test files; Ruff lint and format passed.
+- Local 10,000-object benchmark passed: bookkeeping p95 `0.001754 ms`, warm retrieval p95 `7.198481 ms`, approved-write acknowledgement p95 `53.296186 ms`.
+- Local transition validation: `local_component_passed`, C007, exit 0, accepted from `implementing` to `integration_queue`.
+- Evidence: `specs/007-ownership-reliability/implementation-handoff.md` and `artifacts/verification/c007-*.json`.
+
+### C007 Integration And E07 Handoff
+
+- Integration began from clean C006 receipt-audit commit `9dc3233`; `begin_integration` validation passed for C007.
+- Explicit merge commit: `0a4d0ee`.
+- Integration-owned producer/consumer implementation commits: `f78515b` and `a942bf3`.
+- Integration-owned E07 test: `tests/integration/test_learning_export_handoff.py`.
+- Integration-owned deterministic acceptance coverage: `tests/e2e/test_acceptance_reliability.py` for AT-05, AT-13, and AT-14 behavior.
+- The portable allowlist and schema now include scope exclusions. A narrow shared SQLite adapter supplies actual C004 snapshot identity, validated restore, progress-event preservation, exclusion restore, and approved evidence/deferred deletion.
+- Basic Memory supplies actual stable-ID/version restore with operation replay and divergent-collision rejection. One composite C007 target restores Basic Memory and SQLite sections in declared dependency order and rebuilds the local index.
+- E07 exports actual approved C003 knowledge and actual C004 pass evidence, adjusted numeric thresholds, progress, scope exclusion, and deferred reference in one bundle. It restores the same artifacts without synthetic boundary replacement, then an approved C007 deletion removes actual canonical and dependent learning state; replay remains idempotent.
+- C007 T013 and T021 are complete after integration. T044 remains open only for the C008 consumer handoff and related C002 recovery/controlled-location wiring.
+
+### C007 Integration Gate
+
+- Tested integration SHA: `a942bf399f2ef6770796429f9db66baebcdbd2fa`.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 93 passed in 74.48 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 20 passed in 0.09 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 338 passed in 110.20 seconds, including the real public-CLI and offline Basic Memory cases.
+- `rtk .venv-arm64/bin/python benchmarks/benchmark_mvp.py --corpus-size 10000 --output /tmp/expertiseos-c007-final-benchmark.json`: exit 0.
+- Final benchmark results: bookkeeping p95 `0.000836 ms`, warm retrieval p95 `6.360 ms`, approved-write acknowledgement p95 `35.762 ms`; all thresholds passed.
+- `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 117 files formatted.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 116 source files checked.
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0.
+- Post-gate isolated offline reruns: two attempts failed before product assertions because Basic Memory `project add` and then `write-note` each exceeded the fixture's 30-second subprocess timeout. Process inspection found no retained Basic Memory process; the exact-SHA full suite had already passed the same offline test. No third unchanged retry was run.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c007.json`; schema version 2; cumulative E00-E07 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
