@@ -405,3 +405,32 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c004.json`; schema version 2; cumulative E00-E04 coverage.
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+### C005 Integration Start And E05 Handoff
+
+- Integration began from clean audit commit `8702179`; `begin_integration` validation passed for C005.
+- Explicit merge commit: `68b45a0`.
+- Integration-owned E05 test: `tests/integration/test_codex_control_handoff.py`.
+- Integration-owned deterministic acceptance coverage: `tests/e2e/test_acceptance_codex.py` for applicable AT-01, AT-03, AT-06, and AT-11 behavior.
+- E05 passes actual C004 active, pause, fatigue-rest, target-satisfied, and disabled resolutions through C005 observation and retrieval guards. Source, path, and session exclusions use the actual C004 exclusion matcher through C005.
+- Normalized C005 events prove open atomic sequences reject checkpoints. A closed static sequence may be recorded, but comparison delivery remains unavailable because live atomic-boundary evidence is absent.
+- C005 capability reporting remains exact: static pinned-profile reads/search are available; automatic activation, configuration-preserving installation, actual-user decision validation, persistent writes, and live atomic-boundary delivery are unavailable.
+- Pre-gate focused verification: `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_codex_control_handoff.py tests/e2e/test_acceptance_codex.py`; exit 0; 13 passed in 0.04 seconds.
+- Pre-gate static verification: Ruff check and format passed; strict mypy passed across 92 source files; `git diff --check` passed.
+
+### C005 Integration Gate
+
+- Tested integration SHA: `31786f2854f0c715a0b811064546f17aad66b2af`.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 0; 58 passed in 82.44 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 13 passed in 0.07 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q`: exit 0; 245 passed in 101.69 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration/test_local_backend_offline.py`: exit 0; 1 passed in 14.29 seconds with outbound network denied.
+- `rtk env EXPERTISEOS_BENCHMARK_EVIDENCE=/tmp/expertiseos-c005-integration-benchmark.json .venv-arm64/bin/python -m pytest -q tests/performance/test_retrieval_benchmark.py`: exit 0; 1 passed; 10,000-note warm retrieval p95 `9.456 ms`.
+- `rtk .venv-arm64/bin/python -m ruff check .`: exit 0.
+- `rtk .venv-arm64/bin/python -m ruff format --check .`: exit 0; 92 files formatted.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 92 source files checked.
+- `rtk .venv-arm64/bin/python -m expertiseos --health`: exit 0; bootstrap-ready JSON.
+- `rtk git diff --check`: exit 0.
+- Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c005.json`; schema version 2; cumulative E00-E05 coverage.
+- `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
+- `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
