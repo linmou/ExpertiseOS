@@ -562,3 +562,11 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 117 source files checked.
 - Ruff check and format, health smoke, and `rtk git diff --check`: exit 0.
 - C008 checkpoint before receipt: `8287e50563c02d273f37f2e30ec54a52c5681e3d`; 31/60 tasks, 41 E2E tests, Ruff, formatting, and mypy passed; worktree clean.
+
+### C002 Correction Propagation To C008
+
+- Smoke-verified correction audit and immutable propagation SHA: `d4fa41b`.
+- Downstream branch: `008-product-integration`.
+- Exact propagation receipt merge: `a09bea40478e2c770469f8282ff9e343a6a9da9a`.
+- Receipt verification: delegated-consent unit tests plus the complete current C008 E2E suite passed 51 tests in 0.16 seconds.
+- Receipt health smoke and `rtk git diff --check`: exit 0; C008 worktree clean before owner resume.
