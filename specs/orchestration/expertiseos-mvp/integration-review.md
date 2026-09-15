@@ -588,3 +588,18 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Exact C008 receipt merge: `992fb28b8c58d74135c26f3980c348938996a6e0`.
 - Receipt verification: 73 approval, delegated-consent, and current C008 E2E tests passed in 0.20 seconds.
 - Receipt health smoke and `rtk git diff --check`: exit 0; C008 worktree clean before owner resume.
+
+### C008 Local Component Gate
+
+- Executable tested SHA: `03ea840d2b713d87fb6aa20fe1257c20268e2f92`.
+- Acceptance evidence commit: `253525600ad1d6bb57ed2532c057da712493df2c`.
+- Final task-closing commit: `45529542d6cb6601fd2d51bf3d321f5c9890b618`; 60/60 tasks complete and worktree clean.
+- Complete C008 E2E suite: 62 passed with no skips.
+- Full repository suite: 393 passed in 65.45 seconds.
+- Focused service, consent, and reliability suites: 7, 6, and 7 tests passed.
+- Offline group: 4 passed with socket connections denied, keyword fallback active, and zero outbound attempts.
+- Pinned Codex `0.146.1` and Claude Code `2.1.241` capability fixtures: 9 passed.
+- Ruff check and format, mypy across 45 source/E2E files, smoke, and diff checks passed.
+- Acceptance evidence: `specs/008-product-integration/evidence/`; exactly AT-01 through AT-16 are mapped at the tested SHA.
+- Live authenticated write, actual-user decision validation, atomic-boundary observation, and automatic activation remain unproven and false; model-quality misses and false proposals remain explicitly unmeasured and do not alter deterministic results.
+- Local `local_component_passed` transition: exit 0; accepted from `implementing` to `integration_queue`.
