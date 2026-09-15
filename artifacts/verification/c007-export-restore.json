@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest tests/integration/test_export_restore.py -q",
+  "exit_code": 0,
+  "passed": 4,
+  "failed": 0,
+  "duration_seconds": 0.17,
+  "actual_producers": ["BasicMemoryBackend", "SQLiteState"],
+  "record_counts": {"knowledge": 1, "approval_receipt": 1},
+  "collision_result": "conflict_before_mutation",
+  "identical_result": "no_op",
+  "malformed_path_result": "rejected",
+  "index_failure_result": "repair_required"
+}

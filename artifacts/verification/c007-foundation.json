@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest tests/unit/test_ownership_models.py tests/unit/test_reliability.py tests/unit/test_security_boundary.py -q",
+  "exit_code": 0,
+  "passed": 12,
+  "failed": 0,
+  "duration_seconds": 0.16,
+  "checks": [
+    "no-default operation dataclasses",
+    "sealed actual-user export and restore bindings",
+    "content-free recovery records",
+    "canonical committed rendering gate",
+    "bounded degraded search health",
+    "local transport and secret minimization"
+  ]
+}

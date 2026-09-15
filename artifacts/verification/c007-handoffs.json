@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "partial_integration_required",
+  "tested_base_sha": "a121bf560a20937fa8d0e7017a13bd402427bb33",
+  "verified": [
+    "C003 BasicMemoryBackend and C004 SQLiteState feed the same C007 export",
+    "C003 index degradation reaches C007 explicit keyword health",
+    "C007 rejects altered and replayed actual-user request bindings"
+  ],
+  "open": [
+    "C003 bulk restore and controlled-location producer",
+    "C004 bulk restore, deletion, and controlled-location producer",
+    "C002 operation-state and receipt-reconciliation producer",
+    "C008 request-binding and result-rendering consumer"
+  ],
+  "owner": "integration"
+}

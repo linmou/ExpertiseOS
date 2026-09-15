@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/mypy --strict <18 C007 source and test files>",
+  "exit_code": 0,
+  "files_checked": 18,
+  "issues": 0,
+  "python_target": "3.12"
+}
