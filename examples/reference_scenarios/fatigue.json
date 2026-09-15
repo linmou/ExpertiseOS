@@ -1,0 +1,23 @@
+{
+  "scenario_id": "C",
+  "title": "Fatigue rest takes precedence before a satisfied target",
+  "requirements": ["FR-004", "FR-008"],
+  "acceptance_tests": ["AT-10", "AT-11"],
+  "initial_approved_state": {
+    "controls": {
+      "enabled": true,
+      "learning_paused": false,
+      "reflection_target": 1,
+      "reflection_count": 1,
+      "fatigue_rest_minutes": 60
+    }
+  },
+  "events": [
+    {"kind": "inspect_controls", "offset_minutes": 0},
+    {"kind": "recall", "query": "retry boundary"},
+    {"kind": "inspect_controls", "offset_minutes": 61}
+  ],
+  "expected_visible_results": ["Fatigue rest", "Approved recall available", "Target satisfied"],
+  "expected_persistent_delta": {},
+  "expected_volatile_end_state": {"unresolved_proposals": 0, "unconsumed_grants": 0}
+}

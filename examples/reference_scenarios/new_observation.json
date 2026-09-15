@@ -1,0 +1,20 @@
+{
+  "scenario_id": "A",
+  "title": "Save a new observation and reflect later",
+  "requirements": ["FR-001", "FR-004", "FR-008"],
+  "acceptance_tests": ["AT-04", "AT-07", "AT-08"],
+  "initial_approved_state": {"knowledge": [], "reflection_count": 0},
+  "events": [
+    {"host": "claude-code", "kind": "observe", "content": "Retry only with the same operation identity."},
+    {"host": "claude-code", "kind": "decision", "action": "save", "user_event_ref": "claude:user-save-a"},
+    {"host": "claude-code", "kind": "reflection", "action": "defer"},
+    {"host": "codex", "kind": "reflection", "event_id": "reflection-a-1"}
+  ],
+  "expected_visible_results": ["Proposal ready", "Saved", "Reflection deferred", "Reflection recorded"],
+  "expected_persistent_delta": {
+    "knowledge_added": 1,
+    "content": "Retry only with the same operation identity.",
+    "reflection_count": 1
+  },
+  "expected_volatile_end_state": {"unresolved_proposals": 0, "unconsumed_grants": 0}
+}

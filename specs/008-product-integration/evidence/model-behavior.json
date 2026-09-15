@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "at_id": "AT-02",
+  "tested_sha": "03ea840d2b713d87fb6aa20fe1257c20268e2f92",
+  "command": ["rtk", "env", "PYTHONPATH=src", "/Users/admin/Documents/GitHub.nosynchr/expertiseOS_full-worktrees/expertiseos-mvp/integration/.venv-arm64/bin/python", "-m", "pytest", "tests/e2e/test_shared_skill.py", "tests/e2e/test_acceptance_hosts.py", "-q"],
+  "exit_code": 0,
+  "started_at": "2026-09-15T03:52:21Z",
+  "finished_at": "2026-09-15T03:52:22Z",
+  "environment": [["os", "macOS 15.1.1 arm64"], ["python", "3.12.10"], ["execution_mode", "deterministic behavior-contract fixtures"], ["authenticated_model_run", "false"]],
+  "fixture_versions": ["c008-acceptance-corpus-v1", "scenario-B"],
+  "producer_consumer_edges": ["C003->C008", "C005->C008", "C006->C008"],
+  "edge_artifacts": ["9 passed in 0.03s", "model_misses:not_measured", "false_proposals:not_measured"],
+  "result": "not_applicable",
+  "reason": "No authenticated model-behavior execution capability was proven; deterministic novelty, conflict, and shared-skill checks passed separately and were not promoted into a model-quality claim.",
+  "output_path": "specs/008-product-integration/evidence/model-behavior.json"
+}

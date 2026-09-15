@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "tested_sha": "03ea840d2b713d87fb6aa20fe1257c20268e2f92",
+  "command": ["rtk", "env", "PYTHONPATH=src", "/Users/admin/Documents/GitHub.nosynchr/expertiseOS_full-worktrees/expertiseos-mvp/integration/.venv-arm64/bin/python", "-m", "pytest", "tests/e2e/test_acceptance_codex.py", "tests/e2e/test_acceptance_claude.py", "tests/e2e/test_codex_live_host.py", "-q"],
+  "exit_code": 0,
+  "started_at": "2026-09-15T03:52:21Z",
+  "finished_at": "2026-09-15T03:52:22Z",
+  "summary": "9 passed in 0.01s",
+  "environment": {
+    "os": "macOS 15.1.1 arm64",
+    "python": "3.12.10",
+    "codex_fixture": "0.146.1",
+    "claude_code_fixture": "2.1.241",
+    "execution_mode": "pinned contract fixtures",
+    "authenticated_live_write_evidence": false
+  },
+  "capability_limits": {
+    "can_read": true,
+    "can_search": true,
+    "can_validate_user_decisions": false,
+    "can_write": false,
+    "can_observe_atomic_boundaries": false,
+    "can_auto_activate": false
+  },
+  "fixture_versions": ["host-activation-v1", "host-atomic-v1", "forged-decision-v1", "scenario-C"],
+  "producer_consumer_edges": ["C001->C005", "C001->C006", "C005->C008", "C006->C008"],
+  "edge_artifacts": ["tests/e2e/test_acceptance_codex.py", "tests/e2e/test_acceptance_claude.py", "tests/e2e/test_codex_live_host.py"],
+  "result": "pass",
+  "output_path": "specs/008-product-integration/evidence/host-capabilities.json"
+}

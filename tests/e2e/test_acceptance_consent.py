@@ -11,10 +11,12 @@ import pytest
 from expertiseos.approval.gate import ApprovalGate, DecisionGrantStore
 from expertiseos.domain.candidate_store import CandidateStore
 from expertiseos.domain.errors import ApprovalRejectedError
-from expertiseos.domain.models import CommitStatus, PendingOperation
+from expertiseos.domain.models import CommitStatus, LearnerState, PendingOperation
 from expertiseos.hosts.contract import DecisionAction, DecisionBinding, EventKind, HostEvent
 from expertiseos.knowledge.backend import SearchQuery
 from expertiseos.knowledge.service import KnowledgeService
+from expertiseos.learning.evidence import AssistanceLevel, EvidenceOutcome, LearnerEvidence
+from expertiseos.service import ExpertiseOSService, ToolStatus
 from expertiseos.state.sqlite import SQLiteState
 from tests.consent_support import (
     NOW,
@@ -23,6 +25,7 @@ from tests.consent_support import (
     fake_backend,
     observation,
 )
+from tests.e2e.conftest import ProductGraph
 from tests.fakes import DeterministicClock, FakeHostAdapter
 
 
@@ -181,3 +184,194 @@ def test_at06_forged_or_ambiguous_events_cannot_authorize_write() -> None:
     assert backend.search(SearchQuery("forged approval marker", 10, None, (), (), ())) == ()
     assert receipts.get_receipt("operation-at06") is None
     receipts.close()
+
+
+def test_c008_operation_id_is_the_only_commit_replay_identity(tmp_path: Path) -> None:
+    state_path = tmp_path / "state-c008.db"
+    backend = fake_backend()
+    candidates = CandidateStore()
+    grants = DecisionGrantStore()
+    receipts = SQLiteState(state_path)
+    service = KnowledgeService(
+        backend,
+        candidates,
+        grants,
+        ApprovalGate(),
+        receipts,
+        DeterministicClock(NOW + timedelta(hours=1), timedelta(seconds=1)),
+    )
+    facade = ExpertiseOSService(service, backend, receipts, ())
+    proposal = service.propose_create(
+        "proposal-c008",
+        "operation-c008",
+        "session-c008",
+        "codex",
+        approved("canonical operation identity"),
+        NOW,
+    )
+    service.present(proposal.proposal_id)
+    service.register_decision(
+        proposal.proposal_id,
+        "grant-c008",
+        observation(user_event_ref="host-user-c008"),
+        NOW + timedelta(seconds=1),
+    )
+
+    wrong = facade.commit_proposal(proposal.proposal_id, "grant-c008", "request-c008", {})
+    committed = facade.commit_proposal(
+        proposal.proposal_id, "grant-c008", proposal.operation_id, {}
+    )
+
+    assert wrong.status is ToolStatus.REJECTED
+    assert wrong.message != "Saved"
+    assert committed.status is ToolStatus.COMMITTED
+    assert committed.message == "Saved"
+    receipts.close()
+
+
+def test_at07_saved_knowledge_and_learning_evidence_require_separate_approval(
+    product_graph: ProductGraph,
+) -> None:
+    facade = ExpertiseOSService(
+        product_graph.knowledge,
+        product_graph.backend,
+        product_graph.state,
+        (),
+    )
+    proposed = facade.propose_create_knowledge(
+        "proposal-at07-knowledge",
+        "operation-at07-knowledge",
+        "session-at07",
+        "codex",
+        approved("AT-07 approved knowledge"),
+        NOW,
+    )
+    assert proposed.status is ToolStatus.OK
+    product_graph.knowledge.register_decision(
+        "proposal-at07-knowledge",
+        "grant-at07-knowledge",
+        observation(user_event_ref="host-user-at07-knowledge"),
+        NOW + timedelta(seconds=1),
+    )
+    saved = facade.commit_proposal(
+        "proposal-at07-knowledge",
+        "grant-at07-knowledge",
+        "operation-at07-knowledge",
+        {},
+    )
+    assert saved.status is ToolStatus.COMMITTED
+    record = saved.data.records[0]  # type: ignore[union-attr]
+    assert product_graph.state.list_evidence(record.id, record.version, None, 20) == ()
+
+    evidence = LearnerEvidence(
+        "evidence-at07",
+        record.id,
+        record.version,
+        "task-at07",
+        "session-at07",
+        "apply approved knowledge",
+        EvidenceOutcome.PASS,
+        AssistanceLevel.INDEPENDENT,
+        None,
+        "user contribution",
+        LearnerState.RECOGNIZED,
+        LearnerState.RECOGNIZED,
+        False,
+        "operation-at07-evidence",
+        NOW,
+    )
+    evidence_proposal = facade.propose_learning_evidence(
+        "proposal-at07-evidence",
+        "operation-at07-evidence",
+        "session-at07",
+        "codex",
+        evidence,
+        {record.id: record.version},
+        NOW,
+    )
+    assert evidence_proposal.status is ToolStatus.OK
+    rejected = facade.commit_proposal(
+        "proposal-at07-evidence",
+        "missing-grant-at07",
+        "operation-at07-evidence",
+        {record.id: record.version},
+    )
+    assert rejected.status is ToolStatus.REJECTED
+    assert product_graph.state.list_evidence(record.id, record.version, None, 20) == ()
+    product_graph.knowledge.register_decision(
+        "proposal-at07-evidence",
+        "grant-at07-evidence",
+        observation(user_event_ref="host-user-at07-evidence"),
+        NOW + timedelta(seconds=2),
+    )
+    committed = facade.commit_proposal(
+        "proposal-at07-evidence",
+        "grant-at07-evidence",
+        "operation-at07-evidence",
+        {record.id: record.version},
+    )
+    assert committed.status is ToolStatus.COMMITTED
+    assert product_graph.state.list_evidence(record.id, record.version, None, 20) == (evidence,)
+
+
+def test_at08_revision_is_separately_approved_and_decline_preserves_state(
+    product_graph: ProductGraph,
+) -> None:
+    original = product_graph.backend.create_approved(
+        approved("original scope"),
+        "seed-at08",
+    )
+    facade = ExpertiseOSService(
+        product_graph.knowledge,
+        product_graph.backend,
+        product_graph.state,
+        (),
+    )
+    revision = facade.propose_revision(
+        "proposal-at08-revision",
+        "operation-at08-revision",
+        "session-at08",
+        "codex",
+        original.id,
+        original.version,
+        approved("revised scope"),
+        NOW,
+    )
+    assert revision.status is ToolStatus.OK
+    rejected = facade.commit_proposal(
+        "proposal-at08-revision",
+        "missing-grant-at08",
+        "operation-at08-revision",
+        {original.id: original.version},
+    )
+    assert rejected.status is ToolStatus.REJECTED
+    assert product_graph.backend.get(original.id) == original
+    product_graph.knowledge.register_decision(
+        "proposal-at08-revision",
+        "grant-at08-revision",
+        observation(user_event_ref="host-user-at08-revision"),
+        NOW + timedelta(seconds=1),
+    )
+    committed = facade.commit_proposal(
+        "proposal-at08-revision",
+        "grant-at08-revision",
+        "operation-at08-revision",
+        {original.id: original.version},
+    )
+    assert committed.status is ToolStatus.COMMITTED
+    revised = product_graph.backend.get(original.id)
+    assert revised is not None and revised.content == "revised scope"
+
+    declined = facade.propose_revision(
+        "proposal-at08-decline",
+        "operation-at08-decline",
+        "session-at08",
+        "codex",
+        revised.id,
+        revised.version,
+        approved("unapproved replacement"),
+        NOW + timedelta(seconds=2),
+    )
+    assert declined.status is ToolStatus.OK
+    assert facade.decline_proposal("proposal-at08-decline", None).status is ToolStatus.OK
+    assert product_graph.backend.get(original.id) == revised
