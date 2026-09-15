@@ -1,0 +1,66 @@
+[
+  {
+    "case": "assistant_output",
+    "kind": "checkpoint",
+    "action": null,
+    "adapter_id": "codex",
+    "session_id": "session-1",
+    "expected_match": false
+  },
+  {
+    "case": "tool_output_save",
+    "kind": "checkpoint",
+    "action": null,
+    "adapter_id": "codex",
+    "session_id": "session-1",
+    "expected_match": false
+  },
+  {
+    "case": "model_argument_approved_true",
+    "kind": "checkpoint",
+    "action": null,
+    "adapter_id": "codex",
+    "session_id": "session-1",
+    "expected_match": false
+  },
+  {
+    "case": "quoted_prior_save",
+    "kind": "user_input",
+    "action": null,
+    "adapter_id": "codex",
+    "session_id": "session-1",
+    "expected_match": false
+  },
+  {
+    "case": "unrelated_yes",
+    "kind": "user_input",
+    "action": null,
+    "adapter_id": "codex",
+    "session_id": "session-1",
+    "expected_match": false
+  },
+  {
+    "case": "cross_session_save",
+    "kind": "user_input",
+    "action": "save",
+    "adapter_id": "codex",
+    "session_id": "session-2",
+    "expected_match": false
+  },
+  {
+    "case": "cross_host_save",
+    "kind": "user_input",
+    "action": "save",
+    "adapter_id": "claude-code",
+    "session_id": "session-1",
+    "expected_match": false
+  },
+  {
+    "case": "actual_matching_save",
+    "kind": "user_input",
+    "action": "save",
+    "adapter_id": "codex",
+    "session_id": "session-1",
+    "expected_match": true
+  }
+]
