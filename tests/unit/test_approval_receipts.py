@@ -28,9 +28,20 @@ def receipt(operation_id: str = "operation-1") -> ApprovalReceipt:
     )
 
 
-def test_schema_contains_only_approval_receipts() -> None:
+def test_schema_contains_only_approved_consent_and_learning_state() -> None:
     state = SQLiteState(":memory:")
-    assert state.table_names() == ("approval_receipts",)
+    assert state.table_names() == (
+        "approval_receipts",
+        "control_operations",
+        "control_state",
+        "deferred_activities",
+        "deferred_activity_refs",
+        "learner_evidence",
+        "period_progress",
+        "progress_events",
+        "scope_exclusions",
+    )
+    assert all("candidate" not in name for name in state.table_names())
     state.close()
 
 
