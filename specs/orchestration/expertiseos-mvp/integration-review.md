@@ -184,6 +184,22 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
 - C008 remains blocked until C005-C007 all promote.
 
+### C005 Local Component Gate
+
+- Completed component tasks: 25/37; live authenticated/configuration/persistent-write tasks T011-T014, T023-T029, and T035 remain unavailable.
+- Component commit: `99675e958e4a65d0295163212fdd93fd278e5737`.
+- Worktree status: clean.
+- Independent `rtk .venv/bin/python -m pytest -q`: exit 0; 229 passed and 3 expected optional Basic Memory skips in 0.86 seconds.
+- Independent `rtk .venv/bin/python -m ruff check .`: exit 0.
+- Independent `rtk .venv/bin/python -m ruff format --check .`: exit 0; 90 files formatted.
+- Independent `rtk .venv/bin/python -m mypy src tests`: exit 0; 90 source files checked.
+- Import smoke: exit 0 with `codex-import-ok`.
+- Baseline-to-component `rtk git diff --check`: exit 0.
+- Proven capabilities: pinned-profile approved read/search, static hook normalization, control/exclusion consumption, session cleanup, failure continuity, and reversible command planning.
+- Unproven capabilities remain false: live auto-activation, configuration-preserving installation, actual-user decision validation, persistent writes, and live atomic checkpoint ordering.
+- Local transition validation: `local_component_passed`, C005, exit 0, accepted from `implementing` to `integration_queue`.
+- Evidence: `specs/005-codex-host/evidence/` on the component branch.
+
 ### C001 Promotion And C002 Receipt
 
 - Promotion candidate and immutable promotion SHA: `f7b1eb59a7d1837c367095e195ea7a42ead20098`
