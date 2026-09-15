@@ -45,7 +45,7 @@
 **Independent Test**: Round-trip all supported records through actual C002-C004 snapshot/restore producers, then exercise malformed bundles and every collision class.
 
 - [X] T012 [P] [US1] Add actual-user export/restore binding, replay/cross-session/altered-field rejection, no-redundant-confirmation, export allowlist, candidate/grant exclusion, manifest, and interrupted-write tests with the required header in `tests/integration/test_export_restore.py` (FR-001 through FR-004, FR-025, SC-001, SC-002)
-- [ ] T013 [US1] Add actual producer round-trip, stable identity/reference, collision, foreign import, and index-rebuild-failure cases to `tests/integration/test_export_restore.py` (FR-004 through FR-006, SC-001, SC-007)
+- [X] T013 [US1] Add actual producer round-trip, stable identity/reference, collision, foreign import, and index-rebuild-failure cases to `tests/integration/test_export_restore.py` (FR-004 through FR-006, SC-001, SC-007)
 - [X] T014 [US1] Implement trusted export request binding validation, deterministic approved snapshot serialization, and atomic bound-destination publication in `src/expertiseos/ownership.py` (FR-001, FR-002, FR-025)
 - [X] T015 [US1] Implement full-bundle schema/path/digest/count/reference validation and collision preflight in `src/expertiseos/ownership.py` (FR-003, FR-005)
 - [X] T016 [US1] Implement trusted restore request binding validation, identical-record no-op, producer application ordering, and index-repair result in `src/expertiseos/ownership.py` (FR-004 through FR-006, FR-025)

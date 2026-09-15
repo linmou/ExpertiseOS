@@ -19,7 +19,12 @@ from typing import Protocol, cast
 
 from expertiseos.domain.models import ApprovalReceipt, LearnerState, PendingOperationKind
 from expertiseos.hosts.contract import EventKind, HostEvent
-from expertiseos.knowledge.backend import KnowledgeBackend, KnowledgeRecord, KnowledgeStatus
+from expertiseos.knowledge.backend import (
+    KnowledgeBackend,
+    KnowledgeRecord,
+    KnowledgeStatus,
+    RelationshipInput,
+)
 from expertiseos.learning.controls import (
     ApprovedKnowledgeRef,
     ControlSettings,
@@ -243,6 +248,12 @@ class RestoreTarget(Protocol):
     ) -> int: ...
 
     def rebuild_index(self) -> None: ...
+
+
+class ApprovedRestoreBackend(KnowledgeBackend, Protocol):
+    def restore_approved(
+        self, records: tuple[KnowledgeRecord, ...], operation_id: str
+    ) -> tuple[KnowledgeRecord, ...]: ...
 
 
 class LearningDeletionTarget(Protocol):
@@ -684,8 +695,61 @@ def _parse_deferred(record: Mapping[str, object]) -> DeferredActivity:
     )
 
 
-def _validate_sqlite_record(record_type: str, record: Mapping[str, object]) -> None:
-    if record_type == "approval_receipt":
+def _parse_relationship(record: Mapping[str, object]) -> RelationshipInput:
+    return RelationshipInput(
+        _record_text(record, "source_id"),
+        _record_int(record, "source_version"),
+        _record_text(record, "target_id"),
+        _record_int(record, "target_version"),
+        _record_text(record, "type"),
+        _record_optional_text(record, "explanation"),
+        _record_optional_text(record, "source_ref"),
+    )
+
+
+def _parse_knowledge(record: Mapping[str, object]) -> KnowledgeRecord:
+    raw_relationships = record.get("relationships")
+    if not isinstance(raw_relationships, list) or any(
+        not isinstance(item, dict) for item in raw_relationships
+    ):
+        raise OwnershipError("portable relationships are invalid")
+    relationships = tuple(
+        _parse_relationship(item) for item in raw_relationships if isinstance(item, dict)
+    )
+    return KnowledgeRecord(
+        _record_text(record, "id"),
+        _record_int(record, "version"),
+        _record_text(record, "content"),
+        _record_text(record, "content_digest"),
+        _record_text_tuple(record, "categories"),
+        _record_text_tuple(record, "subjects"),
+        _record_optional_text(record, "applicability_scope"),
+        _record_optional_text(record, "evidential_status"),
+        _record_text_tuple(record, "source_refs"),
+        _record_text(record, "contribution_origin"),
+        KnowledgeStatus(_record_text(record, "status")),
+        relationships,
+        datetime.fromisoformat(_record_text(record, "created_at")),
+        datetime.fromisoformat(_record_text(record, "updated_at")),
+    )
+
+
+def _validate_source_reference(record: Mapping[str, object]) -> None:
+    _record_text(record, "id")
+    _record_int(record, "version")
+    _record_text(record, "knowledge_id")
+    _record_int(record, "knowledge_version")
+    _record_text(record, "value")
+
+
+def _validate_portable_record(record_type: str, record: Mapping[str, object]) -> None:
+    if record_type == "knowledge":
+        _parse_knowledge(record)
+    elif record_type == "relationship":
+        _parse_relationship(record)
+    elif record_type == "source_reference":
+        _validate_source_reference(record)
+    elif record_type == "approval_receipt":
         _parse_receipt(record)
     elif record_type == "learner_evidence":
         _parse_evidence(record)
@@ -713,6 +777,52 @@ class SQLiteSnapshotIdentityLookup:
 
     def digest_for(self, record_type: str, identity: str, version: int) -> str | None:
         return self._digests.get((record_type, identity, version))
+
+
+class BackendSnapshotIdentityLookup:
+    """Resolve identity digests from the actual destination knowledge backend."""
+
+    def __init__(self, backend: KnowledgeBackend, scope: ExportScope) -> None:
+        self._digests: dict[tuple[str, str, int], str] = {}
+        backend_types = tuple(
+            record_type
+            for record_type in scope.record_types
+            if record_type in {"knowledge", "relationship", "source_reference"}
+        )
+        if not backend_types:
+            return
+        source = BackendSnapshotSource(backend)
+        for ref in scope.knowledge_refs:
+            if backend.get(ref.knowledge_id, ref.version, include_retired=True) is None:
+                continue
+            selected_scope = ExportScope(backend_types, (ref,), (), ())
+            for section in source.snapshot(selected_scope):
+                for record in section.records:
+                    identity, version = _identity(section.record_type, record)
+                    self._digests[(section.record_type, identity, version)] = _digest(record)
+
+    def digest_for(self, record_type: str, identity: str, version: int) -> str | None:
+        return self._digests.get((record_type, identity, version))
+
+
+class ApprovedStateIdentityLookup:
+    """Resolve collisions across the actual Basic Memory and SQLite destinations."""
+
+    def __init__(self, backend: KnowledgeBackend, state: SQLiteState, scope: ExportScope) -> None:
+        self._lookups: tuple[ExistingIdentityLookup, ...] = (
+            BackendSnapshotIdentityLookup(backend, scope),
+            SQLiteSnapshotIdentityLookup(state, scope),
+        )
+
+    def digest_for(self, record_type: str, identity: str, version: int) -> str | None:
+        values = tuple(
+            value
+            for lookup in self._lookups
+            if (value := lookup.digest_for(record_type, identity, version)) is not None
+        )
+        if len(set(values)) > 1:
+            raise OwnershipError("destination identity has conflicting canonical digests")
+        return None if not values else values[0]
 
 
 class SQLiteLearningRestoreTarget:
@@ -755,6 +865,49 @@ class SQLiteLearningRestoreTarget:
 
     def rebuild_index(self) -> None:
         return None
+
+
+class ApprovedStateRestoreTarget:
+    """Restore one validated bundle into Basic Memory and shared SQLite state."""
+
+    def __init__(self, backend: ApprovedRestoreBackend, state: SQLiteState) -> None:
+        self._backend = backend
+        self._learning = SQLiteLearningRestoreTarget(state)
+
+    def restore_section(
+        self,
+        record_type: str,
+        records: tuple[Mapping[str, object], ...],
+        operation_id: str,
+    ) -> int:
+        if record_type == "knowledge":
+            restored = self._backend.restore_approved(
+                tuple(_parse_knowledge(record) for record in records), operation_id
+            )
+            return len(restored)
+        if record_type == "source_reference":
+            for value in records:
+                record = self._backend.get(
+                    _record_text(value, "knowledge_id"),
+                    _record_int(value, "knowledge_version"),
+                    include_retired=True,
+                )
+                if record is None or _record_text(value, "value") not in record.source_refs:
+                    raise OwnershipError("restored source reference does not resolve")
+            return len(records)
+        if record_type == "relationship":
+            for value in records:
+                relationship = _parse_relationship(value)
+                source = self._backend.get(
+                    relationship.source_id, relationship.source_version, include_retired=True
+                )
+                if source is None or relationship not in source.relationships:
+                    raise OwnershipError("restored relationship does not resolve")
+            return len(records)
+        return self._learning.restore_section(record_type, records, operation_id)
+
+    def rebuild_index(self) -> None:
+        self._backend.rebuild_index()
 
 
 class SQLiteLearningDeletionTarget:
@@ -960,7 +1113,7 @@ def validate_restore(source: Path, lookup: ExistingIdentityLookup) -> RestorePla
                     raise OwnershipError("portable record is not an object")
                 record = cast(dict[str, object], value)
                 identity, version = _identity(record_type, record)
-                _validate_sqlite_record(record_type, record)
+                _validate_portable_record(record_type, record)
                 incoming = _digest(record)
                 local = lookup.digest_for(record_type, identity, version)
                 if local is not None and local != incoming:

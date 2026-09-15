@@ -449,6 +449,41 @@ class BasicMemoryBackend:
         self._save_state()
         return record
 
+    def restore_approved(
+        self, records: tuple[KnowledgeRecord, ...], operation_id: str
+    ) -> tuple[KnowledgeRecord, ...]:
+        """Restore validated approved records while preserving stable identities."""
+        if not records:
+            raise ValueError("restore requires approved records")
+        ordered = tuple(sorted(records, key=lambda item: (item.id, item.version)))
+        if len({(item.id, item.version) for item in ordered}) != len(ordered):
+            raise ValueError("restore contains duplicate knowledge versions")
+        for record in ordered:
+            digest = hashlib.sha256(record.content.encode("utf-8")).hexdigest()
+            if digest != record.content_digest:
+                raise ValueError("restored knowledge content digest does not match")
+        document = {
+            "kind": "restore",
+            "records": [self._metadata(record, operation_id) for record in ordered],
+        }
+        digest = self._digest(document)
+        replay = self._replayed(operation_id, digest)
+        if replay is not None:
+            return self._records_from_replay(replay)
+        for record in ordered:
+            existing = self._read_identifier(self._identifier(record.id, record.version))
+            if existing is not None and existing != record:
+                raise VersionConflictError("restore collides with a different canonical version")
+        for record in ordered:
+            existing = self._read_identifier(self._identifier(record.id, record.version))
+            if existing is None:
+                self._write_record(record, operation_id)
+            self._record_mapping(record)
+        refs = tuple((record.id, record.version) for record in ordered)
+        self._store_operation(operation_id, digest, "restore", refs, None)
+        self._save_state()
+        return ordered
+
     def get(
         self,
         knowledge_id: str,

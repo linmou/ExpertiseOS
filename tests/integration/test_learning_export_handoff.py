@@ -4,13 +4,20 @@
 from __future__ import annotations
 
 import dataclasses
+import hashlib
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
+import pytest
+
 from expertiseos.domain.models import ApprovalReceipt, LearnerState, PendingOperationKind
 from expertiseos.hosts.contract import DecisionAction, EventKind, HostEvent
-from expertiseos.knowledge.backend import SearchQuery
+from expertiseos.knowledge.backend import (
+    IdempotencyConflictError,
+    SearchQuery,
+    VersionConflictError,
+)
 from expertiseos.learning.controls import (
     ApprovedKnowledgeRef,
     DeferredActivity,
@@ -28,15 +35,17 @@ from expertiseos.learning.evidence import (
     validate_evidence,
 )
 from expertiseos.ownership import (
+    ApprovedStateIdentityLookup,
+    ApprovedStateRestoreTarget,
+    BackendSnapshotSource,
     CollisionPolicy,
+    CompositeSnapshotSource,
     DeletionScope,
     ExportScope,
     KnowledgeRef,
     OwnershipStatus,
     SelectionAuthority,
     SQLiteLearningDeletionTarget,
-    SQLiteLearningRestoreTarget,
-    SQLiteSnapshotIdentityLookup,
     SQLiteSnapshotSource,
     execute_delete,
     export_approved,
@@ -158,6 +167,8 @@ def test_actual_learning_state_round_trips_and_deletes_through_c007(tmp_path: Pa
 
     scope = ExportScope(
         (
+            "knowledge",
+            "source_reference",
             "approval_receipt",
             "learner_evidence",
             "control",
@@ -180,7 +191,7 @@ def test_actual_learning_state_round_trips_and_deletes_through_c007(tmp_path: Pa
         authority.issue_export(_user_event("export"), "export-1", scope, destination),
         scope,
         destination,
-        SQLiteSnapshotSource(source),
+        CompositeSnapshotSource((BackendSnapshotSource(store), SQLiteSnapshotSource(source))),
         authority,
         "0.1.0",
         NOW,
@@ -188,6 +199,8 @@ def test_actual_learning_state_round_trips_and_deletes_through_c007(tmp_path: Pa
 
     assert exported.status is OwnershipStatus.COMMITTED
     assert dict(exported.record_counts) == {
+        "knowledge": 1,
+        "source_reference": 1,
         "approval_receipt": 4,
         "learner_evidence": 1,
         "control": 1,
@@ -197,8 +210,9 @@ def test_actual_learning_state_round_trips_and_deletes_through_c007(tmp_path: Pa
     }
 
     restored_state = SQLiteState(tmp_path / "restored.sqlite")
+    restored_store = backend(tmp_path / "restored-backend", FakeBasicMemoryCli())
     restore_plan = validate_restore(
-        destination, SQLiteSnapshotIdentityLookup(restored_state, scope)
+        destination, ApprovedStateIdentityLookup(restored_store, restored_state, scope)
     )
     restored = restore_validated(
         restore_plan,
@@ -209,10 +223,21 @@ def test_actual_learning_state_round_trips_and_deletes_through_c007(tmp_path: Pa
             CollisionPolicy.REJECT_DIVERGENT,
         ),
         authority,
-        SQLiteLearningRestoreTarget(restored_state),
+        ApprovedStateRestoreTarget(restored_store, restored_state),
     )
 
     assert restored.status is OwnershipStatus.COMMITTED
+    assert restored_store.get(knowledge.id, knowledge.version, include_retired=True) == knowledge
+    assert restored_store.restore_approved((knowledge,), "restore-1") == (knowledge,)
+    divergent = dataclasses.replace(
+        knowledge,
+        content="divergent content",
+        content_digest=hashlib.sha256(b"divergent content").hexdigest(),
+    )
+    with pytest.raises(IdempotencyConflictError):
+        restored_store.restore_approved((divergent,), "restore-1")
+    with pytest.raises(VersionConflictError):
+        restored_store.restore_approved((divergent,), "restore-collision")
     assert restored_state.list_evidence(knowledge.id, knowledge.version, "python", 20) == (
         evidence,
     )
