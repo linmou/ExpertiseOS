@@ -7,14 +7,19 @@ import inspect
 from datetime import timedelta
 from pathlib import Path
 
-from expertiseos.mcp_server import PUBLIC_TOOL_NAMES, ToolRegistry, build_tool_registry
+from expertiseos.mcp_server import (
+    PUBLIC_TOOL_NAMES,
+    ToolRegistry,
+    TrustedOwnershipHandlers,
+    build_tool_registry,
+)
 from expertiseos.ownership import (
     CompositeSnapshotSource,
     ExportRequestBinding,
     ExportScope,
     SelectionAuthority,
 )
-from expertiseos.service import ExpertiseOSService
+from expertiseos.service import ExpertiseOSService, ToolResult, ToolStatus
 from tests.consent_support import NOW
 from tests.e2e.conftest import ProductGraph
 
@@ -23,7 +28,11 @@ def _registry(product_graph: ProductGraph) -> ToolRegistry:
     facade = ExpertiseOSService(
         product_graph.knowledge, product_graph.backend, product_graph.state, ()
     )
-    return build_tool_registry(facade)
+
+    def unavailable() -> ToolResult:
+        return ToolResult(ToolStatus.UNAVAILABLE, None, "not_injected", "Unavailable", ())
+
+    return build_tool_registry(facade, TrustedOwnershipHandlers(unavailable, unavailable))
 
 
 def test_registry_is_an_explicit_allowlist(product_graph: ProductGraph) -> None:
@@ -48,6 +57,9 @@ def test_registry_excludes_every_backend_and_authorization_bypass_name(
         "approve",
         "approved",
         "user_approved",
+        "prepare_delegated_commit",
+        "complete_delegated_commit",
+        "record_receipt",
     }
 
     assert forbidden.isdisjoint(registry.names)
@@ -68,8 +80,14 @@ def test_mutation_handlers_accept_operation_id_not_approval_assertions(
         parameters = inspect.signature(registry.get(name).handler).parameters
         assert "approved" not in parameters
         assert "user_approved" not in parameters
+        assert "receipt" not in parameters
+        assert "authorization" not in parameters
+        assert "host_event" not in parameters
+        assert "seal" not in parameters
 
     assert "operation_id" in inspect.signature(registry.get("commit_proposal").handler).parameters
+    assert inspect.signature(registry.get("export_data").handler).parameters == {}
+    assert inspect.signature(registry.get("restore_data").handler).parameters == {}
 
 
 def test_export_rejects_model_manufactured_selection_binding(

@@ -39,6 +39,12 @@ class ToolDefinition:
     handler: ToolHandler
 
 
+@dataclass(frozen=True)
+class TrustedOwnershipHandlers:
+    export_data: ToolHandler
+    restore_data: ToolHandler
+
+
 class ToolRegistry:
     """Hold the exact local tool allowlist; it is not itself a host-facing generic tool."""
 
@@ -60,7 +66,10 @@ class ToolRegistry:
             raise KeyError(f"tool is not registered: {name}") from error
 
 
-def build_tool_registry(service: ExpertiseOSService) -> ToolRegistry:
+def build_tool_registry(
+    service: ExpertiseOSService,
+    ownership: TrustedOwnershipHandlers,
+) -> ToolRegistry:
     """Bind explicit service methods without exposing backend or authorization shortcuts."""
     return ToolRegistry(
         (
@@ -78,8 +87,8 @@ def build_tool_registry(service: ExpertiseOSService) -> ToolRegistry:
             ToolDefinition("commit_proposal", service.commit_proposal),
             ToolDefinition("propose_control_change", service.propose_control_change),
             ToolDefinition("propose_retire_or_delete", service.propose_retire_or_delete),
-            ToolDefinition("export_data", service.export_data),
-            ToolDefinition("restore_data", service.restore_data),
+            ToolDefinition("export_data", ownership.export_data),
+            ToolDefinition("restore_data", ownership.restore_data),
             ToolDefinition("remove_deferred_activity", service.remove_deferred_activity),
         )
     )

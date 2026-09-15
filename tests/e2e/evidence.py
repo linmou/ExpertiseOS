@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -43,3 +44,16 @@ def write_evidence(evidence: AcceptanceEvidence, destination: Path) -> Path:
         encoding="utf-8",
     )
     return destination
+
+
+def deterministic_verdict(
+    quality_by_at: Mapping[str, str],
+    evidence: tuple[AcceptanceEvidence, ...],
+) -> str:
+    """Return a deterministic verdict without accepting model-quality offsets."""
+    by_id = {item.at_id: item for item in evidence}
+    if set(by_id) != set(quality_by_at):
+        raise ValueError("acceptance evidence is incomplete")
+    if any(item.result == "fail" for item in by_id.values()):
+        return "fail"
+    return "pass"

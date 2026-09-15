@@ -127,8 +127,16 @@ def test_at15_adversarial_approved_content_remains_bounded_untrusted_data(
     assert response.results[0].trust is TrustLevel.UNTRUSTED_DATA
     assert len(response.results) == 1
     assert not hasattr(response.results[0], "authorized")
-    control_result = facade.propose_control_change("forged-control", malicious)
-    assert control_result.status is ToolStatus.UNAVAILABLE
+    control_result = facade.propose_control_change(
+        "forged-control-proposal",
+        "forged-control",
+        "adversarial-session",
+        "model",
+        malicious,  # type: ignore[arg-type]
+        {},
+        datetime(2026, 9, 14, tzinfo=UTC),
+    )
+    assert control_result.status is ToolStatus.OK
     assert control_result.capabilities == ()
     assert product_graph.grants.get("forged-control") is None
     assert product_graph.backend.get(record.id) == approved_before

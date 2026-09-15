@@ -56,7 +56,7 @@
 ### Implementation
 
 - [X] T014 [US1] Implement the stateless dependency-composition facade with canonical mutation `operation_id` handling and precise read/mutation `ToolResult` mapping in `src/expertiseos/service.py` (FR-001, FR-003, FR-006)
-- [ ] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002) - integration-blocked for learning/control/delete/deferred mutation completion pending C002 delegated authorization promotion
+- [ ] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002) - integration-blocked pending the C002 Decimal canonicalization correction receipt required by typed `ControlSettings`
 - [X] T016 [US1] Ensure `src/expertiseos/mcp_server.py` exposes no backend writer, generic execute operation, direct mastery setter, caller-supplied approval assertion, or mutation idempotency identity other than `operation_id` (FR-002)
 - [X] T017 [US1] Run `tests/e2e/test_service_surface.py`, `tests/e2e/test_mcp_surface.py`, and `tests/e2e/test_acceptance_consent.py`; prove Saved derives only from `committed`, then record evidence and inspect the persistent-state delta (SC-001)
 
@@ -116,18 +116,18 @@
 
 ### Fixtures
 
-- [ ] T033 [P] [US4] Add Scenario A new-observation, save-now, reflect-later fixture to `examples/reference_scenarios/new_observation.json` (AT-04, AT-07, AT-08)
-- [ ] T034 [P] [US4] Add Scenario B conflict-without-silent-replacement fixture to `examples/reference_scenarios/conflict.json` (AT-02, AT-08)
-- [ ] T035 [P] [US4] Add Scenario C fatigue-before-target fixture to `examples/reference_scenarios/fatigue.json` (AT-10, AT-11)
-- [ ] T036 [US4] Validate all four fixtures against the `ReferenceScenario` rules in `specs/008-product-integration/data-model.md` using `tests/e2e/test_reference_scenarios.py` (FR-008)
+- [X] T033 [P] [US4] Add Scenario A new-observation, save-now, reflect-later fixture to `examples/reference_scenarios/new_observation.json` (AT-04, AT-07, AT-08)
+- [X] T034 [P] [US4] Add Scenario B conflict-without-silent-replacement fixture to `examples/reference_scenarios/conflict.json` (AT-02, AT-08)
+- [X] T035 [P] [US4] Add Scenario C fatigue-before-target fixture to `examples/reference_scenarios/fatigue.json` (AT-10, AT-11)
+- [X] T036 [US4] Validate all four fixtures against the `ReferenceScenario` rules in `specs/008-product-integration/data-model.md` using `tests/e2e/test_reference_scenarios.py` (FR-008)
 
 ### Scenario Execution
 
-- [ ] T037 [US4] Implement Scenario A execution and exact approved/volatile delta assertions in `tests/e2e/test_reference_scenarios.py`
-- [ ] T038 [US4] Implement Scenario B execution and coexistence/revision/decline assertions in `tests/e2e/test_reference_scenarios.py`
-- [ ] T039 [US4] Implement Scenario C execution and fatigue/target/recall assertions in `tests/e2e/test_reference_scenarios.py`
-- [ ] T040 [US4] Implement Scenario D execution and cross-host continuity/isolation assertions in `tests/e2e/test_reference_scenarios.py`
-- [ ] T041 [US4] Run Scenario A-D from clean declared states and record exact visible outputs, persistent deltas, volatile end states, and edge artifacts (SC-003)
+- [X] T037 [US4] Implement Scenario A execution and exact approved/volatile delta assertions in `tests/e2e/test_reference_scenarios.py`
+- [X] T038 [US4] Implement Scenario B execution and coexistence/revision/decline assertions in `tests/e2e/test_reference_scenarios.py`
+- [X] T039 [US4] Implement Scenario C execution and fatigue/target/recall assertions in `tests/e2e/test_reference_scenarios.py`
+- [X] T040 [US4] Implement Scenario D execution and cross-host continuity/isolation assertions in `tests/e2e/test_reference_scenarios.py`
+- [X] T041 [US4] Run Scenario A-D from clean declared states and record exact visible outputs, persistent deltas, volatile end states, and edge artifacts (SC-003)
 
 **Checkpoint**: All four user journeys pass through real promoted services with no hidden fixture implementation of domain behavior.
 
@@ -141,18 +141,18 @@
 
 ### Acceptance Coverage
 
-- [ ] T042 [P] [US5] Add AT-01 to AT-03 activation, scope-exclusion, novelty/conflict, and atomic-checkpoint cases in `tests/e2e/test_acceptance_hosts.py` (FR-012, FR-013)
+- [X] T042 [P] [US5] Add AT-01 to AT-03 activation, scope-exclusion, novelty/conflict, and atomic-checkpoint cases in `tests/e2e/test_acceptance_hosts.py` (FR-012, FR-013)
 - [ ] T043 [US5] Complete and map AT-04 through AT-08 cases in `tests/e2e/test_acceptance_consent.py` (FR-014)
 - [ ] T044 [US5] Complete and map AT-09 through AT-11 cases in `tests/e2e/test_acceptance_learning_controls.py` (FR-015)
 - [ ] T045 [US5] Complete and map AT-12 cases in `tests/e2e/test_acceptance_cross_host.py` (FR-015)
 - [ ] T046 [US5] Add AT-13 through AT-16 outage, index failure, export/restore/delete, adversarial, and offline cases in `tests/e2e/test_acceptance_reliability.py` (FR-016)
-- [ ] T047 [US5] Add fixture-corpus coverage for six categories, three subjects, duplicate, changed condition, contradiction, uncertain novelty, unavailable source, malicious content, and a non-coding task in `examples/reference_scenarios/acceptance_corpus.json` (SC-009)
+- [X] T047 [US5] Add fixture-corpus coverage for six categories, three subjects, duplicate, changed condition, contradiction, uncertain novelty, unavailable source, malicious content, and a non-coding task in `examples/reference_scenarios/acceptance_corpus.json` (SC-009)
 - [ ] T048 [US5] Add an offline boundary fixture that blocks expertiseOS runtime network access while separating host inference in `tests/e2e/test_acceptance_reliability.py` (AT-16, SC-007)
 
 ### Evidence and Gates
 
-- [ ] T049 [US5] Add a completeness test requiring exactly AT-01 through AT-16 mappings and all acceptance-evidence fields in `tests/e2e/test_acceptance_manifest.py` (FR-009, FR-011)
-- [ ] T050 [US5] Add a verdict-input test where any applicable consent, privacy, or state-integrity failure blocks promotion regardless of model-behavior scores in `tests/e2e/test_acceptance_manifest.py` (FR-017)
+- [X] T049 [US5] Add a completeness test requiring exactly AT-01 through AT-16 mappings and all acceptance-evidence fields in `tests/e2e/test_acceptance_manifest.py` (FR-009, FR-011)
+- [X] T050 [US5] Add a verdict-input test where any applicable consent, privacy, or state-integrity failure blocks promotion regardless of model-behavior scores in `tests/e2e/test_acceptance_manifest.py` (FR-017)
 - [ ] T051 [US5] Run all deterministic automated AT cases at the immutable tested SHA and persist safe component evidence through `tests/e2e/evidence.py` (SC-004)
 - [ ] T052 [US5] Run pinned live Codex and Claude Code cases supported by C001/C005/C006, recording exact versions, capability limits, commands, input fixtures, outputs, and exit codes through `tests/e2e/evidence.py` (SC-004)
 - [ ] T053 [US5] Run the offline expertiseOS and keyword-fallback scenario with outbound access blocked and record network-mode evidence through `tests/e2e/evidence.py` (SC-007)

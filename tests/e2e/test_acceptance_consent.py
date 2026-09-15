@@ -215,8 +215,10 @@ def test_c008_operation_id_is_the_only_commit_replay_identity(tmp_path: Path) ->
         NOW + timedelta(seconds=1),
     )
 
-    wrong = facade.commit_proposal(proposal.proposal_id, "grant-c008", "request-c008")
-    committed = facade.commit_proposal(proposal.proposal_id, "grant-c008", proposal.operation_id)
+    wrong = facade.commit_proposal(proposal.proposal_id, "grant-c008", "request-c008", {})
+    committed = facade.commit_proposal(
+        proposal.proposal_id, "grant-c008", proposal.operation_id, {}
+    )
 
     assert wrong.status is ToolStatus.REJECTED
     assert wrong.message != "Saved"
