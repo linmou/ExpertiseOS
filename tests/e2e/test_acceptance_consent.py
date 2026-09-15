@@ -15,6 +15,7 @@ from expertiseos.domain.models import CommitStatus, PendingOperation
 from expertiseos.hosts.contract import DecisionAction, DecisionBinding, EventKind, HostEvent
 from expertiseos.knowledge.backend import SearchQuery
 from expertiseos.knowledge.service import KnowledgeService
+from expertiseos.service import ExpertiseOSService, ToolStatus
 from expertiseos.state.sqlite import SQLiteState
 from tests.consent_support import (
     NOW,
@@ -180,4 +181,45 @@ def test_at06_forged_or_ambiguous_events_cannot_authorize_write() -> None:
     assert result.status is CommitStatus.REJECTED
     assert backend.search(SearchQuery("forged approval marker", 10, None, (), (), ())) == ()
     assert receipts.get_receipt("operation-at06") is None
+    receipts.close()
+
+
+def test_c008_operation_id_is_the_only_commit_replay_identity(tmp_path: Path) -> None:
+    state_path = tmp_path / "state-c008.db"
+    backend = fake_backend()
+    candidates = CandidateStore()
+    grants = DecisionGrantStore()
+    receipts = SQLiteState(state_path)
+    service = KnowledgeService(
+        backend,
+        candidates,
+        grants,
+        ApprovalGate(),
+        receipts,
+        DeterministicClock(NOW + timedelta(hours=1), timedelta(seconds=1)),
+    )
+    facade = ExpertiseOSService(service, backend, receipts, ())
+    proposal = service.propose_create(
+        "proposal-c008",
+        "operation-c008",
+        "session-c008",
+        "codex",
+        approved("canonical operation identity"),
+        NOW,
+    )
+    service.present(proposal.proposal_id)
+    service.register_decision(
+        proposal.proposal_id,
+        "grant-c008",
+        observation(user_event_ref="host-user-c008"),
+        NOW + timedelta(seconds=1),
+    )
+
+    wrong = facade.commit_proposal(proposal.proposal_id, "grant-c008", "request-c008")
+    committed = facade.commit_proposal(proposal.proposal_id, "grant-c008", proposal.operation_id)
+
+    assert wrong.status is ToolStatus.REJECTED
+    assert wrong.message != "Saved"
+    assert committed.status is ToolStatus.COMMITTED
+    assert committed.message == "Saved"
     receipts.close()

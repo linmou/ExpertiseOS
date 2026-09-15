@@ -98,6 +98,51 @@ def test_at07_only_persisted_pass_evidence_advances_numeric_mastery() -> None:
     state.close()
 
 
+def test_c008_all_non_pass_outcomes_remain_inspectable_and_contribute_zero() -> None:
+    state = SQLiteState(":memory:")
+    fact = ApprovedObjectFact("knowledge-c008", 1, "python", False)
+    outcomes = (
+        EvidenceOutcome.PARTIAL,
+        EvidenceOutcome.FAIL,
+        EvidenceOutcome.INSUFFICIENT_EVIDENCE,
+    )
+    records: list[LearnerEvidence] = []
+    for index, outcome in enumerate(outcomes):
+        receipt = _authorize_receipt(
+            state,
+            PendingOperationKind.LEARNING_EVIDENCE,
+            f"c008-{outcome.value}",
+            ((fact.knowledge_id, fact.knowledge_version),),
+            f"C008 {outcome.value}",
+            index * 10 + 100,
+        )
+        record = dataclasses.replace(
+            _evidence(
+                f"evidence-c008-{outcome.value}",
+                receipt.operation_id,
+                outcome,
+                f"task-c008-{index}",
+                f"session-c008-{index}",
+                False,
+            ),
+            knowledge_id=fact.knowledge_id,
+            proposed_state=LearnerState.RECOGNIZED,
+            approved_state=LearnerState.RECOGNIZED,
+        )
+        records.append(state.insert_evidence_once(validate_evidence(record, fact, receipt)))
+
+    thresholds = AdvancementThresholds(1, 1, 1, 1, 2)
+    summary = summarize_mastery(fact, tuple(records), thresholds, False, NOW + timedelta(hours=1))
+
+    assert thresholds.as_tuple() == (1, 1, 1, 1, 2)
+    persisted = state.list_evidence(fact.knowledge_id, 1, "python", 20)
+    assert {item.id for item in persisted} == {item.id for item in records}
+    assert summary.state is LearnerState.NEW
+    assert summary.supporting_evidence_ids == ()
+    assert set(summary.excluded_evidence_ids) == {item.id for item in records}
+    state.close()
+
+
 def test_at09_autonomous_requires_every_non_numeric_safeguard() -> None:
     fact = ApprovedObjectFact("knowledge-learning", 1, "python", False)
     first = _evidence(

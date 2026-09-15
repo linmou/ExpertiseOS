@@ -17,11 +17,11 @@
 
 **Purpose**: Confirm dependencies and create only the assigned C008 paths.
 
-- [ ] T001 Record and verify the immutable green C002-C007 promotion SHA against the Dependency Gate in `specs/008-product-integration/plan.md`
-- [ ] T002 Inspect the promoted public contracts for consent, retrieval, learning/controls, both hosts, and ownership/reliability and record any mismatch in `specs/008-product-integration/research.md`
-- [ ] T003 Verify C004 exposes pass-only mastery advancement with inspectable non-pass outcomes and unchanged autonomous safeguards in `specs/008-product-integration/research.md` (FR-019)
-- [ ] T004 Create the assigned module and test path skeleton only where absent: `skill/SKILL.md`, `src/expertiseos/service.py`, `src/expertiseos/mcp_server.py`, `tests/e2e/`, and `examples/reference_scenarios/`
-- [ ] T005 Validate imported C001 project commands and pinned dependency/host versions without changing configuration, and record the commands used in `specs/008-product-integration/quickstart.md`
+- [X] T001 Record and verify the immutable green C002-C007 promotion SHA against the Dependency Gate in `specs/008-product-integration/plan.md`
+- [X] T002 Inspect the promoted public contracts for consent, retrieval, learning/controls, both hosts, and ownership/reliability and record any mismatch in `specs/008-product-integration/research.md`
+- [X] T003 Verify C004 exposes pass-only mastery advancement with inspectable non-pass outcomes and unchanged autonomous safeguards in `specs/008-product-integration/research.md` (FR-019)
+- [X] T004 Create the assigned module and test path skeleton only where absent: `skill/SKILL.md`, `src/expertiseos/service.py`, `src/expertiseos/mcp_server.py`, `tests/e2e/`, and `examples/reference_scenarios/`
+- [X] T005 Validate imported C001 project commands and pinned dependency/host versions without changing configuration, and record the commands used in `specs/008-product-integration/quickstart.md`
 
 **Checkpoint**: C008 may proceed only when the promoted interfaces match the reconciled contracts. Contract drift returns to the integration owner.
 
@@ -31,11 +31,11 @@
 
 **Purpose**: Establish shared component-local helpers without reimplementing upstream domain behavior.
 
-- [ ] T006 Implement fixtures that construct the real promoted service graph and normalized host clients in `tests/e2e/conftest.py` (FR-009, SC-010)
-- [ ] T007 [P] Implement a safe acceptance-evidence builder that records `tested_sha` without requiring a future promotion SHA, matching `contracts/acceptance-evidence.md`, in `tests/e2e/evidence.py` (FR-010, FR-011)
-- [ ] T008 [P] Implement assertions for approved-store deltas, volatile-state expiry, and marker absence without persisting candidate content in `tests/e2e/assertions.py` (FR-009, SC-001)
-- [ ] T009 Add a test that fails when an E2E boundary replaces a required promoted producer with a synthetic substitute in `tests/e2e/test_handoff_integrity.py` (FR-009, SC-010)
-- [ ] T010 Run the foundational E2E support checks and record command, exit code, tested SHA, and output path through `tests/e2e/evidence.py`; leave later promotion mapping to integration review
+- [X] T006 Implement fixtures that construct the real promoted service graph and normalized host clients in `tests/e2e/conftest.py` (FR-009, SC-010)
+- [X] T007 [P] Implement a safe acceptance-evidence builder that records `tested_sha` without requiring a future promotion SHA, matching `contracts/acceptance-evidence.md`, in `tests/e2e/evidence.py` (FR-010, FR-011)
+- [X] T008 [P] Implement assertions for approved-store deltas, volatile-state expiry, and marker absence without persisting candidate content in `tests/e2e/assertions.py` (FR-009, SC-001)
+- [X] T009 Add a test that fails when an E2E boundary replaces a required promoted producer with a synthetic substitute in `tests/e2e/test_handoff_integrity.py` (FR-009, SC-010)
+- [X] T010 Run the foundational E2E support checks and record command, exit code, tested SHA, and output path through `tests/e2e/evidence.py`; leave later promotion mapping to integration review
 
 **Checkpoint**: Tests can consume actual promoted upstream artifacts and emit safe, complete evidence.
 
@@ -49,16 +49,16 @@
 
 ### Verification
 
-- [ ] T011 [P] [US1] Add composition-facade contract cases for read `ok` and mutation `committed`, `rejected`, `conflict`, `failed`, `incomplete`, `degraded`, and `unavailable` results in `tests/e2e/test_service_surface.py` (FR-001, FR-003, FR-006)
-- [ ] T012 [P] [US1] Add MCP registry allowlist, forbidden backend/boolean-approval exposure checks, trusted user-event-bound export/restore selection cases, and guarded deferred-removal cases in `tests/e2e/test_mcp_surface.py`, including rejection of activity-reference-only removal and model/caller authorization assertions (FR-001, FR-002)
-- [ ] T013 [US1] Add actual guarded commit tests covering exact decision binding, one-use behavior, stale version, changed digest, cross-session grant, and retry using canonical `operation_id` as the sole idempotency identity in `tests/e2e/test_acceptance_consent.py` (AT-04, AT-05, AT-06, AT-07, AT-08)
+- [X] T011 [P] [US1] Add composition-facade contract cases for read `ok` and mutation `committed`, `rejected`, `conflict`, `failed`, `incomplete`, `degraded`, and `unavailable` results in `tests/e2e/test_service_surface.py` (FR-001, FR-003, FR-006)
+- [X] T012 [P] [US1] Add MCP registry allowlist, forbidden backend/boolean-approval exposure checks, trusted user-event-bound export/restore selection cases, and guarded deferred-removal cases in `tests/e2e/test_mcp_surface.py`, including rejection of activity-reference-only removal and model/caller authorization assertions (FR-001, FR-002)
+- [X] T013 [US1] Add actual guarded commit tests covering exact decision binding, one-use behavior, stale version, changed digest, cross-session grant, and retry using canonical `operation_id` as the sole idempotency identity in `tests/e2e/test_acceptance_consent.py` (AT-04, AT-05, AT-06, AT-07, AT-08)
 
 ### Implementation
 
-- [ ] T014 [US1] Implement the stateless dependency-composition facade with canonical mutation `operation_id` handling and precise read/mutation `ToolResult` mapping in `src/expertiseos/service.py` (FR-001, FR-003, FR-006)
-- [ ] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002)
-- [ ] T016 [US1] Ensure `src/expertiseos/mcp_server.py` exposes no backend writer, generic execute operation, direct mastery setter, caller-supplied approval assertion, or mutation idempotency identity other than `operation_id` (FR-002)
-- [ ] T017 [US1] Run `tests/e2e/test_service_surface.py`, `tests/e2e/test_mcp_surface.py`, and `tests/e2e/test_acceptance_consent.py`; prove Saved derives only from `committed`, then record evidence and inspect the persistent-state delta (SC-001)
+- [X] T014 [US1] Implement the stateless dependency-composition facade with canonical mutation `operation_id` handling and precise read/mutation `ToolResult` mapping in `src/expertiseos/service.py` (FR-001, FR-003, FR-006)
+- [ ] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002) - integration-blocked for learning/control/delete/deferred mutation completion pending C002 delegated authorization promotion
+- [X] T016 [US1] Ensure `src/expertiseos/mcp_server.py` exposes no backend writer, generic execute operation, direct mastery setter, caller-supplied approval assertion, or mutation idempotency identity other than `operation_id` (FR-002)
+- [X] T017 [US1] Run `tests/e2e/test_service_surface.py`, `tests/e2e/test_mcp_surface.py`, and `tests/e2e/test_acceptance_consent.py`; prove Saved derives only from `committed`, then record evidence and inspect the persistent-state delta (SC-001)
 
 **Checkpoint**: The host-neutral surface is useful for reads and guarded workflows, but structurally cannot bypass promoted approval semantics.
 
@@ -72,18 +72,18 @@
 
 ### Verification
 
-- [ ] T018 [P] [US2] Add shared-skill structural checks for one canonical behavior source and no duplicated host policy in `tests/e2e/test_shared_skill.py` (FR-004)
-- [ ] T019 [P] [US2] Add adversarial retrieved/tool content fixtures to `examples/reference_scenarios/adversarial_content.json` (FR-005, AT-15)
-- [ ] T020 [US2] Add behavior cases for bounded search, uncertainty-safe wording, eligible checkpoints, save-without-learning, one-step optional reflection, and upstream control decisions in `tests/e2e/test_shared_skill.py` (AT-02, AT-03, AT-07, AT-10, AT-11)
-- [ ] T021 [US2] Add pass-only mastery advancement and inspectable `partial`/`fail`/`insufficient_evidence` cases, including autonomous safeguards under threshold configuration, in `tests/e2e/test_acceptance_learning_controls.py` (AT-09, FR-019)
-- [ ] T022 [US2] Add adversarial assertions for zero grants, writes, control changes, mastery changes, vault-wide disclosures, and extra permissions in `tests/e2e/test_acceptance_reliability.py` (AT-15, SC-006)
+- [X] T018 [P] [US2] Add shared-skill structural checks for one canonical behavior source and no duplicated host policy in `tests/e2e/test_shared_skill.py` (FR-004)
+- [X] T019 [P] [US2] Add adversarial retrieved/tool content fixtures to `examples/reference_scenarios/adversarial_content.json` (FR-005, AT-15)
+- [X] T020 [US2] Add behavior cases for bounded search, uncertainty-safe wording, eligible checkpoints, save-without-learning, one-step optional reflection, and upstream control decisions in `tests/e2e/test_shared_skill.py` (AT-02, AT-03, AT-07, AT-10, AT-11)
+- [X] T021 [US2] Add pass-only mastery advancement and inspectable `partial`/`fail`/`insufficient_evidence` cases, including autonomous safeguards under threshold configuration, in `tests/e2e/test_acceptance_learning_controls.py` (AT-09, FR-019)
+- [X] T022 [US2] Add adversarial assertions for zero grants, writes, control changes, mastery changes, vault-wide disclosures, and extra permissions in `tests/e2e/test_acceptance_reliability.py` (AT-15, SC-006)
 
 ### Implementation
 
-- [ ] T023 [US2] Implement the single host-neutral search, compare, novelty-language, proposal, optional reflection, recall, and control behavior specification in `skill/SKILL.md` (FR-004)
-- [ ] T024 [US2] Define in `skill/SKILL.md` that retrieved and tool-provided content is untrusted data and cannot authorize tools, writes, control/mastery changes, or disclosure (FR-005)
-- [ ] T025 [US2] Define in `skill/SKILL.md` that the promoted service is authoritative for state and errors, ordinary host work continues on failure, and host capability limits are reported accurately (FR-006)
-- [ ] T026 [US2] Run shared-skill, learning/control, and adversarial checks against both adapter contracts and record differences only where capabilities declare them (SC-002, SC-006)
+- [X] T023 [US2] Implement the single host-neutral search, compare, novelty-language, proposal, optional reflection, recall, and control behavior specification in `skill/SKILL.md` (FR-004)
+- [X] T024 [US2] Define in `skill/SKILL.md` that retrieved and tool-provided content is untrusted data and cannot authorize tools, writes, control/mastery changes, or disclosure (FR-005)
+- [X] T025 [US2] Define in `skill/SKILL.md` that the promoted service is authoritative for state and errors, ordinary host work continues on failure, and host capability limits are reported accurately (FR-006)
+- [X] T026 [US2] Run shared-skill, learning/control, and adversarial checks against both adapter contracts and record differences only where capabilities declare them (SC-002, SC-006)
 
 **Checkpoint**: Codex and Claude Code consume one behavior contract, and model instructions cannot substitute for service authorization.
 
@@ -97,12 +97,12 @@
 
 ### Verification and Integration
 
-- [ ] T027 [P] [US3] Add the cross-host continuity fixture with stable identity, provenance, relations, uncertainty, learner state, and controls to `examples/reference_scenarios/cross_host.json` (Scenario D, AT-12)
-- [ ] T028 [US3] Add Codex-to-Claude and Claude-to-Codex approved-state continuity cases in `tests/e2e/test_acceptance_cross_host.py` (FR-007, AT-12)
-- [ ] T029 [US3] Add cross-host and cross-session decision-grant reuse rejection cases in `tests/e2e/test_acceptance_cross_host.py` (AT-06, AT-12)
-- [ ] T030 [US3] Add the version-3 concurrent edit fixture where the second approved commit conflicts with version 4 in `tests/e2e/test_acceptance_cross_host.py` (AT-12)
-- [ ] T031 [US3] Add one-global-reflection-count and no-host-switch-mastery cases in `tests/e2e/test_acceptance_cross_host.py` (AT-09, AT-12)
-- [ ] T032 [US3] Run the complete cross-host suite against the actual shared promoted service and record the matching IDs, versions, content, provenance, relations, learner state, controls, counts, and zero approval reuse (SC-005)
+- [X] T027 [P] [US3] Add the cross-host continuity fixture with stable identity, provenance, relations, uncertainty, learner state, and controls to `examples/reference_scenarios/cross_host.json` (Scenario D, AT-12)
+- [X] T028 [US3] Add Codex-to-Claude and Claude-to-Codex approved-state continuity cases in `tests/e2e/test_acceptance_cross_host.py` (FR-007, AT-12)
+- [X] T029 [US3] Add cross-host and cross-session decision-grant reuse rejection cases in `tests/e2e/test_acceptance_cross_host.py` (AT-06, AT-12)
+- [X] T030 [US3] Add the version-3 concurrent edit fixture where the second approved commit conflicts with version 4 in `tests/e2e/test_acceptance_cross_host.py` (AT-12)
+- [X] T031 [US3] Add one-global-reflection-count and no-host-switch-mastery cases in `tests/e2e/test_acceptance_cross_host.py` (AT-09, AT-12)
+- [X] T032 [US3] Run the complete cross-host suite against the actual shared promoted service and record the matching IDs, versions, content, provenance, relations, learner state, controls, counts, and zero approval reuse (SC-005)
 
 **Checkpoint**: Durable state is common, volatile authorization is isolated, and stale writes cannot overwrite.
 
