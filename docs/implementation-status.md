@@ -9,7 +9,7 @@
 ## Integrated Components
 
 - C001 feasibility/bootstrap is promoted at `f7b1eb59a7d1837c367095e195ea7a42ead20098`.
-- C002 consent core is promoted at `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`; delegated state-change authorization correction `d4fa41b` is supplied to C008.
+- C002 consent core is promoted at `6fb115340c43ca8f4ae5afcc8a5f4306996c1779`; delegated authorization and Decimal canonicalization corrections through `70d182d` are supplied to C008.
 - C003 backend retrieval is promoted at `166f196638e66e4aea324ee12d117507963e7629`.
 - C004 learner evidence and controls are promoted at `633961d62a63ff761b992df768b1c04b173e2cd4`.
 - C005 Codex host is promoted at `edf03b653ee59f9c8a2db2f7c1df7b591e5a05d4`.

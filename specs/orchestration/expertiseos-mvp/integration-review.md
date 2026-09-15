@@ -580,3 +580,11 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Focused approval/delegated/integration gate: exit 0; 21 passed in 0.13 seconds.
 - Complete current E2E gate: exit 0; 20 passed in 0.21 seconds.
 - Strict mypy across 117 files, Ruff check and format, health smoke, and `rtk git diff --check`: exit 0.
+
+### C002 Decimal Correction Propagation To C008
+
+- Smoke-verified correction audit and immutable propagation SHA: `70d182d`.
+- C008 checkpoint before receipt: `b4c96eddea0b451f856feed7ca232874e53cc2fe`; 44/60 tasks and 55 E2E tests passed with Ruff, formatting, mypy, and diff checks green.
+- Exact C008 receipt merge: `992fb28b8c58d74135c26f3980c348938996a6e0`.
+- Receipt verification: 73 approval, delegated-consent, and current C008 E2E tests passed in 0.20 seconds.
+- Receipt health smoke and `rtk git diff --check`: exit 0; C008 worktree clean before owner resume.
