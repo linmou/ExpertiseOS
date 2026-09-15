@@ -205,7 +205,23 @@ class RetireOperation:
             raise DomainValidationError("expected version must be positive")
 
 
+@dataclass(frozen=True)
+class LearningEvidenceOperation:
+    value: object
+
+
+@dataclass(frozen=True)
+class ControlChangeOperation:
+    value: object
+
+
+@dataclass(frozen=True)
+class DeleteOperation:
+    value: object
+
+
 MutationEffect = CreateOperation | RevisionOperation | RelationshipOperation | RetireOperation
+DelegatedOperation = LearningEvidenceOperation | ControlChangeOperation | DeleteOperation
 
 
 @dataclass(frozen=True)
@@ -217,7 +233,7 @@ class GroupedOperation:
             raise DomainValidationError("grouped operation requires effects")
 
 
-OperationPayload = MutationEffect | GroupedOperation
+OperationPayload = MutationEffect | GroupedOperation | DelegatedOperation
 
 
 def _validate_versions(values: tuple[tuple[str, int], ...]) -> None:
@@ -308,6 +324,46 @@ class ApprovalReceipt:
         _validate_versions(self.object_ids_versions)
         _require_digest(self.content_digest)
         _require_utc(self.created_at, "receipt creation time")
+
+
+@dataclass(frozen=True)
+class AuthorizedOperation:
+    grant_id: str
+    proposal_id: str
+    operation_id: str
+    session_id: str
+    adapter_id: str
+    kind: PendingOperationKind
+    payload: DelegatedOperation
+    content_digest: str
+    expected_versions: tuple[tuple[str, int], ...]
+    user_event_ref: str
+    existing_receipt: ApprovalReceipt | None
+
+    def __post_init__(self) -> None:
+        for value, name in (
+            (self.grant_id, "grant id"),
+            (self.proposal_id, "proposal id"),
+            (self.operation_id, "operation id"),
+            (self.session_id, "session id"),
+            (self.adapter_id, "adapter id"),
+            (self.content_digest, "content digest"),
+            (self.user_event_ref, "user event reference"),
+        ):
+            _require_text(value, name)
+        _validate_versions(self.expected_versions)
+        _require_digest(self.content_digest)
+        expected_type: type[object]
+        if self.kind is PendingOperationKind.LEARNING_EVIDENCE:
+            expected_type = LearningEvidenceOperation
+        elif self.kind is PendingOperationKind.CONTROL_CHANGE:
+            expected_type = ControlChangeOperation
+        elif self.kind is PendingOperationKind.DELETE:
+            expected_type = DeleteOperation
+        else:
+            raise DomainValidationError("authorization kind is not delegated")
+        if not isinstance(self.payload, expected_type):
+            raise DomainValidationError("authorization payload does not match operation kind")
 
 
 @dataclass(frozen=True)

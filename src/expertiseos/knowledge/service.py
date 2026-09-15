@@ -18,17 +18,24 @@ from expertiseos.domain.candidate_store import CandidateStore
 from expertiseos.domain.errors import (
     ApprovalRejectedError,
     ReadBackMismatchError,
+    ReceiptConflictError,
     StaleVersionError,
 )
 from expertiseos.domain.models import (
     ApprovalReceipt,
+    AuthorizedOperation,
     CandidateState,
     CommitResult,
     CommitStatus,
+    ControlChangeOperation,
     CreateOperation,
     DecisionGrant,
+    DelegatedOperation,
+    DeleteOperation,
     GroupedOperation,
+    LearningEvidenceOperation,
     MutationEffect,
+    OperationPayload,
     PendingOperation,
     PendingOperationKind,
     RelationshipOperation,
@@ -72,6 +79,7 @@ class KnowledgeService:
         self._receipts = receipts
         self._clock = clock
         self._attempted: set[str] = set()
+        self._prepared_delegated: dict[str, AuthorizedOperation] = {}
 
     def propose_create(
         self,
@@ -210,6 +218,91 @@ class KnowledgeService:
             created_at,
         )
 
+    def propose_learning_evidence(
+        self,
+        proposal_id: str,
+        operation_id: str,
+        session_id: str,
+        adapter_id: str,
+        value: object,
+        expected_versions: Mapping[str, int],
+        created_at: datetime,
+    ) -> PendingOperation:
+        return self._propose_delegated(
+            proposal_id,
+            operation_id,
+            session_id,
+            adapter_id,
+            PendingOperationKind.LEARNING_EVIDENCE,
+            LearningEvidenceOperation(value),
+            expected_versions,
+            created_at,
+        )
+
+    def propose_control_change(
+        self,
+        proposal_id: str,
+        operation_id: str,
+        session_id: str,
+        adapter_id: str,
+        value: object,
+        expected_versions: Mapping[str, int],
+        created_at: datetime,
+    ) -> PendingOperation:
+        return self._propose_delegated(
+            proposal_id,
+            operation_id,
+            session_id,
+            adapter_id,
+            PendingOperationKind.CONTROL_CHANGE,
+            ControlChangeOperation(value),
+            expected_versions,
+            created_at,
+        )
+
+    def propose_delete(
+        self,
+        proposal_id: str,
+        operation_id: str,
+        session_id: str,
+        adapter_id: str,
+        value: object,
+        expected_versions: Mapping[str, int],
+        created_at: datetime,
+    ) -> PendingOperation:
+        return self._propose_delegated(
+            proposal_id,
+            operation_id,
+            session_id,
+            adapter_id,
+            PendingOperationKind.DELETE,
+            DeleteOperation(value),
+            expected_versions,
+            created_at,
+        )
+
+    def _propose_delegated(
+        self,
+        proposal_id: str,
+        operation_id: str,
+        session_id: str,
+        adapter_id: str,
+        kind: PendingOperationKind,
+        payload: DelegatedOperation,
+        expected_versions: Mapping[str, int],
+        created_at: datetime,
+    ) -> PendingOperation:
+        return self._propose(
+            proposal_id,
+            operation_id,
+            session_id,
+            adapter_id,
+            kind,
+            payload,
+            tuple(sorted(expected_versions.items())),
+            created_at,
+        )
+
     def _propose(
         self,
         proposal_id: str,
@@ -217,7 +310,7 @@ class KnowledgeService:
         session_id: str,
         adapter_id: str,
         kind: PendingOperationKind,
-        payload: MutationEffect | GroupedOperation,
+        payload: OperationPayload,
         expected_versions: tuple[tuple[str, int], ...],
         created_at: datetime,
     ) -> PendingOperation:
@@ -242,7 +335,7 @@ class KnowledgeService:
         return self._candidates.mark_awaiting_decision(proposal_id)
 
     def revise_displayed_proposal(
-        self, proposal_id: str, payload: MutationEffect | GroupedOperation
+        self, proposal_id: str, payload: OperationPayload
     ) -> PendingOperation:
         proposal = self._candidates.get(proposal_id)
         if proposal is None:
@@ -261,9 +354,7 @@ class KnowledgeService:
         return self._candidates.replace_awaiting_decision(updated)
 
     @staticmethod
-    def _validate_payload_kind(
-        kind: PendingOperationKind, payload: MutationEffect | GroupedOperation
-    ) -> None:
+    def _validate_payload_kind(kind: PendingOperationKind, payload: OperationPayload) -> None:
         expected_type: type[object]
         if kind is PendingOperationKind.CREATE:
             expected_type = CreateOperation
@@ -275,6 +366,12 @@ class KnowledgeService:
             expected_type = RetireOperation
         elif kind is PendingOperationKind.CONFLICT_RESOLUTION:
             expected_type = GroupedOperation
+        elif kind is PendingOperationKind.LEARNING_EVIDENCE:
+            expected_type = LearningEvidenceOperation
+        elif kind is PendingOperationKind.CONTROL_CHANGE:
+            expected_type = ControlChangeOperation
+        elif kind is PendingOperationKind.DELETE:
+            expected_type = DeleteOperation
         else:
             raise ValueError("operation kind is not implemented by consent core")
         if not isinstance(payload, expected_type):
@@ -310,11 +407,180 @@ class KnowledgeService:
             self._grants.expire_proposal(proposal_id)
         return expired
 
+    def prepare_delegated_commit(
+        self,
+        proposal_id: str,
+        grant_id: str,
+        operation_id: str,
+        current_versions: Mapping[str, int],
+    ) -> AuthorizedOperation:
+        proposal = self._candidates.get(proposal_id)
+        grant = self._grants.get(grant_id)
+        if (
+            proposal is None
+            or grant is None
+            or not isinstance(
+                proposal.payload,
+                LearningEvidenceOperation | ControlChangeOperation | DeleteOperation,
+            )
+        ):
+            raise ApprovalRejectedError("delegated proposal and grant are required")
+        existing = self._receipts.get_receipt(operation_id)
+        if existing is not None:
+            self._validate_existing_delegated_binding(proposal, grant, operation_id, existing)
+            authorization = self._authorization(proposal, grant, existing)
+            self._prepared_delegated[operation_id] = authorization
+            return authorization
+        self._gate.validate(proposal, grant, operation_id, current_versions, False)
+        self._attempted.add(operation_id)
+        authorization = self._authorization(proposal, grant, None)
+        prepared = self._prepared_delegated.get(operation_id)
+        if prepared is not None and prepared != authorization:
+            raise ReceiptConflictError("operation_id already has a different authorization")
+        self._prepared_delegated[operation_id] = authorization
+        return authorization
+
+    def complete_delegated_commit(
+        self,
+        authorization: AuthorizedOperation,
+        object_ids_versions: tuple[tuple[str, int], ...],
+    ) -> ApprovalReceipt:
+        if self._prepared_delegated.get(authorization.operation_id) != authorization:
+            raise ApprovalRejectedError("delegated authorization was not prepared")
+        proposal = self._candidates.get(authorization.proposal_id)
+        grant = self._grants.get(authorization.grant_id)
+        if proposal is None or grant is None:
+            raise ApprovalRejectedError("authorized proposal and grant are required")
+        self._validate_authorization(proposal, grant, authorization)
+        existing = self._receipts.get_receipt(authorization.operation_id)
+        if existing is None and (
+            proposal.state is not CandidateState.AWAITING_DECISION or grant.consumed_at is not None
+        ):
+            raise ApprovalRejectedError("authorization is not finalizable")
+        if existing is not None and proposal.state not in {
+            CandidateState.AWAITING_DECISION,
+            CandidateState.APPROVED,
+        }:
+            raise ApprovalRejectedError("proposal is not finalizable")
+        if existing is not None:
+            self._validate_existing_delegated_binding(
+                proposal, grant, authorization.operation_id, existing
+            )
+            if existing.object_ids_versions != object_ids_versions:
+                raise ReceiptConflictError("operation_id already has different affected versions")
+            if (
+                authorization.existing_receipt is not None
+                and authorization.existing_receipt != existing
+            ):
+                raise ReceiptConflictError("authorization carries a different receipt")
+            stored = existing
+        else:
+            if authorization.existing_receipt is not None:
+                raise ReceiptConflictError("authorized receipt is no longer available")
+            receipt = ApprovalReceipt(
+                authorization.operation_id,
+                authorization.proposal_id,
+                authorization.kind,
+                object_ids_versions,
+                authorization.content_digest,
+                authorization.user_event_ref,
+                authorization.adapter_id,
+                self._clock(),
+            )
+            stored = self._receipts.record_receipt(receipt)
+        if grant.consumed_at is None:
+            self._grants.consume(grant.grant_id, self._clock())
+            self._grants.expire_proposal(proposal.proposal_id)
+        if proposal.state is CandidateState.AWAITING_DECISION:
+            self._candidates.mark_approved(proposal.proposal_id)
+        elif proposal.state is not CandidateState.APPROVED:
+            raise ApprovalRejectedError("proposal is not finalizable")
+        del self._prepared_delegated[authorization.operation_id]
+        return stored
+
+    @staticmethod
+    def _authorization(
+        proposal: PendingOperation,
+        grant: DecisionGrant,
+        existing_receipt: ApprovalReceipt | None,
+    ) -> AuthorizedOperation:
+        assert isinstance(
+            proposal.payload, LearningEvidenceOperation | ControlChangeOperation | DeleteOperation
+        )
+        return AuthorizedOperation(
+            grant.grant_id,
+            proposal.proposal_id,
+            proposal.operation_id,
+            proposal.session_id,
+            proposal.adapter_id,
+            proposal.kind,
+            proposal.payload,
+            proposal.content_digest,
+            proposal.expected_versions,
+            grant.user_event_ref,
+            existing_receipt,
+        )
+
+    @staticmethod
+    def _validate_authorization(
+        proposal: PendingOperation,
+        grant: DecisionGrant,
+        authorization: AuthorizedOperation,
+    ) -> None:
+        if (
+            authorization.grant_id != grant.grant_id
+            or authorization.proposal_id != proposal.proposal_id
+            or authorization.operation_id != proposal.operation_id
+            or authorization.session_id != proposal.session_id
+            or authorization.adapter_id != proposal.adapter_id
+            or authorization.kind is not proposal.kind
+            or authorization.payload != proposal.payload
+            or authorization.content_digest != proposal.content_digest
+            or authorization.expected_versions != proposal.expected_versions
+            or authorization.user_event_ref != grant.user_event_ref
+            or grant.proposal_id != proposal.proposal_id
+            or grant.session_id != proposal.session_id
+            or grant.adapter_id != proposal.adapter_id
+            or grant.content_digest != proposal.content_digest
+            or grant.expected_versions != proposal.expected_versions
+            or grant.action.value not in {"save", "confirm_change"}
+            or canonical_approval_digest(
+                proposal.kind, proposal.payload, proposal.expected_versions
+            )
+            != proposal.content_digest
+        ):
+            raise ApprovalRejectedError("authorization no longer matches proposal and grant")
+
+    @classmethod
+    def _validate_existing_delegated_binding(
+        cls,
+        proposal: PendingOperation,
+        grant: DecisionGrant,
+        operation_id: str,
+        receipt: ApprovalReceipt,
+    ) -> None:
+        authorization = cls._authorization(proposal, grant, receipt)
+        cls._validate_authorization(proposal, grant, authorization)
+        if (
+            operation_id != proposal.operation_id
+            or receipt.proposal_id != proposal.proposal_id
+            or receipt.operation_kind is not proposal.kind
+            or receipt.content_digest != proposal.content_digest
+            or receipt.user_event_ref != grant.user_event_ref
+            or receipt.adapter_id != proposal.adapter_id
+        ):
+            raise ReceiptConflictError("receipt does not match delegated authorization")
+
     def commit(self, proposal_id: str, grant_id: str, operation_id: str) -> CommitResult:
         proposal = self._candidates.get(proposal_id)
         grant = self._grants.get(grant_id)
         if proposal is None or grant is None:
             return CommitResult(CommitStatus.REJECTED, (), None, "approval_rejected")
+        payload = proposal.payload
+        if isinstance(
+            payload, LearningEvidenceOperation | ControlChangeOperation | DeleteOperation
+        ):
+            return CommitResult(CommitStatus.REJECTED, (), None, "delegated_commit_required")
         try:
             existing = self._receipts.get_receipt(operation_id)
         except Exception as error:
@@ -338,8 +604,8 @@ class KnowledgeService:
 
         self._attempted.add(operation_id)
         try:
-            records = self._execute(proposal.payload, operation_id)
-            self._verify_approved_effect(proposal.payload, records)
+            records = self._execute(payload, operation_id)
+            self._verify_approved_effect(payload, records)
             self._verify_read_back(records)
         except VersionConflictError as error:
             return CommitResult(CommitStatus.CONFLICT, (), None, error.__class__.__name__)
