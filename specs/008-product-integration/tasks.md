@@ -56,7 +56,7 @@
 ### Implementation
 
 - [X] T014 [US1] Implement the stateless dependency-composition facade with canonical mutation `operation_id` handling and precise read/mutation `ToolResult` mapping in `src/expertiseos/service.py` (FR-001, FR-003, FR-006)
-- [ ] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002) - integration-blocked pending the C002 Decimal canonicalization correction receipt required by typed `ControlSettings`
+- [X] T015 [US1] Implement the explicit MCP read, proposal, guarded commit, learning/control, ownership, capability, and health registrations in `src/expertiseos/mcp_server.py` (FR-001, FR-002)
 - [X] T016 [US1] Ensure `src/expertiseos/mcp_server.py` exposes no backend writer, generic execute operation, direct mastery setter, caller-supplied approval assertion, or mutation idempotency identity other than `operation_id` (FR-002)
 - [X] T017 [US1] Run `tests/e2e/test_service_surface.py`, `tests/e2e/test_mcp_surface.py`, and `tests/e2e/test_acceptance_consent.py`; prove Saved derives only from `committed`, then record evidence and inspect the persistent-state delta (SC-001)
 
@@ -142,12 +142,12 @@
 ### Acceptance Coverage
 
 - [X] T042 [P] [US5] Add AT-01 to AT-03 activation, scope-exclusion, novelty/conflict, and atomic-checkpoint cases in `tests/e2e/test_acceptance_hosts.py` (FR-012, FR-013)
-- [ ] T043 [US5] Complete and map AT-04 through AT-08 cases in `tests/e2e/test_acceptance_consent.py` (FR-014)
-- [ ] T044 [US5] Complete and map AT-09 through AT-11 cases in `tests/e2e/test_acceptance_learning_controls.py` (FR-015)
-- [ ] T045 [US5] Complete and map AT-12 cases in `tests/e2e/test_acceptance_cross_host.py` (FR-015)
-- [ ] T046 [US5] Add AT-13 through AT-16 outage, index failure, export/restore/delete, adversarial, and offline cases in `tests/e2e/test_acceptance_reliability.py` (FR-016)
+- [X] T043 [US5] Complete and map AT-04 through AT-08 cases in `tests/e2e/test_acceptance_consent.py` (FR-014)
+- [X] T044 [US5] Complete and map AT-09 through AT-11 cases in `tests/e2e/test_acceptance_learning_controls.py` (FR-015)
+- [X] T045 [US5] Complete and map AT-12 cases in `tests/e2e/test_acceptance_cross_host.py` (FR-015)
+- [X] T046 [US5] Add AT-13 through AT-16 outage, index failure, export/restore/delete, adversarial, and offline cases in `tests/e2e/test_acceptance_reliability.py` (FR-016)
 - [X] T047 [US5] Add fixture-corpus coverage for six categories, three subjects, duplicate, changed condition, contradiction, uncertain novelty, unavailable source, malicious content, and a non-coding task in `examples/reference_scenarios/acceptance_corpus.json` (SC-009)
-- [ ] T048 [US5] Add an offline boundary fixture that blocks expertiseOS runtime network access while separating host inference in `tests/e2e/test_acceptance_reliability.py` (AT-16, SC-007)
+- [X] T048 [US5] Add an offline boundary fixture that blocks expertiseOS runtime network access while separating host inference in `tests/e2e/test_acceptance_reliability.py` (AT-16, SC-007)
 
 ### Evidence and Gates
 

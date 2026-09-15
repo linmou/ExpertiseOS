@@ -8,7 +8,12 @@ from datetime import timedelta
 
 import pytest
 
-from expertiseos.domain.models import CandidateState, CommitStatus, LearnerState
+from expertiseos.domain.models import (
+    CandidateState,
+    CommitStatus,
+    LearnerState,
+    PendingOperationKind,
+)
 from expertiseos.hosts.contract import (
     DecisionAction,
     DecisionBinding,
@@ -18,6 +23,13 @@ from expertiseos.hosts.contract import (
     HostEvent,
 )
 from expertiseos.knowledge.backend import SearchQuery
+from expertiseos.learning.controls import (
+    ApprovedKnowledgeRef,
+    DeferredActivity,
+    DeferredStatus,
+    default_daily_settings,
+    remove_deferred,
+)
 from expertiseos.learning.evidence import (
     AssistanceLevel,
     EvidenceOutcome,
@@ -29,6 +41,7 @@ from tests.backend_support import approved
 from tests.consent_support import NOW
 from tests.e2e.conftest import ProductGraph
 from tests.fakes import FakeHostAdapter
+from tests.integration.test_learning_state_sqlite import _authorize_receipt
 
 
 def _facade(graph: ProductGraph) -> ExpertiseOSService:
@@ -335,3 +348,113 @@ def test_delete_dispatch_uses_actual_c007_writer_and_readback(
     assert deleted.status is ToolStatus.COMMITTED
     assert product_graph.backend.get(record.id, record.version, True) is None
     assert product_graph.state.get_receipt("delete-operation") is not None
+
+
+def test_control_change_commits_only_after_actual_state_readback(
+    product_graph: ProductGraph,
+) -> None:
+    facade = _facade(product_graph)
+    initial = default_daily_settings("UTC", 1)
+    initial_receipt = _authorize_receipt(
+        product_graph.state,
+        PendingOperationKind.CONTROL_CHANGE,
+        "seed-control-change",
+        (("control-state", 1),),
+        "seed control change",
+        190,
+    )
+    product_graph.state.apply_control_change(0, initial, initial_receipt.operation_id)
+    settings = dataclasses.replace(initial, learning_paused=True, version=2)
+    proposed = facade.propose_control_change(
+        "control-proposal",
+        "control-operation",
+        "session-control",
+        "codex",
+        settings,
+        {"control-state": 1},
+        NOW,
+    )
+    assert proposed.status is ToolStatus.OK
+    _grant(product_graph, "control-proposal", "control-grant")
+
+    committed = facade.commit_proposal(
+        "control-proposal",
+        "control-grant",
+        "control-operation",
+        {"control-state": 999},
+    )
+
+    assert committed.status is ToolStatus.COMMITTED
+    assert committed.data == settings
+    assert product_graph.state.read_control_state() == settings
+    receipt = product_graph.state.get_receipt("control-operation")
+    assert receipt is not None
+    assert receipt.object_ids_versions == (("control-state", 2),)
+
+
+def test_deferred_removal_commits_after_activity_and_control_readback(
+    product_graph: ProductGraph,
+) -> None:
+    facade = _facade(product_graph)
+    knowledge = product_graph.backend.create_approved(
+        approved("deferred topic", None, ("fact",), ("domain",), ("event-deferred",)),
+        "seed-deferred",
+    )
+    settings = default_daily_settings("UTC", 1)
+    control_receipt = _authorize_receipt(
+        product_graph.state,
+        PendingOperationKind.CONTROL_CHANGE,
+        "seed-control",
+        (("control-state", 1),),
+        "seed control state",
+        200,
+    )
+    product_graph.state.apply_control_change(0, settings, control_receipt.operation_id)
+    knowledge_ref = ApprovedKnowledgeRef(knowledge.id, knowledge.version)
+    setup_receipt = _authorize_receipt(
+        product_graph.state,
+        PendingOperationKind.CONTROL_CHANGE,
+        "seed-deferred-activity",
+        ((knowledge.id, knowledge.version),),
+        "seed deferred activity",
+        210,
+    )
+    pending = DeferredActivity(
+        "deferred-1",
+        (knowledge_ref,),
+        "explain_retry",
+        NOW,
+        DeferredStatus.PENDING,
+        setup_receipt.operation_id,
+    )
+    product_graph.state.insert_deferred_once(pending)
+    removed = remove_deferred(pending, "remove-deferred-operation")
+    proposed = facade.remove_deferred_activity(
+        "remove-deferred-proposal",
+        "remove-deferred-operation",
+        "session-deferred",
+        "codex",
+        removed,
+        {knowledge.id: knowledge.version, "control-state": 1},
+        NOW + timedelta(seconds=1),
+    )
+    assert proposed.status is ToolStatus.OK
+    _grant(product_graph, "remove-deferred-proposal", "remove-deferred-grant")
+
+    committed = facade.commit_proposal(
+        "remove-deferred-proposal",
+        "remove-deferred-grant",
+        "remove-deferred-operation",
+        {knowledge.id: 999, "control-state": 999},
+    )
+
+    assert committed.status is ToolStatus.COMMITTED
+    assert committed.data == removed
+    assert product_graph.state.list_deferred(DeferredStatus.REMOVED, 20) == (removed,)
+    current = product_graph.state.read_control_state()
+    assert current is not None and current.version == 2
+    receipt = product_graph.state.get_receipt("remove-deferred-operation")
+    assert receipt is not None
+    assert receipt.object_ids_versions == tuple(
+        sorted(((knowledge.id, knowledge.version), ("control-state", 2)))
+    )
