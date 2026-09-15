@@ -1,0 +1,161 @@
+{
+  "schema_version": 2,
+  "status": "passed",
+  "tested_integration_sha": "a942bf399f2ef6770796429f9db66baebcdbd2fa",
+  "edge_handoffs": [
+    {
+      "edge_id": "E00",
+      "producer": "C001",
+      "consumer": "integration-bootstrap",
+      "test_path": "tests/integration/test_bootstrap_consumer_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E01",
+      "producer": "C001",
+      "consumer": "C002",
+      "test_path": "tests/integration/test_consent_foundation_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E02",
+      "producer": "C002",
+      "consumer": "C003",
+      "test_path": "tests/integration/test_authorized_backend_retrieval_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E03",
+      "producer": "C002",
+      "consumer": "C004",
+      "test_path": "tests/integration/test_approved_learning_state_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E04",
+      "producer": "C003",
+      "consumer": "C004",
+      "test_path": "tests/integration/test_retrieval_learning_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E05",
+      "producer": "C004",
+      "consumer": "C005",
+      "test_path": "tests/integration/test_codex_control_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E06",
+      "producer": "C004",
+      "consumer": "C006",
+      "test_path": "tests/integration/test_claude_control_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    },
+    {
+      "edge_id": "E07",
+      "producer": "C004",
+      "consumer": "C007",
+      "test_path": "tests/integration/test_learning_export_handoff.py",
+      "passed": true,
+      "upstream_output_consumed": true,
+      "synthetic_boundary_replacement": false
+    }
+  ],
+  "integration": {
+    "tests": [
+      {
+        "path": "tests/integration/test_bootstrap_consumer_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_consent_foundation_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_authorized_backend_retrieval_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_approved_learning_state_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_retrieval_learning_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_codex_control_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_claude_control_handoff.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/integration/test_learning_export_handoff.py",
+        "added": true,
+        "passed": true
+      }
+    ],
+    "command": "rtk .venv-arm64/bin/python -m pytest -q tests/integration",
+    "exit_code": 0
+  },
+  "e2e": {
+    "tests": [
+      {
+        "path": "tests/e2e/test_bootstrap_health.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/e2e/test_acceptance_consent.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/e2e/test_acceptance_learning_controls.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/e2e/test_acceptance_codex.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/e2e/test_acceptance_claude.py",
+        "added": true,
+        "passed": true
+      },
+      {
+        "path": "tests/e2e/test_acceptance_reliability.py",
+        "added": true,
+        "passed": true
+      }
+    ],
+    "command": "rtk .venv-arm64/bin/python -m pytest -q tests/e2e",
+    "exit_code": 0
+  }
+}

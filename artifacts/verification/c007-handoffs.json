@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "e07_passed_c008_required",
+  "tested_integration_sha": "a942bf399f2ef6770796429f9db66baebcdbd2fa",
+  "verified": [
+    "C003 BasicMemoryBackend and C004 SQLiteState feed one C007 export",
+    "C003 approved knowledge restores with stable identity, version, and source references",
+    "C004 approved evidence, numeric thresholds, progress, exclusions, and deferred references restore exactly",
+    "C007 approved deletion invokes actual C003 canonical deletion and C004 dependent cleanup",
+    "C003 restore replay is idempotent and divergent reuse or identity collision is rejected",
+    "C003 index degradation reaches C007 explicit keyword health",
+    "C007 rejects altered and replayed actual-user request bindings"
+  ],
+  "open": [
+    "C002 operation-state and receipt-reconciliation producer",
+    "C003 and C004 controlled-location descriptors",
+    "C008 request-binding and result-rendering consumer"
+  ],
+  "owner": "integration"
+}

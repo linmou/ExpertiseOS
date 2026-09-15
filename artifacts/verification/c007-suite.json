@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest -q",
+  "exit_code": 0,
+  "passed": 218,
+  "failed": 0,
+  "skipped": 3,
+  "duration_seconds": 1.24,
+  "python": "3.12.7",
+  "pytest": "9.1.1",
+  "platform": "macOS-15.1.1-x86_64"
+}
