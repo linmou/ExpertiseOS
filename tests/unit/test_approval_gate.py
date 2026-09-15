@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import dataclasses
+from decimal import Decimal
 
 import pytest
 
@@ -11,6 +12,7 @@ from expertiseos.approval.gate import ApprovalGate, canonical_approval_digest, c
 from expertiseos.domain.errors import ApprovalRejectedError, StaleVersionError
 from expertiseos.domain.models import (
     CandidateState,
+    ControlChangeOperation,
     CreateOperation,
     DecisionGrant,
     PendingOperation,
@@ -18,6 +20,12 @@ from expertiseos.domain.models import (
     UserDecisionAction,
 )
 from tests.consent_support import NOW, approved
+
+
+@dataclasses.dataclass(frozen=True)
+class DecimalSettings:
+    effort_limit: Decimal
+    nested_limits: tuple[Decimal, ...]
 
 
 def proposal() -> PendingOperation:
@@ -74,6 +82,51 @@ def test_digest_normalizes_unordered_domain_collections() -> None:
     assert canonical_approval_digest(PendingOperationKind.CREATE, first, expected) == (
         canonical_approval_digest(PendingOperationKind.CREATE, reordered, reordered_expected)
     )
+
+
+def test_digest_normalizes_equal_decimal_scales_with_tagged_shape() -> None:
+    first = ControlChangeOperation({"effort_limit": Decimal("1.0")})
+    equal_scale = ControlChangeOperation({"effort_limit": Decimal("1.00")})
+    ordinary_string = ControlChangeOperation({"effort_limit": "1e0"})
+    first_digest = canonical_approval_digest(PendingOperationKind.CONTROL_CHANGE, first, ())
+    assert first_digest == canonical_approval_digest(
+        PendingOperationKind.CONTROL_CHANGE, equal_scale, ()
+    )
+    assert first_digest != canonical_approval_digest(
+        PendingOperationKind.CONTROL_CHANGE, ordinary_string, ()
+    )
+
+
+def test_digest_preserves_distinct_decimal_values_in_nested_dataclass() -> None:
+    first = ControlChangeOperation(
+        DecimalSettings(Decimal("6.00"), (Decimal("0.25"), Decimal("2.0")))
+    )
+    equal = ControlChangeOperation(
+        DecimalSettings(Decimal("6"), (Decimal("0.250"), Decimal("2.00")))
+    )
+    changed = ControlChangeOperation(
+        DecimalSettings(Decimal("6.01"), (Decimal("0.25"), Decimal("2.0")))
+    )
+    first_digest = canonical_approval_digest(PendingOperationKind.CONTROL_CHANGE, first, ())
+    assert first_digest == canonical_approval_digest(PendingOperationKind.CONTROL_CHANGE, equal, ())
+    assert first_digest != canonical_approval_digest(
+        PendingOperationKind.CONTROL_CHANGE, changed, ()
+    )
+
+
+def test_digest_rejects_non_finite_decimal_and_unsupported_types() -> None:
+    with pytest.raises(TypeError, match="non-finite Decimal"):
+        canonical_approval_digest(
+            PendingOperationKind.CONTROL_CHANGE,
+            ControlChangeOperation(Decimal("NaN")),
+            (),
+        )
+    with pytest.raises(TypeError, match="unsupported approval value"):
+        canonical_approval_digest(
+            PendingOperationKind.CONTROL_CHANGE,
+            ControlChangeOperation(object()),
+            (),
+        )
 
 
 def test_gate_rejects_operation_and_content_changes() -> None:

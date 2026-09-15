@@ -8,6 +8,7 @@ import json
 from collections.abc import Mapping
 from dataclasses import fields, is_dataclass, replace
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
 from expertiseos.domain.errors import ApprovalRejectedError, StaleVersionError
@@ -26,6 +27,22 @@ def _canonical_value(value: object) -> object:
         return value.value
     if isinstance(value, datetime):
         return value.isoformat()
+    if isinstance(value, Decimal):
+        if not value.is_finite():
+            raise TypeError("unsupported approval value: non-finite Decimal")
+        parts = value.as_tuple()
+        if not any(parts.digits):
+            encoded = "0e0"
+        else:
+            digits = list(parts.digits)
+            exponent = int(parts.exponent)
+            while digits[-1] == 0:
+                digits.pop()
+                exponent += 1
+            coefficient = "".join(str(digit) for digit in digits)
+            sign = "-" if parts.sign else ""
+            encoded = f"{sign}{coefficient}e{exponent}"
+        return {"$decimal": encoded}
     if is_dataclass(value) and not isinstance(value, type):
         document: dict[str, object] = {}
         for item in fields(value):

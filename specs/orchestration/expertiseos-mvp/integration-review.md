@@ -562,3 +562,21 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 117 source files checked.
 - Ruff check and format, health smoke, and `rtk git diff --check`: exit 0.
 - C008 checkpoint before receipt: `8287e50563c02d273f37f2e30ec54a52c5681e3d`; 31/60 tasks, 41 E2E tests, Ruff, formatting, and mypy passed; worktree clean.
+
+### C002 Correction Propagation To C008
+
+- Smoke-verified correction audit and immutable propagation SHA: `d4fa41b`.
+- Downstream branch: `008-product-integration`.
+- Exact propagation receipt merge: `a09bea40478e2c770469f8282ff9e343a6a9da9a`.
+- Receipt verification: delegated-consent unit tests plus the complete current C008 E2E suite passed 51 tests in 0.16 seconds.
+- Receipt health smoke and `rtk git diff --check`: exit 0; C008 worktree clean before owner resume.
+
+### C002 Decimal Approval Canonicalization
+
+- C008's typed control proposal exposed that C002 approval hashing did not accept the required `Decimal` effort limit.
+- C002 corrective commit: `48323566cb5d576896d0cb71241af188fda6f5d6`; finite decimals now use a tagged, scale-normalized canonical representation and non-finite values reject.
+- C002 local gates: 18 focused tests and 64 complete C002 tests passed; Ruff, formatting, strict mypy, import, and diff checks passed. A broader run passed 104 tests before the unchanged external Basic Memory project setup timed out; it was not repeated.
+- Explicit integration merge and tested SHA: `83ec6d307f88952b12a1c217cd3e872dd804b3db`.
+- Focused approval/delegated/integration gate: exit 0; 21 passed in 0.13 seconds.
+- Complete current E2E gate: exit 0; 20 passed in 0.21 seconds.
+- Strict mypy across 117 files, Ruff check and format, health smoke, and `rtk git diff --check`: exit 0.
