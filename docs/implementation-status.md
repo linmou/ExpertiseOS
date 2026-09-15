@@ -4,7 +4,7 @@
 
 **Updated**: 2026-09-14  
 **Integration branch**: `integration/expertiseos-mvp`
-**Verified through**: C006 promotion `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`
+**Verified through**: C007 promotion `2e9555772b6dfefd9aab8403910f4280ca3de44a`
 
 ## Integrated Components
 
@@ -14,6 +14,7 @@
 - C004 learner evidence and controls are promoted at `633961d62a63ff761b992df768b1c04b173e2cd4`.
 - C005 Codex host is promoted at `edf03b653ee59f9c8a2db2f7c1df7b591e5a05d4`.
 - C006 Claude host is promoted at `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`.
+- C007 ownership/reliability is promoted at `2e9555772b6dfefd9aab8403910f4280ca3de44a`.
 
 ## C003 Verified Behavior
 
@@ -48,8 +49,16 @@
 - Only a typed C002 committed result maps to Saved.
 - Automatic activation, configuration preservation, actual-user decision validation, persistent writes, and live atomic-boundary delivery remain unavailable and are reported as such.
 
+## C007 Verified Behavior
+
+- Actual approved Basic Memory knowledge and SQLite learning/control state export together in a portable validated bundle.
+- Restore preserves canonical IDs, versions, provenance, pass evidence, numeric thresholds, progress events, exclusions, and deferred references; divergent replay or collisions fail explicitly.
+- Approved deletion removes canonical records plus dependent evidence and deferred activities and remains idempotent.
+- Canonical failure never renders Saved; index degradation remains separate from commit status and uses bounded local fallback.
+- Persistence audits, explicit uninstall data choices, local transport restrictions, and the deterministic 10,000-object benchmark pass.
+
 ## Current Limits
 
-- C007-C008 remain unpromoted; ownership/reliability and final product wiring are not yet available.
+- C008 product integration is implementing from receipt `d754a5a56596cce559688e4066042235bd3ea35e`; its final wiring remains unpromoted.
 - Codex and Claude persistent writes remain unavailable until authenticated six-step host decision fixtures pass.
 - Public distribution remains blocked pending Basic Memory AGPL packaging review.

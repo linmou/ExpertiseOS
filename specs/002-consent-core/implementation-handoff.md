@@ -8,6 +8,7 @@
 - Volatile candidate and decision-grant stores, including session ownership, one grant per actual user event, decline, edit invalidation, unrelated-decision expiry, and restart loss.
 - Canonical SHA-256 approval binding over displayed semantic content and expected versions.
 - Guarded create, revision, relationship, retirement, and grouped conflict-resolution operations through C001's explicit backend methods.
+- Closed learning-evidence, control-change, and delete proposal wrappers with prepare/complete authorization sequencing for trusted downstream composition.
 - Exact approved-result validation, versioned read-back, optimistic conflict handling, deterministic grouped child operation IDs, retry reconciliation, and truthful commit statuses.
 - SQLite persistence limited to completed `approval_receipts`; candidate content and suppression state are never serialized.
 
@@ -15,21 +16,22 @@
 
 Environment: branch `002-consent-core`, Python 3.12.10, starting integration receipt `fbb164b6b5b5d79d874250c2007565ab8dc05c4b`.
 
-- Component selection: `.venv-arm64/bin/python -m pytest tests/unit/test_domain_models.py tests/unit/test_candidate_lifecycle.py tests/unit/test_approval_gate.py tests/unit/test_exact_write.py tests/unit/test_decline_no_persistence.py tests/unit/test_stale_approval.py tests/unit/test_cross_session_approval.py tests/unit/test_version_conflict.py tests/unit/test_relationship_approval.py tests/unit/test_provenance.py tests/unit/test_approval_receipts.py tests/integration/test_consent_commit_flow.py` -> 51 passed, exit 0.
-- Repository suite: `.venv-arm64/bin/python -m pytest` -> 92 passed, exit 0.
+- Component selection: `.venv-arm64/bin/python -m pytest tests/unit/test_domain_models.py tests/unit/test_candidate_lifecycle.py tests/unit/test_approval_gate.py tests/unit/test_exact_write.py tests/unit/test_delegated_authorization.py tests/unit/test_decline_no_persistence.py tests/unit/test_stale_approval.py tests/unit/test_cross_session_approval.py tests/unit/test_version_conflict.py tests/unit/test_relationship_approval.py tests/unit/test_provenance.py tests/unit/test_approval_receipts.py tests/integration/test_consent_commit_flow.py` -> 61 passed, exit 0.
+- Repository suite: `.venv-arm64/bin/python -m pytest` -> 102 passed, exit 0.
 - Type check: `.venv-arm64/bin/mypy --strict src/expertiseos/domain/models.py src/expertiseos/domain/candidate_store.py src/expertiseos/domain/errors.py src/expertiseos/approval/gate.py src/expertiseos/knowledge/service.py src/expertiseos/state/sqlite.py` -> success in 6 files, exit 0.
 - Lint: `.venv-arm64/bin/ruff check` over all C002 production and test files -> all checks passed, exit 0.
-- Format: `.venv-arm64/bin/ruff format --check` over all C002 production and test files -> 22 files already formatted, exit 0.
+- Format: `.venv-arm64/bin/ruff format --check` over all C002 production and test files -> 23 files already formatted, exit 0.
 - Import smoke: imported `ApprovalGate`, `DecisionGrantStore`, `CandidateStore`, `KnowledgeService`, and `SQLiteState` -> `consent-core-import-ok`, exit 0.
 - Ownership and whitespace: `git diff -- src/expertiseos/knowledge/backend.py tests/fakes.py` produced no diff; `git diff --check` exited 0.
 
-The tests exercise actual proposal/grant/gate/service integration, zero-write adversarial cases, unique-marker absence in an independently opened SQLite database and backend search, stale contenders, exact receipt failure/retry, post-write timeout replay, consistent backend tampering, and per-child grouped validation.
+The tests exercise actual proposal/grant/gate/service integration, zero-write adversarial cases, unique-marker absence in an independently opened SQLite database and backend search, stale contenders, exact receipt failure/retry, post-write timeout replay, consistent backend tampering, per-child grouped validation, and delegated authorization/completion without downstream writes.
 
 ## Corrections During Verification
 
 - Enforced one decision grant per adapter/session/user-event reference and updated multi-decision fixtures to use distinct event identities.
 - Added comparison of backend mutation results to approved content before accepting exact read-back, covering a backend that consistently stores and returns altered content.
 - Added per-effect approved-result validation for grouped operations.
+- Added same-instance delegated authorization preparation, exact receipt completion/replay, and divergent-completion rejection without downstream schema imports.
 - Replaced private SQLite connection inspection and dynamic test imports with public, independent checks.
 
 ## External Assumptions
@@ -42,6 +44,7 @@ The tests exercise actual proposal/grant/gate/service integration, zero-write ad
 
 - C003 must use `KnowledgeService`; it cannot expose C001 backend mutation methods directly to hosts.
 - C004 may extend the forward-only SQLite schema while preserving `approval_receipts` semantics and volatile candidates/grants.
+- Integration calls delegated completion only after C004/C007 durable mutation and exact read-back; C008 cannot expose completion or receipt construction.
 - C005 and C006 register grants only from actual-user `DecisionObservation` values bound to the displayed proposal.
 - C007 and C008 must preserve `CommitStatus`, canonical `operation_id`, and retry/idempotency behavior.
 

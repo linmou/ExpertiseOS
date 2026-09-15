@@ -528,3 +528,37 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c007.json`; schema version 2; cumulative E00-E07 coverage.
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+### C007 Promotion And C008 Receipt
+
+- Promotion candidate and immutable promotion SHA: `2e9555772b6dfefd9aab8403910f4280ca3de44a`.
+- Promotion smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; bootstrap-ready JSON.
+- `promote_green_state`: exit 0; accepted from `promotion_ready` to `propagating` for C007.
+- The C007 promotion contains the promoted C001-C006 states and is the exact all-prerequisite state supplied to C008.
+- C008 receipt merge: `d754a5a56596cce559688e4066042235bd3ea35e`.
+- C008 receipt verification ran E05-E07 handoffs and applicable Codex, Claude, and reliability acceptance files: 31 passed in 2.38 seconds.
+- C008 receipt health smoke: exit 0; bootstrap-ready JSON.
+- C008 worktree is clean after receipt verification.
+
+### C008 Wave Activation
+
+- Activated: 2026-09-14.
+- Satisfied prerequisite promotion: C007 `2e9555772b6dfefd9aab8403910f4280ca3de44a`, which contains the promoted C001-C006 states.
+- Starting receipt commit: `d754a5a56596cce559688e4066042235bd3ea35e`; its second parent is the exact C007 promotion SHA.
+- C008 requirement checklist: 16/16 complete.
+- `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
+- Implementation remains limited to the reconciled C008 facade, MCP allowlist, shared behavior skill, reference scenarios, and deterministic acceptance evidence.
+
+### C002 Delegated Consent Correction During C008
+
+- C008 Phase 3 found that `LEARNING_EVIDENCE`, `CONTROL_CHANGE`, and `DELETE` had durable consumers but no production proposal/decision producer; existing integration helpers constructed receipts after exercising the gate but could not supply the public C008 workflow.
+- Ownership review assigned the closed proposal and authorization lifecycle to C002 and kept C004/C007 execution plus C008 composition outside the consent core.
+- C002 correction commit: `a8bfc982d1f1d82ad486a38afb45cb7f05f6c9ab`; explicit delegated operation types, named proposal methods, and prepare/complete authorization were added without a generic executor or downstream dependency.
+- C002 local evidence: 29 focused tests, 10 delegated lifecycle tests, 61 C002 tests, and 102 full repository tests passed; Ruff, formatting, strict mypy, import, and diff checks passed.
+- Explicit integration merge commit and tested correction SHA: `1e592ed7226e76b982af4677353f22ccc3173e0f`.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/unit/test_delegated_authorization.py tests/unit/test_domain_models.py tests/integration/test_consent_commit_flow.py tests/integration/test_approved_learning_state_handoff.py tests/integration/test_learning_state_sqlite.py tests/integration/test_retire_delete.py`: exit 0; 25 passed in 0.14 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/e2e`: exit 0; 20 passed in 0.09 seconds.
+- `rtk .venv-arm64/bin/python -m pytest -q tests/integration`: exit 1; 92 passed and the real Basic Memory public-CLI case timed out after 30 seconds during `read-note`. The failure was outside the changed consent path, no product assertion failed, and no unchanged retry was run. C002's full 102-test gate passed at the exact correction content.
+- `rtk .venv-arm64/bin/python -m mypy src tests`: exit 0; 117 source files checked.
+- Ruff check and format, health smoke, and `rtk git diff --check`: exit 0.
+- C008 checkpoint before receipt: `8287e50563c02d273f37f2e30ec54a52c5681e3d`; 31/60 tasks, 41 E2E tests, Ruff, formatting, and mypy passed; worktree clean.
