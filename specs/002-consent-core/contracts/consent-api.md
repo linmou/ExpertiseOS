@@ -139,6 +139,10 @@ grouped-operation effects when applicable
 
 It excludes runtime-only proposal/grant IDs, `operation_id` values, generated timestamps, and unrelated prompts. Edit always recomputes the document and requires a matching decision.
 
+Finite decimal values use a tagged canonical JSON object containing a normalized coefficient and
+base-10 exponent string. Numerically equal scales hash identically, distinct values remain distinct,
+and decimal values cannot collide with ordinary strings. Non-finite decimal values are rejected.
+
 ## Downstream Extension Rules
 
 - C003 may add approved read/search operations and backend mapping without adding a mutation bypass.

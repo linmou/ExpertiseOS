@@ -16,8 +16,8 @@
 
 Environment: branch `002-consent-core`, Python 3.12.10, starting integration receipt `fbb164b6b5b5d79d874250c2007565ab8dc05c4b`.
 
-- Component selection: `.venv-arm64/bin/python -m pytest tests/unit/test_domain_models.py tests/unit/test_candidate_lifecycle.py tests/unit/test_approval_gate.py tests/unit/test_exact_write.py tests/unit/test_delegated_authorization.py tests/unit/test_decline_no_persistence.py tests/unit/test_stale_approval.py tests/unit/test_cross_session_approval.py tests/unit/test_version_conflict.py tests/unit/test_relationship_approval.py tests/unit/test_provenance.py tests/unit/test_approval_receipts.py tests/integration/test_consent_commit_flow.py` -> 61 passed, exit 0.
-- Repository suite: `.venv-arm64/bin/python -m pytest` -> 102 passed, exit 0.
+- Component selection: `.venv-arm64/bin/python -m pytest tests/unit/test_domain_models.py tests/unit/test_candidate_lifecycle.py tests/unit/test_approval_gate.py tests/unit/test_exact_write.py tests/unit/test_delegated_authorization.py tests/unit/test_decline_no_persistence.py tests/unit/test_stale_approval.py tests/unit/test_cross_session_approval.py tests/unit/test_version_conflict.py tests/unit/test_relationship_approval.py tests/unit/test_provenance.py tests/unit/test_approval_receipts.py tests/integration/test_consent_commit_flow.py` -> 64 passed, exit 0.
+- Repository suite: `.venv-arm64/bin/python -m pytest` -> 104 passed and one unchanged external Basic Memory `project add` timeout in `tests/integration/test_local_backend_offline.py`, exit 1. The preceding C002 tree passed 102 tests before the three Decimal cases were added; all changed behavior is covered by the green component selection.
 - Type check: `.venv-arm64/bin/mypy --strict src/expertiseos/domain/models.py src/expertiseos/domain/candidate_store.py src/expertiseos/domain/errors.py src/expertiseos/approval/gate.py src/expertiseos/knowledge/service.py src/expertiseos/state/sqlite.py` -> success in 6 files, exit 0.
 - Lint: `.venv-arm64/bin/ruff check` over all C002 production and test files -> all checks passed, exit 0.
 - Format: `.venv-arm64/bin/ruff format --check` over all C002 production and test files -> 23 files already formatted, exit 0.
@@ -32,6 +32,7 @@ The tests exercise actual proposal/grant/gate/service integration, zero-write ad
 - Added comparison of backend mutation results to approved content before accepting exact read-back, covering a backend that consistently stores and returns altered content.
 - Added per-effect approved-result validation for grouped operations.
 - Added same-instance delegated authorization preparation, exact receipt completion/replay, and divergent-completion rejection without downstream schema imports.
+- Added tagged, scale-normalized finite Decimal canonicalization for typed control settings, with non-finite and unsupported values rejected.
 - Replaced private SQLite connection inspection and dynamic test imports with public, independent checks.
 
 ## External Assumptions
