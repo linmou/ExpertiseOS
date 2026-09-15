@@ -15,10 +15,10 @@
 
 **Purpose**: Refuse speculative host bindings and establish exact promoted dependencies before code work.
 
-- [ ] T001 Record the promoted integration SHA and verify C001 HostAdapter, C002 approval/proposal, C003 retrieval/degradation, and C004 controls/exclusions contract paths against `specs/005-codex-host/contracts/codex-adapter.md`
-- [ ] T002 Validate the immutable G0 packet field-by-field against `specs/005-codex-host/contracts/g0-evidence.md` and record each supported/unsupported Codex capability in `specs/005-codex-host/evidence/g0-validation.md`
-- [ ] T003 [P] Materialize only the redacted, reproducible G0 Codex event payloads needed by claimed capabilities in `tests/fixtures/codex/g0_events.json` and record provenance plus exact version/OS/permission metadata in `tests/fixtures/codex/README.md`
-- [ ] T004 Reconcile promoted upstream names and signatures with `specs/005-codex-host/contracts/codex-adapter.md`; route any semantic mismatch back to integration before editing production code
+- [x] T001 Record the promoted integration SHA and verify C001 HostAdapter, C002 approval/proposal, C003 retrieval/degradation, and C004 controls/exclusions contract paths against `specs/005-codex-host/contracts/codex-adapter.md`
+- [x] T002 Validate the immutable G0 packet field-by-field against `specs/005-codex-host/contracts/g0-evidence.md` and record each supported/unsupported Codex capability in `specs/005-codex-host/evidence/g0-validation.md`
+- [x] T003 [P] Materialize only the redacted, reproducible G0 Codex event payloads needed by claimed capabilities in `tests/fixtures/codex/g0_events.json` and record provenance plus exact version/OS/permission metadata in `tests/fixtures/codex/README.md`
+- [x] T004 Reconcile promoted upstream names and signatures with `specs/005-codex-host/contracts/codex-adapter.md`; route any semantic mismatch back to integration before editing production code
 
 **Checkpoint**: Exact host mechanism, version, event provenance, checkpoints, and capability limits are evidenced; missing evidence is explicitly false/read-only.
 
@@ -28,12 +28,12 @@
 
 **Purpose**: Establish one thin adapter surface used by every story without duplicating upstream domain behavior.
 
-- [ ] T005 Define Codex payload-to-normalized-event mapping and minimal session-state construction in `src/expertiseos/hosts/codex.py`, using explicit initialization for every dataclass field and adding no defaults to dataclass definitions (FR-004, FR-005)
-- [ ] T006 Implement evidence-backed capability snapshot construction and environment matching in `src/expertiseos/hosts/codex.py`, defaulting every unproven capability to false (FR-003, FR-018)
-- [ ] T007 Implement exception containment around adapter-to-service calls in `src/expertiseos/hosts/codex.py` so expertiseOS failures return non-owning degradation outcomes and never intercept ordinary host work (FR-017)
-- [ ] T008 [P] Add normalized-event and session-identity contract coverage, including malformed/wrong-session payloads, in `tests/contract/test_codex_host_contract.py` (FR-004, FR-005)
-- [ ] T009 [P] Add per-capability evidence matching, unsupported-version, wrong-OS, wrong-permission, and partial-capability coverage in `tests/contract/test_codex_capabilities.py` (FR-003, FR-018)
-- [ ] T010 Run targeted foundational contract tests and mypy for `src/expertiseos/hosts/codex.py`, saving command, full result, environment metadata, and exit code in `specs/005-codex-host/evidence/foundation-verification.md`
+- [x] T005 Define Codex payload-to-normalized-event mapping and minimal session-state construction in `src/expertiseos/hosts/codex.py`, using explicit initialization for every dataclass field and adding no defaults to dataclass definitions (FR-004, FR-005)
+- [x] T006 Implement evidence-backed capability snapshot construction and environment matching in `src/expertiseos/hosts/codex.py`, defaulting every unproven capability to false (FR-003, FR-018)
+- [x] T007 Implement exception containment around adapter-to-service calls in `src/expertiseos/hosts/codex.py` so expertiseOS failures return non-owning degradation outcomes and never intercept ordinary host work (FR-017)
+- [x] T008 [P] Add normalized-event and session-identity contract coverage, including malformed/wrong-session payloads, in `tests/contract/test_codex_host_contract.py` (FR-004, FR-005)
+- [x] T009 [P] Add per-capability evidence matching, unsupported-version, wrong-OS, wrong-permission, and partial-capability coverage in `tests/contract/test_codex_capabilities.py` (FR-003, FR-018)
+- [x] T010 Run targeted foundational contract tests and mypy for `src/expertiseos/hosts/codex.py`, saving command, full result, environment metadata, and exit code in `specs/005-codex-host/evidence/foundation-verification.md`
 
 **Checkpoint**: The adapter translates only verified payloads, exposes no optimistic capabilities, and has no durable or domain-owned state.
 
@@ -60,13 +60,13 @@
 
 **Independent Test**: Exercise nested/unbalanced atomic fixtures, exclusions/disable states, and service failures while confirming task output completes and no early prompt or false save appears.
 
-- [ ] T015 [US2] Implement G0-proven atomic begin/end and conservative safe-checkpoint translation with non-negative nesting/unknown-state protection in `src/expertiseos/hosts/codex.py` (FR-006)
-- [ ] T016 [US2] Implement comparison-due coalescing so low-level events defer at most one comparison request to the next eligible boundary and never invoke semantic analysis per event in `src/expertiseos/hosts/codex.py` (FR-007)
-- [ ] T017 [US2] Apply promoted disable/pause/fatigue/target and source/path/session exclusion results before observation, candidate forwarding, retrieval, or proposal prompting in `src/expertiseos/hosts/codex.py` (FR-008)
-- [ ] T018 [P] [US2] Add normal, nested, unbalanced, missing-boundary, delayed-comparison, and unresolved-proposal checkpoint cases in `tests/contract/test_codex_safe_checkpoint.py` (FR-006, FR-007)
-- [ ] T019 [P] [US2] Add disabled and source/path/session exclusion tests that assert prohibited content never reaches adapter service calls in `tests/contract/test_codex_scope_controls.py` (FR-008)
-- [ ] T020 [US2] Add service, search, timeout, and rejected-write failure cases proving ordinary task callbacks/results continue and no Saved result is synthesized in `tests/integration/test_codex_service_failure.py` (FR-017)
-- [ ] T021 [US2] Run focused checkpoint/control/failure tests and mypy, then record commands, full results, and exit codes in `specs/005-codex-host/evidence/work-continuity-verification.md` (SC-002, SC-005)
+- [x] T015 [US2] Implement G0-proven atomic begin/end and conservative safe-checkpoint translation with non-negative nesting/unknown-state protection in `src/expertiseos/hosts/codex.py` (FR-006)
+- [x] T016 [US2] Implement comparison-due coalescing so low-level events defer at most one comparison request to the next eligible boundary and never invoke semantic analysis per event in `src/expertiseos/hosts/codex.py` (FR-007)
+- [x] T017 [US2] Apply promoted disable/pause/fatigue/target and source/path/session exclusion results before observation, candidate forwarding, retrieval, or proposal prompting in `src/expertiseos/hosts/codex.py` (FR-008)
+- [x] T018 [P] [US2] Add normal, nested, unbalanced, missing-boundary, delayed-comparison, and unresolved-proposal checkpoint cases in `tests/contract/test_codex_safe_checkpoint.py` (FR-006, FR-007)
+- [x] T019 [P] [US2] Add disabled and source/path/session exclusion tests that assert prohibited content never reaches adapter service calls in `tests/contract/test_codex_scope_controls.py` (FR-008)
+- [x] T020 [US2] Add service, search, timeout, and rejected-write failure cases proving ordinary task callbacks/results continue and no Saved result is synthesized in `tests/integration/test_codex_service_failure.py` (FR-017)
+- [x] T021 [US2] Run focused checkpoint/control/failure tests and mypy, then record commands, full results, and exit codes in `specs/005-codex-host/evidence/work-continuity-verification.md` (SC-002, SC-005)
 
 **Checkpoint**: No proactive interaction occurs inside an unsafe operation, excluded content is not forwarded, and host work remains independent of expertiseOS health.
 
@@ -78,7 +78,7 @@
 
 **Independent Test**: Run Save/Edit/Skip plus every adversarial event source and binding mismatch, asserting the upstream fake records exactly the permitted call and no others.
 
-- [ ] T022 [US3] Implement actual-user provenance validation at the G0-proven Codex event entrypoint in `src/expertiseos/hosts/codex.py`, making non-user payloads structurally unable to call decision registration (FR-009)
+- [x] T022 [US3] Implement actual-user provenance validation at the G0-proven Codex event entrypoint in `src/expertiseos/hosts/codex.py`, making non-user payloads structurally unable to call decision registration (FR-009)
 - [ ] T023 [US3] Implement single-active-proposal Save and Skip/cancel routing with unchanged proposal/session/adapter/digest/event/version fields into promoted C002 interfaces in `src/expertiseos/hosts/codex.py` (FR-010, FR-011)
 - [ ] T024 [US3] Implement Edit-with-final-content replacement/re-display and Edit-without-final-content no-grant behavior in `src/expertiseos/hosts/codex.py` (FR-012)
 - [ ] T025 [US3] Implement unrelated-message expiry, ambiguous-response rejection, multiple-proposal disambiguation, and narrowly deterministic direct-save routing through the normal proposal/grant path in `src/expertiseos/hosts/codex.py` (FR-013, FR-014)
@@ -97,10 +97,10 @@
 **Independent Test**: Retrieve a stable approved object through Codex, reject foreign/stale decisions through upstream services, and terminate the session with no unresolved adapter/candidate/grant state.
 
 - [ ] T029 [US4] Route approved reads, bounded search, controls, and guarded mutation proposals only through the promoted shared local service interfaces in `src/expertiseos/hosts/codex.py` (FR-016)
-- [ ] T030 [US4] Implement session-end upstream expiry and local teardown for active proposal references, unused grants, comparison state, user-event references, and suppression state in `src/expertiseos/hosts/codex.py` (FR-015)
-- [ ] T031 [P] [US4] Add session-end, abrupt-end, late-event, repeated-end, and fresh-session isolation cases in `tests/contract/test_codex_session_expiry.py` (FR-015)
-- [ ] T032 [US4] Add shared approved read identity and cross-session/cross-host/stale-write rejection handoff cases using actual promoted service outputs in `tests/integration/test_codex_shared_service.py` (FR-016)
-- [ ] T033 [US4] Run session/shared-service tests and candidate marker persistence audit, recording store locations checked, commands, complete results, and exit codes in `specs/005-codex-host/evidence/shared-state-verification.md` (SC-006, SC-007)
+- [x] T030 [US4] Implement session-end upstream expiry and local teardown for active proposal references, unused grants, comparison state, user-event references, and suppression state in `src/expertiseos/hosts/codex.py` (FR-015)
+- [x] T031 [P] [US4] Add session-end, abrupt-end, late-event, repeated-end, and fresh-session isolation cases in `tests/contract/test_codex_session_expiry.py` (FR-015)
+- [x] T032 [US4] Add shared approved read identity and cross-session/cross-host/stale-write rejection handoff cases using actual promoted service outputs in `tests/integration/test_codex_shared_service.py` (FR-016)
+- [x] T033 [US4] Run session/shared-service tests and candidate marker persistence audit, recording store locations checked, commands, complete results, and exit codes in `specs/005-codex-host/evidence/shared-state-verification.md` (SC-006, SC-007)
 
 **Checkpoint**: Approved state is shared by stable identity; authorization and volatile state remain session-bound and disappear at end.
 
@@ -110,10 +110,10 @@
 
 **Purpose**: Prove the component contract and provide integration-owned documentation with complete evidence, without editing shared release files.
 
-- [ ] T034 Run the complete component pytest suite plus repository lint, static checks, and mypy for all modified production and test paths, recording commands and full results in `specs/005-codex-host/evidence/component-verification.md`
+- [x] T034 Run the complete component pytest suite plus repository lint, static checks, and mypy for all modified production and test paths, recording commands and full results in `specs/005-codex-host/evidence/component-verification.md`
 - [ ] T035 Run the pinned live Codex matrix for activation, bounded startup, atomic checkpoint, Save, Edit then Save, Skip, unrelated expiry, forged/model-only approval, session cleanup, outage, shared retrieval, and degradation in `tests/e2e/test_codex_live_host.py`, preserving complete metadata and input-output evidence under `specs/005-codex-host/evidence/live-matrix/`
-- [ ] T036 Verify every FR-001 through FR-019 and SC-001 through SC-008 maps to passing evidence and record capability limits plus downstream C008 handoff paths in `specs/005-codex-host/evidence/traceability.md`
-- [ ] T037 Commit the clean component package, report the immutable component SHA and verification commands to integration, and leave shared `docs/`, `skill/SKILL.md`, service wiring, orchestration records, and integration worktree untouched
+- [x] T036 Verify every FR-001 through FR-019 and SC-001 through SC-008 maps to passing evidence and record capability limits plus downstream C008 handoff paths in `specs/005-codex-host/evidence/traceability.md`
+- [x] T037 Commit the clean component package, report the immutable component SHA and verification commands to integration, and leave shared `docs/`, `skill/SKILL.md`, service wiring, orchestration records, and integration worktree untouched
 
 ---
 
