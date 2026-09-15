@@ -314,3 +314,19 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Mastery policy: only `pass` evidence contributes to configurable positive, nondecreasing integer thresholds; defaults are `1, 1, 1, 1, 2`; all autonomous safeguards remain mandatory.
 - `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
 - C005-C008 remain blocked by the authoritative DAG.
+
+### C004 Local Component Gate
+
+- Completed component tasks: 43/48; integration-owned T038-T042 remain open.
+- Component commit: `e5e703233d7fbeb129936616f1deb48858198761`.
+- Worktree status: clean.
+- Owned implementation: pure `learning/evidence.py` and `learning/controls.py`; no SQLite, service, host adapter, or integration artifact edits.
+- Independent `rtk .venv/bin/pytest -q`: exit 0; 182 passed and 3 expected optional Basic Memory skips in 0.51 seconds.
+- Independent `rtk .venv/bin/mypy --strict src tests`: exit 0; 75 source files checked.
+- Independent `rtk .venv/bin/ruff check src tests`: exit 0.
+- Independent `rtk .venv/bin/ruff format --check src tests`: exit 0; 75 files formatted.
+- Dataclass/import smoke: exit 0; representative learning records have no definition-time defaults.
+- Baseline-to-component `rtk git diff --check`: exit 0.
+- Verified semantics include pass-only advancement, explicit defaults `1,1,1,1,2`, adjustable valid thresholds, invalid numeric rejection, and every autonomous non-numeric safeguard.
+- Local transition validation: `local_component_passed`, C004, exit 0, accepted from `implementing` to `integration_queue`.
+- Evidence: `specs/004-learning-controls/verification.md` on the component branch.
