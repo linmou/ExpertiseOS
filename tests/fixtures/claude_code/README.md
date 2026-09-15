@@ -2,7 +2,7 @@
 
 **Intent**: Pin the sanitized environment and capability facts consumed by C006 tests without representing unexecuted live checks as support.
 
-**Updated**: 2026-09-14 against integration commit `649cb66533e78901a71a0a1c7fbd268cb9929fe2`.
+**Updated**: 2026-09-14 for component implementation `0dbabb2a6dd4630a5f9ae01bb078b2c1e6b57137` against integration commit `649cb66533e78901a71a0a1c7fbd268cb9929fe2`.
 
 - Integration promotion: `649cb66533e78901a71a0a1c7fbd268cb9929fe2`
 - C004 promotion received: `633961d62a63ff761b992df768b1c04b173e2cd4`

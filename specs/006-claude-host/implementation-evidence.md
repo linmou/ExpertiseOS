@@ -5,6 +5,7 @@
 ## Provenance
 
 - Component branch: `006-claude-host`
+- Locally verified implementation commit: `0dbabb2a6dd4630a5f9ae01bb078b2c1e6b57137`
 - Implementation baseline: `044bad2a0bd15b4abce4a240d6b4e80444be427d`
 - Integrated C001-C004 promotion: `649cb66533e78901a71a0a1c7fbd268cb9929fe2`
 - C004 promotion received: `633961d62a63ff761b992df768b1c04b173e2cd4`
