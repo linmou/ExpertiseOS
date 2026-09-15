@@ -1,0 +1,13 @@
+{
+  "backend": "BasicMemoryBackend with deterministic public-CLI fixture",
+  "basic_memory_version": "0.23.2",
+  "corpus_size": 10000,
+  "cpu_count": 8,
+  "hardware_architecture": "arm64",
+  "index_mode": "local indexed",
+  "os": "macOS-15.1.1-arm64-arm-64bit",
+  "python": "3.12.10",
+  "sample_count": 30,
+  "warm_retrieval_p95_ms": 5.361080949296593,
+  "warmup_count": 1
+}
