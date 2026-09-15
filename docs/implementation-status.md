@@ -59,6 +59,6 @@
 
 ## Current Limits
 
-- C008 final product wiring remains unpromoted.
+- C008 product integration is implementing from receipt `d754a5a56596cce559688e4066042235bd3ea35e`; its final wiring remains unpromoted.
 - Codex and Claude persistent writes remain unavailable until authenticated six-step host decision fixtures pass.
 - Public distribution remains blocked pending Basic Memory AGPL packaging review.

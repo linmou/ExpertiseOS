@@ -539,3 +539,12 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - C008 receipt verification ran E05-E07 handoffs and applicable Codex, Claude, and reliability acceptance files: 31 passed in 2.38 seconds.
 - C008 receipt health smoke: exit 0; bootstrap-ready JSON.
 - C008 worktree is clean after receipt verification.
+
+### C008 Wave Activation
+
+- Activated: 2026-09-14.
+- Satisfied prerequisite promotion: C007 `2e9555772b6dfefd9aab8403910f4280ca3de44a`, which contains the promoted C001-C006 states.
+- Starting receipt commit: `d754a5a56596cce559688e4066042235bd3ea35e`; its second parent is the exact C007 promotion SHA.
+- C008 requirement checklist: 16/16 complete.
+- `start_implementation_wave`: exit 0; accepted from `implementation_ready` to `implementing`.
+- Implementation remains limited to the reconciled C008 facade, MCP allowlist, shared behavior skill, reference scenarios, and deterministic acceptance evidence.
