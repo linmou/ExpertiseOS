@@ -478,3 +478,12 @@ Allocation passed after all nine worktrees were confirmed present on their appro
 - Coverage manifest: `specs/orchestration/expertiseos-mvp/coverage/c006.json`; schema version 2; cumulative E00-E06 coverage.
 - `integration_coverage_passed`: exit 0; accepted from `integrating` to `integration_coverage_ready`.
 - `integration_passed`: exit 0; accepted from `integration_coverage_ready` to `promotion_ready`.
+
+### C006 Promotion
+
+- Promotion candidate and immutable promotion SHA: `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`.
+- Promotion smoke: `rtk .venv-arm64/bin/python -m expertiseos --health`; exit 0; bootstrap-ready JSON.
+- `promote_green_state`: exit 0; accepted from `promotion_ready` to `propagating` for C006.
+- No downstream branch was unblocked because C008 also requires promoted C007 state.
+- `propagation_complete`: exit 0; accepted from `propagating` to `final_verification` with no premature downstream merge.
+- C006 owner released after successful promotion.

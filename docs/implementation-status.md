@@ -4,7 +4,7 @@
 
 **Updated**: 2026-09-14  
 **Integration branch**: `integration/expertiseos-mvp`
-**Verified through**: C005 promotion `edf03b653ee59f9c8a2db2f7c1df7b591e5a05d4`
+**Verified through**: C006 promotion `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`
 
 ## Integrated Components
 
@@ -13,6 +13,7 @@
 - C003 backend retrieval is promoted at `166f196638e66e4aea324ee12d117507963e7629`.
 - C004 learner evidence and controls are promoted at `633961d62a63ff761b992df768b1c04b173e2cd4`.
 - C005 Codex host is promoted at `edf03b653ee59f9c8a2db2f7c1df7b591e5a05d4`.
+- C006 Claude host is promoted at `59899b8ee88f04a8691d1ff61fd2ae9a9bf2a779`.
 
 ## C003 Verified Behavior
 
@@ -39,8 +40,16 @@
 - Static plugin add/remove commands are reversible, but configuration preservation is not claimed without live evidence.
 - Automatic activation, actual-user decision validation, persistent writes, and live atomic-boundary delivery remain unavailable and are reported as such.
 
+## C006 Verified Behavior
+
+- The pinned Claude profile exposes approved read and bounded search, normalizes lifecycle events, and consumes C004 controls and exclusions directly.
+- Exact Save, Skip, Edit, and direct-save forms are parsed, while ambiguous and forged/model-only forms cannot authorize a write.
+- Session expiry, bounded C003 retrieval, malformed-response handling, and service-failure containment preserve ordinary host work.
+- Only a typed C002 committed result maps to Saved.
+- Automatic activation, configuration preservation, actual-user decision validation, persistent writes, and live atomic-boundary delivery remain unavailable and are reported as such.
+
 ## Current Limits
 
-- C006-C008 remain unpromoted; Claude host, ownership/reliability, and final product wiring are not yet available.
+- C007-C008 remain unpromoted; ownership/reliability and final product wiring are not yet available.
 - Codex and Claude persistent writes remain unavailable until authenticated six-step host decision fixtures pass.
 - Public distribution remains blocked pending Basic Memory AGPL packaging review.
