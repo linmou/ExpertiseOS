@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"at_id": "AT-01", "applicable_environments": ["automated", "codex", "claude-code"], "fixture_ids": ["host-activation-v1"], "producer_consumer_edges": ["C001->C005", "C001->C006", "C005->C008", "C006->C008"], "assertions": ["guided activation", "truthful capabilities", "shared repository", "scope exclusions"], "quality_class": "reliability"},
+    {"at_id": "AT-02", "applicable_environments": ["automated"], "fixture_ids": ["scenario-B", "c008-acceptance-corpus-v1"], "producer_consumer_edges": ["C003->C008"], "assertions": ["uncertain novelty", "conflict visible"], "quality_class": "behavior"},
+    {"at_id": "AT-03", "applicable_environments": ["automated", "codex", "claude-code"], "fixture_ids": ["host-atomic-v1"], "producer_consumer_edges": ["C005->C008", "C006->C008"], "assertions": ["no atomic interruption", "earliest proven checkpoint"], "quality_class": "state_integrity"},
+    {"at_id": "AT-04", "applicable_environments": ["automated"], "fixture_ids": ["scenario-A"], "producer_consumer_edges": ["C002->C003", "C003->C008"], "assertions": ["exact approved persistence"], "quality_class": "consent"},
+    {"at_id": "AT-05", "applicable_environments": ["automated"], "fixture_ids": ["negative-consent-v1"], "producer_consumer_edges": ["C002->C008"], "assertions": ["no unapproved persistence"], "quality_class": "privacy"},
+    {"at_id": "AT-06", "applicable_environments": ["automated", "cross-host"], "fixture_ids": ["forged-decision-v1"], "producer_consumer_edges": ["C005->C002", "C006->C002"], "assertions": ["forged approval rejected", "grant isolation"], "quality_class": "consent"},
+    {"at_id": "AT-07", "applicable_environments": ["automated"], "fixture_ids": ["scenario-A"], "producer_consumer_edges": ["C002->C004"], "assertions": ["save without learning", "separate evidence approval"], "quality_class": "consent"},
+    {"at_id": "AT-08", "applicable_environments": ["automated"], "fixture_ids": ["scenario-B"], "producer_consumer_edges": ["C002->C003"], "assertions": ["derived change separately approved", "decline preserved"], "quality_class": "consent"},
+    {"at_id": "AT-09", "applicable_environments": ["automated", "cross-host"], "fixture_ids": ["mastery-v1"], "producer_consumer_edges": ["C004->C008"], "assertions": ["user-grounded pass only", "global reflection count"], "quality_class": "state_integrity"},
+    {"at_id": "AT-10", "applicable_environments": ["automated"], "fixture_ids": ["scenario-C"], "producer_consumer_edges": ["C004->C008"], "assertions": ["fatigue distinct from target"], "quality_class": "behavior"},
+    {"at_id": "AT-11", "applicable_environments": ["automated", "codex", "claude-code"], "fixture_ids": ["scenario-C"], "producer_consumer_edges": ["C004->C005", "C004->C006"], "assertions": ["pause preserves work and recall", "disable stops expertiseOS"], "quality_class": "behavior"},
+    {"at_id": "AT-12", "applicable_environments": ["automated", "cross-host"], "fixture_ids": ["scenario-D"], "producer_consumer_edges": ["C003->C005", "C003->C006", "C004->C008"], "assertions": ["shared durable state", "stale edit conflict", "volatile isolation"], "quality_class": "state_integrity"},
+    {"at_id": "AT-13", "applicable_environments": ["automated"], "fixture_ids": ["outage-recovery-v1"], "producer_consumer_edges": ["C003->C007", "C007->C008"], "assertions": ["outage truthful", "retry idempotent", "host work continues"], "quality_class": "reliability"},
+    {"at_id": "AT-14", "applicable_environments": ["automated"], "fixture_ids": ["ownership-v1"], "producer_consumer_edges": ["C007->C008"], "assertions": ["export restore delete guarded", "external limits visible"], "quality_class": "privacy"},
+    {"at_id": "AT-15", "applicable_environments": ["automated", "adversarial"], "fixture_ids": ["adversarial-content-v1"], "producer_consumer_edges": ["C003->C008"], "assertions": ["content remains untrusted", "retrieval bounded", "zero extra authority"], "quality_class": "state_integrity"},
+    {"at_id": "AT-16", "applicable_environments": ["automated", "offline"], "fixture_ids": ["offline-v1"], "producer_consumer_edges": ["C001->C003", "C003->C008"], "assertions": ["runtime network blocked", "keyword fallback local"], "quality_class": "locality"}
+  ]
+}

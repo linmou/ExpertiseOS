@@ -1,0 +1,61 @@
+{
+  "scenario_id": "D",
+  "title": "Shared approved knowledge across hosts",
+  "requirements": ["FR-007"],
+  "acceptance_tests": ["AT-06", "AT-09", "AT-12"],
+  "initial_approved_state": {
+    "knowledge": [
+      {
+        "stable_id": "codex-origin",
+        "content": "Cross-host retry boundaries require a stable operation identity.",
+        "categories": ["procedure"],
+        "subjects": ["domain", "self"],
+        "applicability_scope": "repository",
+        "evidential_status": "observed",
+        "source_refs": ["codex:user-event-1"],
+        "learner_state": "new"
+      },
+      {
+        "stable_id": "claude-origin",
+        "content": "Cross-host recall must preserve provenance and uncertainty.",
+        "categories": ["principle"],
+        "subjects": ["domain"],
+        "applicability_scope": "repository",
+        "evidential_status": "uncertain",
+        "source_refs": ["claude-code:user-event-1"],
+        "learner_state": "new"
+      }
+    ],
+    "relations": [
+      {
+        "source": "codex-origin",
+        "target": "claude-origin",
+        "type": "supports"
+      }
+    ],
+    "controls": {
+      "enabled": true,
+      "learning_paused": false,
+      "fatigue_rest_until": null
+    }
+  },
+  "events": [
+    {"host": "codex", "kind": "recall", "query": "cross-host"},
+    {"host": "claude-code", "kind": "recall", "query": "cross-host"},
+    {"host": "codex", "kind": "reflection", "event_id": "reflection-global-1"},
+    {"host": "claude-code", "kind": "reflection", "event_id": "reflection-global-1"}
+  ],
+  "expected_visible_results": [
+    "Both hosts return the same approved identities and versions.",
+    "Provenance, relationship, uncertainty, learner state, and controls remain visible.",
+    "The repeated global reflection event counts once."
+  ],
+  "expected_persistent_delta": {
+    "knowledge": [],
+    "reflection_count": 1
+  },
+  "expected_volatile_end_state": {
+    "proposals": [],
+    "grants": []
+  }
+}

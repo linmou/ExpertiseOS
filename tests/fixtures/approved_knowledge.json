@@ -1,0 +1,14 @@
+{
+  "source": {
+    "title": "G0 Approved Source",
+    "folder": "tests",
+    "content": "---\ntags: [retry, safety]\ntype: note\n---\n\n# G0 Approved Source\n\n## Observations\n- [procedure] Retry only when the operation is idempotent. #safety\n\n## Relations\n- supports [[G0 Approved Target]]"
+  },
+  "target": {
+    "title": "G0 Approved Target",
+    "folder": "tests",
+    "content": "# G0 Approved Target\n\n## Observations\n- [fact] Side effects can make an uncertain retry unsafe. #safety"
+  },
+  "query": "idempotent",
+  "page_size": 1
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "command": "PYTHONPATH=src /Users/admin/.cache/uv/archive-v0/Xh1rF7O-yp7Ho6JEh2paj/bin/pytest tests/integration/test_injection_boundary.py tests/integration/test_no_candidate_persistence_audit.py tests/integration/test_no_network_runtime.py -q",
+  "exit_code": 0,
+  "passed": 3,
+  "failed": 0,
+  "duration_seconds": 0.17,
+  "controlled_locations": ["BasicMemoryBackend state", "SQLiteState database"],
+  "privileged_side_effects": 0,
+  "blocked_network_attempts": 0,
+  "candidate_markers_found": 0
+}

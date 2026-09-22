@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "at_id": "AT-16",
+  "tested_sha": "03ea840d2b713d87fb6aa20fe1257c20268e2f92",
+  "command": ["rtk", "env", "PYTHONPATH=src", "/Users/admin/Documents/GitHub.nosynchr/expertiseOS_full-worktrees/expertiseos-mvp/integration/.venv-arm64/bin/python", "-m", "pytest", "tests/e2e/test_acceptance_reliability.py::test_at16_runtime_is_offline_and_uses_local_keyword_fallback", "tests/integration/test_no_network_runtime.py", "tests/integration/test_keyword_fallback.py", "-q"],
+  "exit_code": 0,
+  "started_at": "2026-09-15T03:52:21Z",
+  "finished_at": "2026-09-15T03:52:22Z",
+  "environment": [["os", "macOS 15.1.1 arm64"], ["python", "3.12.10"], ["network_mode", "socket connect denied"], ["host_inference", "outside expertiseOS runtime boundary"]],
+  "fixture_versions": ["offline-v1"],
+  "producer_consumer_edges": ["C001->C003", "C003->C008"],
+  "edge_artifacts": ["4 passed in 0.03s", "SearchMode.KEYWORD", "IndexState.DEGRADED", "outbound_attempts:0"],
+  "result": "pass",
+  "output_path": "specs/008-product-integration/evidence/offline-at16.json"
+}

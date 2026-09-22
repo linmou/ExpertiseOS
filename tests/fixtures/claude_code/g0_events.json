@@ -1,0 +1,55 @@
+{
+  "environment": {
+    "version": "2.1.241",
+    "operating_system": "macOS 15.1.1 build 24B91",
+    "architecture": "arm64",
+    "permission_mode": "default"
+  },
+  "events": {
+    "session_start": "SessionStart",
+    "actual_user_input": "UserPromptSubmit",
+    "atomic_begin_candidate": "PreToolUse",
+    "atomic_end_candidate": "PostToolUse",
+    "atomic_failure_candidate": "PostToolUseFailure",
+    "checkpoint_candidate": "Stop",
+    "session_end": "SessionEnd"
+  },
+  "capabilities": [
+    {
+      "name": "can_read",
+      "result": "pass",
+      "evidence_ref": "g0:claude-host-20260914:installed-interface",
+      "limitation": "shared-service read path is deterministic; live plugin activation is not proven"
+    },
+    {
+      "name": "can_search",
+      "result": "pass",
+      "evidence_ref": "g0:claude-host-20260914:installed-interface",
+      "limitation": "shared-service search path is deterministic; live plugin activation is not proven"
+    },
+    {
+      "name": "can_validate_user_decisions",
+      "result": "not_run",
+      "evidence_ref": "g0:claude-host-20260914:six-step-not-run",
+      "limitation": "authenticated live six-step decision fixture was not run"
+    },
+    {
+      "name": "can_write",
+      "result": "not_run",
+      "evidence_ref": "g0:claude-host-20260914:six-step-not-run",
+      "limitation": "persistent writes remain blocked"
+    },
+    {
+      "name": "can_observe_atomic_boundaries",
+      "result": "not_run",
+      "evidence_ref": "g0:claude-host-20260914:atomic-order-not-run",
+      "limitation": "live lifecycle ordering was not validated"
+    },
+    {
+      "name": "can_auto_activate",
+      "result": "not_run",
+      "evidence_ref": "g0:claude-host-20260914:activation-not-run",
+      "limitation": "configuration-preserving setup and removal were not run"
+    }
+  ]
+}

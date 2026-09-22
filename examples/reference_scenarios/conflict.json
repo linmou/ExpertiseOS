@@ -1,0 +1,28 @@
+{
+  "scenario_id": "B",
+  "title": "Resolve conflicting knowledge without silent replacement",
+  "requirements": ["FR-003", "FR-004", "FR-008"],
+  "acceptance_tests": ["AT-02", "AT-08"],
+  "initial_approved_state": {
+    "knowledge": [
+      {
+        "stable_id": "retry-policy",
+        "version": 1,
+        "content": "Use three retries for transient failures.",
+        "source_refs": ["codex:user-original"]
+      }
+    ]
+  },
+  "events": [
+    {"kind": "coexist", "content": "Use five retries when the service publishes a longer rate-limit window."},
+    {"kind": "revise", "content": "Use three retries unless the service publishes a longer rate-limit window."},
+    {"kind": "decline", "content": "Always use ten retries."}
+  ],
+  "expected_visible_results": ["Conflict shown", "Coexisting note saved", "Original revised", "Unsafe replacement declined"],
+  "expected_persistent_delta": {
+    "knowledge_added": 1,
+    "knowledge_revised": 1,
+    "knowledge_declined": 0
+  },
+  "expected_volatile_end_state": {"unresolved_proposals": 0, "unconsumed_grants": 0}
+}

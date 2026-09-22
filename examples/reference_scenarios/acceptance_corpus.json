@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "corpus_id": "c008-acceptance-corpus-v1",
+  "records": [
+    {"id": "duplicate", "category": "declarative", "subjects": ["domain"], "condition": "duplicate"},
+    {"id": "changed", "category": "structural_procedural", "subjects": ["domain", "self"], "condition": "changed_condition"},
+    {"id": "conflict", "category": "conditional_boundary", "subjects": ["domain", "ai"], "condition": "contradiction"},
+    {"id": "uncertain", "category": "causal_mechanistic", "subjects": ["domain"], "condition": "uncertain_novelty"},
+    {"id": "unavailable", "category": "episodic_tacit_experiential", "subjects": ["self"], "condition": "unavailable_source"},
+    {"id": "malicious", "category": "goal_metacognitive_normative", "subjects": ["ai"], "condition": "malicious_content"},
+    {"id": "non-coding", "category": "declarative", "subjects": ["domain", "self"], "condition": "non_coding_task"}
+  ]
+}
